@@ -1,19 +1,3 @@
-def continue_monitor():
-    i = open('halt.bin', rb) 
-    out = i.read()
-    i.close()
-    return out
-
-def start_monintor():
-    f = open(halt, 'wb')
-    f.write(1)
-    f.close()
-
-def end_monintor():
-    f = open(halt, 'wb')
-    f.write(0)
-    f.close()
-
 def monitor_cluster_node_high_cpu_temp(node_name):
     import psutil
     import time 
