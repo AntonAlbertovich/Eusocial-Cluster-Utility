@@ -1,0 +1,50 @@
+import tkinter
+from tkinter import messagebox
+from tkinter import *
+clustername = ""
+passwrd = ""
+top = tkinter.Tk()
+mainFrame = tkinter.Frame(top)
+mainFrame.grid()
+entryFrame = tkinter.Frame(mainFrame, width=450, height=200)
+entryFrame.grid(row=1, column=1)
+# Code to add widgets will go here...
+def helloCallBack():
+   messagebox.showinfo( "Instructions for first time use", "Please install the following dependencies before using!\n 1.)Openssh-server \n 2.)gfortran")
+def setname():
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v)
+    E1.grid()
+    E1.focus_set()
+    def setclus():
+        clustername = E1.get()
+        #print (clustername)
+        txt.destroy()
+    button = Button(txt, text="Set name", width=10, command=setclus)
+    button.grid()
+    txt.mainloop()
+def setpass():
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v, show ="*")
+    E1.grid()
+    E1.focus_set()
+    def password():
+        passwrd = E1.get()
+        #print (passwrd)
+        txt.destroy()
+    button = Button(txt, text="Set password", width=10, command=password)
+    button.grid()
+    txt.mainloop()
+
+
+
+B = tkinter.Button(top, text ="Instructions for first time use", command = helloCallBack)
+A = tkinter.Button(top, text ="Set cluster name", command = setname)
+C = tkinter.Button(top, text ="Set ssh password", command = setpass)
+
+B.grid()
+A.grid()
+C.grid()
+top.mainloop()
