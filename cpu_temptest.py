@@ -25,7 +25,12 @@ def monitor_cluster_node_high_cpu_temp(node_name):
         time.sleep(.30)
         data_structure = psutil.sensors_temperatures()
 
-    job_start_time= time.clock_gettime_ns(time.CLOCK_REALTIME)
+    job_start_time= time.clock_gettime(time.CLOCK_REALTIME)
+    try:
+        job_start_time = time.clock_gettime_ns(time.CLOCK_REALTIME)
+    except AttributeError:
+        print("Alert: [time.clock_gettime_ns] has experienced an AttributeError.\nDefaulting to: [time.clock_gettime]\nTime precision will be effected.")
+        job_start_time = time.clock_gettime(time.CLOCK_REALTIME)
     ts = time.time()
     time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     recorded_cycles = 0
@@ -33,7 +38,11 @@ def monitor_cluster_node_high_cpu_temp(node_name):
         time.sleep(.50)
         data_structure = psutil.sensors_temperatures()
         sub_structure = data_structure.get("coretemp")
-        servey_time = time.clock_gettime_ns(time.CLOCK_REALTIME)
+        try:
+            servey_time = time.clock_gettime_ns(time.CLOCK_REALTIME)
+        except AttributeError:
+            print("Alert: [time.clock_gettime_ns] has experienced an AttributeError.\nDefaulting to: [time.clock_gettime]\nTime precision will be effected.")
+            servey_time = time.clock_gettime(time.CLOCK_REALTIME)
         servey_cores= psutil.cpu_percent(interval = 1, percpu = True)
         memory_usage = psutil.virtual_memory().percent    
         this_core = 0
