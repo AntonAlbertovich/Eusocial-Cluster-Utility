@@ -1,3 +1,7 @@
+#############################################
+#           Using Python 3.7                #
+#############################################
+
 def monitor_cluster_node_high_cpu_temp(node_name):
     import psutil
     import time 
