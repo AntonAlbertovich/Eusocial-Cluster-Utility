@@ -1,0 +1,72 @@
+import tkinter
+from tkinter import messagebox
+from tkinter import font
+from tkinter import *
+clustername = ""
+passwrd = ""
+top = tkinter.Tk()
+top.title("ECU")
+top.configure(bg = "black")
+pad1 = tkinter.Frame(top, width=350, height=45, bg = "black")
+pad2 = tkinter.Frame(top, width=350, height=45, bg = "black")
+pad3 = tkinter.Frame(top, width=350, height=45, bg = "black")
+pad4 = tkinter.Frame(top, width=350, height=20, bg = "black")
+pad5 = tkinter.Frame(top, width=350, height=20, bg = "black")
+# Code to add widgets will go here...
+var = StringVar()
+fnt = font.Font(family='Times', size=15, weight='bold')
+label = Label(top, textvariable=var, bd = 30, relief = GROOVE, font = fnt, pady = 10, padx = 5, bg = "black", fg = "white")
+var.set("Eusocial Cluster Utility")
+def helloCallBack():
+   messagebox.showinfo( "Instructions for first time use", "Please install the following dependencies before using!\n 1.)Openssh-server \n 2.)gfortran")
+def setname():
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v)
+    E1.grid()
+    E1.focus_set()
+    def setclus():
+        clustername = E1.get()
+        file = open("info.txt", "a")
+        file.write(clustername + "\n")
+        file.close()
+        #print (clustername)
+        txt.destroy()
+    button = Button(txt, text="Set name", width=10, command=setclus)
+    button.grid()
+    txt.mainloop()
+def setpass():
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v, show ="*")
+    E1.grid()
+    E1.focus_set()
+    def password():
+        passwrd = E1.get()
+        #print (passwrd)
+        file = open("info.txt","a")
+        file.write(passwrd + "\n")
+        file.close()
+        txt.destroy()
+    button = Button(txt, text="Set password", width=10, command=password)
+    button.grid()
+    txt.mainloop()
+def reset():
+    file = open("info.txt", "w")
+    file.close()
+    messagebox.showinfo("Reset name and password","Cluster name and password cleared.")
+A = tkinter.Button(top, text ="Instructions for first time use", command = helloCallBack)
+B = tkinter.Button(top, text ="Set cluster name", command = setname)
+C = tkinter.Button(top, text ="Set ssh password", command = setpass)
+D = tkinter.Button(top, text ="Reset name and password", command = reset)
+pad3.grid()
+label.grid()
+pad1.grid()
+A.grid()
+#pad4.grid()
+B.grid()
+#pad5.grid()
+C.grid()
+D.grid()
+pad2.grid()
+top.mainloop()
