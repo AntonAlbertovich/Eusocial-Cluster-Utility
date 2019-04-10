@@ -1,13 +1,16 @@
 #############################################
 #           Using Python 3.7                #
 #############################################
+import socket
+from distributed_ledger_functions import view_distributed_public_ledger
 
 def monitor_cluster_node_high_cpu_temp(node_name):
     import psutil
     import time 
     import datetime
+    import socket
     import os
-
+    from distributed_ledger_functions import next_block
     core_count = 0
     data_structure = psutil.sensors_temperatures()
     sub_structure = data_structure.get("coretemp")
@@ -38,7 +41,7 @@ def monitor_cluster_node_high_cpu_temp(node_name):
     ts = time.time()
     time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     recorded_cycles = 0
-    for i in range(0, 1):
+    for i in range(0, 5):
         time.sleep(.50)
         data_structure = psutil.sensors_temperatures()
         sub_structure = data_structure.get("coretemp")
@@ -84,9 +87,16 @@ def monitor_cluster_node_high_cpu_temp(node_name):
         data_out = data_out+text
     data_out = data_out + ("Monitoring stated: %s UTC. " %(time_stamp1))
     data_out = data_out + ("Monitoring ended: %s UTC. \n" %(time_stamp2))
+    
+    # Here the thermal data is sent to the blockchain
+    next_block(data_out) 
+    
     return data_out
     #print("Hours: ", job_start_time3//3600000000000, "Minutes: ", job_start_time3//600000000000, "Seconds: ",job_start_time3 //1000000000)
     #print(psutil.sensors_temperatures())
 
-print_test = monitor_cluster_node_high_cpu_temp("Unit02")
+name = socket.gethostname()
+print_test = monitor_cluster_node_high_cpu_temp(name)
 print(print_test)
+view_distributed_public_ledger()
+
