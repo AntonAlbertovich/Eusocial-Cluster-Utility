@@ -7,6 +7,8 @@ clustername = ""
 username = ""
 passwrd = ""
 nodes = 0
+tempe = 0
+stemp = ""
 top = tkinter.Tk()
 top.title("ECU")
 top.configure(bg = "black")
@@ -172,6 +174,96 @@ def reset():
     button.pack()
     txt.mainloop()
 
+def finish():
+    top.destroy()
+
+def temp():
+    messagebox.showinfo("Enter max CPU temp","Set the temperature limit for all machines across the cluster. It is recommended that you choose a temperature between 90 to 105 degrees. "
+                                             +"Setting a temperature below 50 degrees or above 120 degrees will result in an error.")
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v)
+    E1.grid()
+    E1.focus_set()
+    def settemp():
+        tempe = int(E1.get())
+        stemp = E1.get()
+        print(E1.get())
+        if int(E1.get()) <= 120:
+            if int(E1.get()) >= 50:
+                file = open("info.txt", "a")
+                #the temperature uses a t as an identifier
+                file.write("t " + stemp + "\n")
+                file.close()
+                txt.destroy()
+            else:
+                messagebox.showerror("Error", "Please choose a number between 50 and 120.")
+                txt.destroy()
+        else:
+            messagebox.showerror("Error", "Please choose a number between 50 and 120.")
+            txt.destroy()
+    button = Button(txt, text="Set CPU temp(°C)", width=10, command=settemp)
+    button.grid()
+    txt.mainloop()
+def test():
+    messagebox.showinfo("Set test interval","This will set how often data will be sampled across the cluster.  ECU will "
+                                            +"survey the hardware in each machine once per number of minutes entered. "
+                                             +"At the end of this period the collected data will be sent to the distributed "
+                                              +"public ledger on all machines. Only intervals between once a minute and once per 60 minutes will be accepted.")
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v)
+    E1.grid()
+    E1.focus_set()
+    def setint():
+        stemp = E1.get()
+        print(E1.get())
+        if int(E1.get()) <= 60:
+            if int(E1.get()) >= 1:
+                file = open("info.txt", "a")
+                #the interval uses a i as an identifier
+                file.write("i " + stemp + "\n")
+                file.close()
+                txt.destroy()
+            else:
+                messagebox.showerror("Error", "Please choose a number between 1 and 60.")
+                txt.destroy()
+        else:
+            messagebox.showerror("Error", "Please choose a number between 1 and 60.")
+            txt.destroy()
+    button = Button(txt, text="Set interval", width=10, command=setint)
+    button.grid()
+    txt.mainloop()
+def jobtime():
+    messagebox.showinfo("Set job time","This will set how long data will be sampled across the cluster.  "
+                                       +"ECU will survey the hardware throughout the cluster for  up to 96 hours.  "
+                                        +"The minimum Job Time is 1 hour.  Rebooting  during the Set Job Time will "
+                                         +"result in failure to complete the test.")
+    txt = tkinter.Tk()
+    v = StringVar()
+    E1 = Entry(txt, bd=5, textvariable = v)
+    E1.grid()
+    E1.focus_set()
+    def jobt():
+        stime = E1.get()
+        print(E1.get())
+        if int(E1.get()) <= 96:
+            if int(E1.get()) >= 1:
+                file = open("info.txt", "a")
+                #the time uses a c as an identifier
+                file.write("c " + stime + "\n")
+                file.close()
+                txt.destroy()
+            else:
+                messagebox.showerror("Error", "Please choose a number between 1 and 96.")
+                txt.destroy()
+        else:
+            messagebox.showerror("Error", "Please choose a number between 1 and 96.")
+            txt.destroy()
+    button = Button(txt, text="Set job time", width=10, command=jobt)
+    button.grid()
+    txt.mainloop()
+
 #putting widgets in order
 pad1 = tkinter.Frame(top, width=500, height=45, bg = "black")
 pad2 = tkinter.Frame(top, width=350, height=45, bg = "black")
@@ -186,15 +278,23 @@ D = tkinter.Button(top, text ="Set username", font = fnt,command = user)
 E = tkinter.Button(top, text ="Set ssh password", font = fnt,command = setpass)
 F = tkinter.Button(top, text ="Set node title", font = fnt,command = setnodename)
 G = tkinter.Button(top, text ="Create new cluster", font = fnt,command = reset)
+H = tkinter.Button(top, text ="Finish", font = fnt, command = finish)
+I = tkinter.Button(top, text ="Max CPU temperature", font = fnt, command = temp)
+J = tkinter.Button(top, text ="Set testing interval", font = fnt, command = test)
+K = tkinter.Button(top, text ="Set job time", font = fnt, command = jobtime)
 pad3.grid()
 label.grid()
 canvas.grid()
 A.grid()
+G.grid()
 B.grid()
 C.grid()
 D.grid()
 E.grid()
 F.grid()
-G.grid()
+I.grid()
+J.grid()
+K.grid()
+H.grid()
 pad2.grid()
 top.mainloop()
