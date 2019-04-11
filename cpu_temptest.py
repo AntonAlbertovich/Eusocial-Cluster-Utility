@@ -4,9 +4,9 @@
 import socket
 from distributed_ledger_functions import view_distributed_public_ledger
 
-def monitor_cluster_node_high_cpu_temp(node_name):
+def monitor_cluster_node_high_cpu_temp(node_name, test_interval):
     import psutil
-    import time 
+    import time
     import datetime
     import socket
     import os
@@ -41,8 +41,8 @@ def monitor_cluster_node_high_cpu_temp(node_name):
     ts = time.time()
     time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     recorded_cycles = 0
-    for i in range(0, 5):
-        time.sleep(.50)
+    for i in range(0, int(test_interval)):
+        time.sleep(1)
         data_structure = psutil.sensors_temperatures()
         sub_structure = data_structure.get("coretemp")
         try:
@@ -51,14 +51,14 @@ def monitor_cluster_node_high_cpu_temp(node_name):
             print("Alert: [time.clock_gettime_ns] has experienced an AttributeError.\nDefaulting to: [time.clock_gettime]\nTime precision will be effected.")
             servey_time = time.clock_gettime(time.CLOCK_REALTIME)
         servey_cores= psutil.cpu_percent(interval = 1, percpu = True)
-        memory_usage = psutil.virtual_memory().percent    
+        memory_usage = psutil.virtual_memory().percent
         this_core = 0
         ts = time.time()
         time_stamp = str(datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
         for a in sub_structure:
             if a[0][0] == "C":
                 ave_recorded_temps_per_core[this_core] = ave_recorded_temps_per_core[this_core] + int(a[1])
-                
+
                 if int(max_recorded_temps_per_core[this_core]) <= int(a[1]):
 
                     #print("!!! New Max Temp on ", a[0], " !!!") 
@@ -82,21 +82,19 @@ def monitor_cluster_node_high_cpu_temp(node_name):
         text = text + ("UTC time: %s. \n" %(recorded_utc[a]))
         text = text + ("CPU time: %d ns. \n" %(max_recorded_temps_clocked[a]))
         text = text + ("Job time: %d ns. \n" %(max_recorded_temps_job_time[a]))
-        text = text + ("CPU usage: %s. \n" %(recorded_temp_all_cores[a]))
-        text = text + ("RAM usage: %d \n" %(recorded_memory_usage[a]))
+        text = text + ("CPU usages %s. \n" %(recorded_temp_all_cores[a]))
+        text = text + ("RAM usage: %d percent. \n" %(recorded_memory_usage[a]))
         data_out = data_out+text
     data_out = data_out + ("Monitoring stated: %s UTC. " %(time_stamp1))
     data_out = data_out + ("Monitoring ended: %s UTC. \n" %(time_stamp2))
-    
+
     # Here the thermal data is sent to the blockchain
-    next_block(data_out) 
-    
+    next_block(data_out)
+
     return data_out
+
+
     #print("Hours: ", job_start_time3//3600000000000, "Minutes: ", job_start_time3//600000000000, "Seconds: ",job_start_time3 //1000000000)
     #print(psutil.sensors_temperatures())
 
-name = socket.gethostname()
-print_test = monitor_cluster_node_high_cpu_temp(name)
-print(print_test)
-view_distributed_public_ledger()
 
