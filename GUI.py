@@ -57,23 +57,25 @@ def addnode():
         file.close()
         E2.destroy()
         button2.destroy()
-    def gpu():
+     def gpu():
         def yes():
             file = open("nodes.txt", "a")
             # when adding a new node, GPU uses a g as identifier
             file.write("g yes" + "\n")
             file.close()
             ex.destroy()
+            button4.destroy()
         def no():
             file = open("nodes.txt", "a")
             # when adding a new node, GPU uses a g as identifier
             file.write("g no" + "\n")
             file.close()
             ex.destroy()
+            button4.destroy()
         ex = tkinter.Tk()
         but = Button(ex, text="Yes", width=5, command=yes)
         but1 = Button(ex, text="No", width=5, command=no)
-        label = Label(ex, text="Does this node have a GPU?", bd=30)
+        label = Label(ex, text="Does this node have a GPU with Nvidia CUDA 10.0 and NVCC toolkit support?", bd=30)
         label.grid()
         but.grid()
         but1.grid()
