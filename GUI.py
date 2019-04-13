@@ -12,16 +12,6 @@ stemp = ""
 top = tkinter.Tk()
 top.title("ECU")
 top.configure(bg = "black")
-def check():
-    file = open("info.txt", "r")
-    stri = file.readline()
-    if len(stri) > 0:
-        if stri[0] == "#":
-            nodes = int(stri[1:])
-    file.close()
-
-check()
-
 # Code to add widgets will go here...
 var = StringVar()
 fnt = font.Font(family='Times', size=15, weight='bold')
@@ -56,25 +46,47 @@ def addnode():
         comname = E1.get()
         file = open("nodes.txt", "a")
         #when adding a new node, it will start with a pound sign as an identifier
-        file.write("%"  + comname+ "\n")
+        file.write("% "  + comname+ "\n")
         file.close()
         E1.destroy()
         button.destroy()
     def setmac():
         macadd = E2.get()
         file = open("nodes.txt", "a")
-        file.write("m" + macadd + "\n")
+        file.write("m " + macadd + "\n")
         file.close()
         E2.destroy()
         button2.destroy()
+    def gpu():
+        def yes():
+            file = open("nodes.txt", "a")
+            # when adding a new node, GPU uses a g as identifier
+            file.write("g yes" + "\n")
+            file.close()
+            ex.destroy()
+        def no():
+            file = open("nodes.txt", "a")
+            # when adding a new node, GPU uses a g as identifier
+            file.write("g no" + "\n")
+            file.close()
+            ex.destroy()
+        ex = tkinter.Tk()
+        but = Button(ex, text="Yes", width=5, command=yes)
+        but1 = Button(ex, text="No", width=5, command=no)
+        label = Label(ex, text="Does this node have a GPU?", bd=30)
+        label.grid()
+        but.grid()
+        but1.grid()
     def exit():
         txt.destroy()
     button = Button(txt, text="Set node name", width=20, command=add)
     button2 = Button(txt, text ="Set MAC address", width=20, command=setmac)
     button3 = Button(txt, text="Exit", width=20, command=exit)
+    button4 = Button(txt, text = "GPU support", width=20, command=gpu)
     button.grid()
     E2.grid()
     button2.grid()
+    button4.grid()
     button3.grid()
     txt.mainloop()
 
@@ -92,7 +104,7 @@ def user():
         username = E1.get()
         file = open("info.txt", "a")
         #the username line begins with a u as an identifier
-        file.write("u" + username + "\n")
+        file.write("u " + username + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set username", width=10, command=username)
@@ -109,7 +121,7 @@ def setname():
         clustername = E1.get()
         file = open("info.txt", "a")
         #the cluster name line begins with an n as an identifier
-        file.write("n" + clustername + "\n")
+        file.write("n " + clustername + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set name", width=10, command=setclus)
@@ -128,7 +140,7 @@ def setnodename():
         nod = E1.get()
         file = open("info.txt", "a")
         #the node name uses a u as an identifier
-        file.write("v" + nod + "\n")
+        file.write("u " + nod + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set node title", width=10, command=nodename)
@@ -147,7 +159,7 @@ def setpass():
         #print (passwrd)
         file = open("info.txt","a")
         #the password line begins with a p as an identifier
-        file.write("p" + passwrd + "\n")
+        file.write("p " + passwrd + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set password", width=10, command=password)
@@ -193,7 +205,7 @@ def temp():
             if int(E1.get()) >= 50:
                 file = open("info.txt", "a")
                 #the temperature uses a t as an identifier
-                file.write("t" + stemp + "\n")
+                file.write("t " + stemp + "\n")
                 file.close()
                 txt.destroy()
             else:
@@ -202,7 +214,7 @@ def temp():
         else:
             messagebox.showerror("Error", "Please choose a number between 50 and 120.")
             txt.destroy()
-    button = Button(txt, text="Set CPU temp(°C)", width=10, command=settemp)
+    button = Button(txt, text="Set CPU temp(°C)", width=20, command=settemp)
     button.grid()
     txt.mainloop()
 def test():
@@ -222,7 +234,7 @@ def test():
             if int(E1.get()) >= 1:
                 file = open("info.txt", "a")
                 #the interval uses a i as an identifier
-                file.write("i" + stemp + "\n")
+                file.write("i " + stemp + "\n")
                 file.close()
                 txt.destroy()
             else:
@@ -251,7 +263,7 @@ def jobtime():
             if int(E1.get()) >= 1:
                 file = open("info.txt", "a")
                 #the time uses a c as an identifier
-                file.write("c" + stime + "\n")
+                file.write("c " + stime + "\n")
                 file.close()
                 txt.destroy()
             else:
