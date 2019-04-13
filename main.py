@@ -92,8 +92,39 @@ def build_cluster():
         cluster_members = unique_check(Nodes, inets)
         numerical_designation = 0 
         create_genesis_block()
-        cluster_birth_certificate = "Cluster: "+ cluster_name + "Made by: " + node_name 
+        cluster_birth_certificate = "Cluster: "+ cluster_name + "Made by: " + user_name 
         next_block(cluster_birth_certificate)
+        parallel_file = open("run_parallel.py", 'w')
+        parallel_file.write("import os \n")
+        parallel_file.write("from multiprocessing import Process  \n")
+        function_i = 0
+        for machine in cluster_members:
+            write_line = "def func"+str(function_i)+"():\n"
+            parallel_file.write(write_line)
+            write_line = "    command_0 = "+'"'+"sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + machine.mac + " cd "+ cluster_name +" && python3.7 run_node.py "+'"'+" \n" 
+            parallel_file.write(write_line)
+            write_line = "    try: \n" 
+            parallel_file.write(write_line)
+            write_line = "        os.system(command_0)\n" 
+            parallel_file.write(write_line)
+            write_line = "    except: \n" 
+            parallel_file.write(write_line)
+            write_line = "        print('Error: onc command in sub function " + str(function_i) +" ')\n"
+            parallel_file.write(write_line)
+            function_i = function_i + 1
+        
+        parallel_file.write("if __name__=='__main__': \n")
+        
+        function_i = 0
+        for machine in cluster_members:
+            write_line = "    p"+str(function_i)+" = Process(target = func"+str(function_i)+")\n"
+            parallel_file.write(write_line)
+            write_line = "    p"+str(function_i)+".start()\n"
+            parallel_file.write(write_line)
+            function_i = function_i + 1
+        
+        parallel_file.close()
+
         for machine in cluster_members:
             command_0 = "sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + machine.mac + " rm -r " + cluster_name 
             command_1 = "sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + machine.mac + " mkdir " + cluster_name 
@@ -122,7 +153,8 @@ def build_cluster():
             output_file.write(write_string)
             write_string = "import socket"+"\n"
             output_file.write(write_string)
-            write_string = "# Custom file distribution protocal for"+file_tag+"\n"
+            write_string = "# Custom file distribution protocal for "+file_tag+"\n"
+            
             output_file.write(write_string)
             for destination_machine in cluster_members:
                 if(destination_machine != machine):

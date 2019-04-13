@@ -41,8 +41,9 @@ def monitor_cluster_node_high_cpu_temp(node_name, test_interval):
     ts = time.time()
     time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     recorded_cycles = 0
-    for i in range(0, int(test_interval)):
-        time.sleep(1)
+    testing_phase = time.time() + 60*int(test_interval)
+    while(time.time() < testing_phase):
+        time.sleep(.5)
         data_structure = psutil.sensors_temperatures()
         sub_structure = data_structure.get("coretemp")
         try:

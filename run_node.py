@@ -1,6 +1,7 @@
 import os
 import socket
 import time
+import datetime
 from distributed_ledger_functions import create_genesis_block
 from distributed_ledger_functions import next_block
 from cpu_temptest import monitor_cluster_node_high_cpu_temp
@@ -40,27 +41,13 @@ for line in file:
         inets.append(new_inet)
 file.close()
 name = socket.gethostname()
-closing_time = time.time() +60*60*float(job_time)
+closing_time = time.time() + int(job_time)*60*60
+print(closing_time)
 while time.time() < closing_time:
-    print("Phase I")
-    thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval)
-    print("Phase II")
-    for mac in inets:
-        print("Phase III")
-        command_1 = "sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + mac + " rm " +cluster_name + "/distributed_ledger.bin"
-        command_2 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/distributed_ledger.bin"+" " + user_name + "@" + mac +":/home/"+user_name+"/"+cluster_name
-        print("Phase IIII")
-        try:
-            os.system(command_1)
-            print(command_1)
-        except:
-            print("Error on command: ", command_1)
-        try:
-            os.system(command_2)
-            print(command_2)
-        except:
-            print("Error on command: ", command_2)
-    print("Phase V")
+    print("Phase I. On: ", socket.gethostname())
 
-print("Phase VI")
+    thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval)   
+    ts = time.time()
+    time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('Current time %Y-%m-%d %H:%M:%S')
+    time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime('%Y-%m-%d %H:%M:%S')
 

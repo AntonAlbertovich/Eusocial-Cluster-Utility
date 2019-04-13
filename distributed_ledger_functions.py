@@ -82,6 +82,6 @@ def verify_distributed_public_ledger():
 #next_block(2)
 #next_block(2)
 
-#view_distributed_public_ledger()
+view_distributed_public_ledger()
 #verify_distributed_public_ledger()
 
