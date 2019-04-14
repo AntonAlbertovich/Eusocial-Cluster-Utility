@@ -6,7 +6,7 @@ from distributed_ledger_functions import create_genesis_block
 from distributed_ledger_functions import next_block
 from cpu_temptest import monitor_cluster_node_high_cpu_temp
 dir_path = os.path.dirname(os.path.realpath(__file__))
-cluster_name = "Eusocial-Cluster" #n
+cluster_name = "Eusocial-Cluster-Utility-master" #n
 user_name = "user" #u
 user_pass = "root" #p
 node_name = "Node" #v
@@ -15,8 +15,7 @@ job_interval = 5 #i
 job_time = 1 #c
 Nodes = []
 inets = []
-print(dir_path)
-os.system(" ls")
+os.chdir(dir_path)
 in_line = open("info.txt", "r")
 for line in in_line:
     if(line[0] == "n"):
@@ -41,13 +40,12 @@ for line in file:
         inets.append(new_inet)
 file.close()
 name = socket.gethostname()
-closing_time = time.time() + int(job_time)*60*60
-print(closing_time)
+closing_time = time.time() + int(job_time)*60*2
+time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime('Running until  %Y-%m-%d %H:%M:%S')
 while time.time() < closing_time:
-    print("Phase I. On: ", socket.gethostname())
-
     thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval)   
-    ts = time.time()
-    time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('Current time %Y-%m-%d %H:%M:%S')
-    time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime('%Y-%m-%d %H:%M:%S')
+
+
+os.system("cp distributed_ledger.bin "+socket.gethostname())
+os.system("python3.7 send_"+node_name+".py")
 

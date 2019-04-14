@@ -2,8 +2,6 @@ import hashlib as hasher
 import datetime as date
 import pickle
 
-
-
 class Block:
     def __init__(self, timestamp, data, previous_hash):
         self.timestamp = timestamp
@@ -77,11 +75,5 @@ def verify_distributed_public_ledger():
     
     input_file.close()
     
-#create_genesis_block()
-#next_block(1)
-#next_block(2)
-#next_block(2)
 
-view_distributed_public_ledger()
-#verify_distributed_public_ledger()
 

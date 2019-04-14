@@ -29,10 +29,12 @@ def unique_check(list_nodes, list_macs):
 
 def build_cluster():
 
+
     # defual variables
     import os
     import socket
     from distributed_ledger_functions import create_genesis_block
+    create_genesis_block()
     from distributed_ledger_functions import next_block
     
     
@@ -96,12 +98,12 @@ def build_cluster():
         next_block(cluster_birth_certificate)
         parallel_file = open("run_parallel.py", 'w')
         parallel_file.write("import os \n")
-        parallel_file.write("from multiprocessing import Process  \n")
+        parallel_file.write("from multiprocessing import Process  \n") 
         function_i = 0
         for machine in cluster_members:
             write_line = "def func"+str(function_i)+"():\n"
             parallel_file.write(write_line)
-            write_line = "    command_0 = "+'"'+"sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + machine.mac + " cd "+ cluster_name +" && python3.7 run_node.py "+'"'+" \n" 
+            write_line = "    command_0 = "+'"'+"sshpass -p'"+ user_pass + "'  ssh " + user_name + "@" + machine.mac +" python3.7 " + cluster_name+ "/run_node.py"+ ' "' +" \n" 
             parallel_file.write(write_line)
             write_line = "    try: \n" 
             parallel_file.write(write_line)
@@ -179,6 +181,12 @@ def build_cluster():
             except:
                 print("Error on command: ", command_4)
 
+            command_4 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/view_distributed_ledger_local.py"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
+            try:
+                os.system(command_4)
+            except:
+                print("Error on command: ", command_4)
+
             command_4 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/cpu_temptest.py"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
             try:
                 os.system(command_4)
@@ -211,6 +219,11 @@ def build_cluster():
             except:
                 print("Error on cleaning up files")
             numerical_designation = numerical_designation + 1
+        import time    
+        import datetime
+        closing_time = time.time() + int(job_time)*60*2
+        time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime(' %Y-%m-%d %H:%M:%S')
+        print("CLUSTER BUILT.  Run time est  ", time_stamp2)
 
         
 
@@ -222,64 +235,8 @@ def build_cluster():
 
 def activate_cluster():
     import os
-    import socket
-    import time
-    from distributed_ledger_functions import create_genesis_block
-    from distributed_ledger_functions import next_block
-    from cpu_temptest import monitor_cluster_node_high_cpu_temp
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    cluster_name = "Eusocial-Cluster" #n
-    user_name = "user" #u
-    user_pass = "root" #p
-    node_name = "Node" #v
-    max_temperature = 90 #t
-    job_interval = 5 #i
-    job_time = 1 #c
-    Nodes = [] 
-    inets = []
-    os.system("ls")
-    file = open("info.txt", "r")
-    for line in file:
-        if(line[0] == "n"):
-            cluster_name = line[1:].rstrip(' \n')
-        elif(line[0] == "u"):
-            user_name = line[1:].rstrip(' \n')
-        elif(line[0] == "p"):
-            user_pass = line[1:].rstrip(' \n')
-        elif(line[0] == "v"):
-            node_name = line[1:].rstrip(' \n')
-        elif(line[0] == "t"):
-            max_temperature = line[1:].rstrip(' \n')
-        elif(line[0] == "i"):
-            job_interval = line[1:].rstrip(' \n')
-        elif(line[0] == "c"):
-            job_time = line[1:].rstrip(' \n')
-    file.close()
-    in_file = open("nodes.txt", "r") 
-    for line in in_file:
-        if(line[0] == "m"):
-            new_inet = line[1:].rstrip(' \n')
-            inets.append(new_inet)
-    in_file.close()
-    for mac in inets:
-        command_1 = "sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + mac + " ls "+  "/home/"+user_name+"/"+cluster_name+"/"
-        command_2 = "sshpass -p'"+ user_pass + "' ssh " + user_name + "@" + mac + " cd "  "/home/"+user_name+"/"+cluster_name+ "/ && python3.7 run_node.py"
-
-        try:
-            os.system(command_1)
-        
-            print(".!.!.!.!.!.!. NODE "+ mac  + " ONLINE .!.!.!.!.!.!.")
-            time.sleep(3)
-        except:
-            print("Error on command: ", command_1)
-        try:
-            os.system(command_2)
-        
-            print(".!.!.!.!.!.!. NODE "+ mac  + " ONLINE .!.!.!.!.!.!.")
-            time.sleep(3)
-        except:
-            print("Error on command: ", command_2)
-
+    print("READY? OKAY LETS GO!")
+    os.system("python3.7 run_parallel.py")
 
 
 build_cluster()

@@ -46,29 +46,29 @@ def addnode():
         comname = E1.get()
         file = open("nodes.txt", "a")
         #when adding a new node, it will start with a pound sign as an identifier
-        file.write("% "  + comname+ "\n")
+        file.write("%"  + comname+ "\n")
         file.close()
         E1.destroy()
         button.destroy()
     def setmac():
         macadd = E2.get()
         file = open("nodes.txt", "a")
-        file.write("m " + macadd + "\n")
+        file.write("m" + macadd + "\n")
         file.close()
         E2.destroy()
         button2.destroy()
-     def gpu():
+    def gpu():
         def yes():
             file = open("nodes.txt", "a")
             # when adding a new node, GPU uses a g as identifier
-            file.write("g yes" + "\n")
+            file.write("gyes" + "\n")
             file.close()
             ex.destroy()
             button4.destroy()
         def no():
             file = open("nodes.txt", "a")
             # when adding a new node, GPU uses a g as identifier
-            file.write("g no" + "\n")
+            file.write("gno" + "\n")
             file.close()
             ex.destroy()
             button4.destroy()
@@ -106,7 +106,7 @@ def user():
         username = E1.get()
         file = open("info.txt", "a")
         #the username line begins with a u as an identifier
-        file.write("u " + username + "\n")
+        file.write("u" + username + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set username", width=10, command=username)
@@ -123,7 +123,7 @@ def setname():
         clustername = E1.get()
         file = open("info.txt", "a")
         #the cluster name line begins with an n as an identifier
-        file.write("n " + clustername + "\n")
+        file.write("n" + clustername + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set name", width=10, command=setclus)
@@ -142,7 +142,7 @@ def setnodename():
         nod = E1.get()
         file = open("info.txt", "a")
         #the node name uses a u as an identifier
-        file.write("u " + nod + "\n")
+        file.write("v" + nod + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set node title", width=10, command=nodename)
@@ -161,7 +161,7 @@ def setpass():
         #print (passwrd)
         file = open("info.txt","a")
         #the password line begins with a p as an identifier
-        file.write("p " + passwrd + "\n")
+        file.write("p" + passwrd + "\n")
         file.close()
         txt.destroy()
     button = Button(txt, text="Set password", width=10, command=password)
@@ -207,7 +207,7 @@ def temp():
             if int(E1.get()) >= 50:
                 file = open("info.txt", "a")
                 #the temperature uses a t as an identifier
-                file.write("t " + stemp + "\n")
+                file.write("t" + stemp + "\n")
                 file.close()
                 txt.destroy()
             else:
@@ -236,7 +236,7 @@ def test():
             if int(E1.get()) >= 1:
                 file = open("info.txt", "a")
                 #the interval uses a i as an identifier
-                file.write("i " + stemp + "\n")
+                file.write("i" + stemp + "\n")
                 file.close()
                 txt.destroy()
             else:
@@ -265,7 +265,7 @@ def jobtime():
             if int(E1.get()) >= 1:
                 file = open("info.txt", "a")
                 #the time uses a c as an identifier
-                file.write("c " + stime + "\n")
+                file.write("c" + stime + "\n")
                 file.close()
                 txt.destroy()
             else:
