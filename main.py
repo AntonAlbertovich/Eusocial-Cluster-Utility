@@ -111,7 +111,7 @@ def build_cluster():
             parallel_file.write(write_line)
             write_line = "    except: \n" 
             parallel_file.write(write_line)
-            write_line = "        print('Error: onc command in sub function " + str(function_i) +" ')\n"
+            write_line = "        print('Error: on command_0 in sub function " + str(function_i) +" ')\n"
             parallel_file.write(write_line)
             function_i = function_i + 1
         
@@ -156,8 +156,9 @@ def build_cluster():
             write_string = "import socket"+"\n"
             output_file.write(write_string)
             write_string = "# Custom file distribution protocal for "+file_tag+"\n"
-            
             output_file.write(write_string)
+            output_file.write("dir_path = os.path.dirname(os.path.realpath(__file__)) \n")
+            output_file.write("os.chdir(dir_path) \n")
             for destination_machine in cluster_members:
                 if(destination_machine != machine):
                     write_string = 'os.system("'+ "sshpass -p '" + user_pass +"' scp -r /home/"+user_name+"/"+cluster_name+"/"+machine.node +"  "+ user_name +"@"+destination_machine.mac+":/home/"+user_name+"/"+cluster_name +'")\n'
@@ -216,12 +217,14 @@ def build_cluster():
             try:
                 print("cleaning...",file_designation )
                 os.system("rm "+ file_designation)
+                os.system("rm -r " + machine.node +"/")
             except:
                 print("Error on cleaning up files")
+            
             numerical_designation = numerical_designation + 1
         import time    
         import datetime
-        closing_time = time.time() + int(job_time)*60*2
+        closing_time = time.time() + int(job_time)*60*60
         time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime(' %Y-%m-%d %H:%M:%S')
         print("CLUSTER BUILT.  Run time est  ", time_stamp2)
 
@@ -236,8 +239,58 @@ def build_cluster():
 def activate_cluster():
     import os
     print("READY? OKAY LETS GO!")
+
     os.system("python3.7 run_parallel.py")
 
+    import socket
+    
+    
+    cluster_name = "Eusocial-Cluster" #n
+    user_name = "user" #u
+    user_pass = "root" #p
+    node_name = "Node" #v
+    max_temperature = 90 #t
+    job_interval = 5 #i
+    job_time = 1 #c
+    Nodes = [] 
+    inets = []
+
+    file = open("info.txt", "r")
+    for line in file:
+        if(line[0] == "n"):
+            cluster_name = line[1:].rstrip(' \n')
+        elif(line[0] == "u"):
+            user_name = line[1:].rstrip(' \n')
+        elif(line[0] == "p"):
+            user_pass = line[1:].rstrip(' \n')
+        elif(line[0] == "v"):
+            node_name = line[1:].rstrip(' \n')
+        elif(line[0] == "t"):
+            max_temperature = line[1:].rstrip(' \n')
+        elif(line[0] == "i"):
+            job_interval = line[1:].rstrip(' \n')
+        elif(line[0] == "c"):
+            job_time = line[1:].rstrip(' \n')
+    file = open("nodes.txt", "r")
+    
+    for line in file:
+        if(line[0] == "%"):
+            new_node = line[1:].rstrip(' \n')
+            Nodes.append(new_node)
+        elif(line[0] == "m"):
+            new_inet = line[1:].rstrip(' \n')
+            inets.append(new_inet)
+    file.close()
+    if(len(Nodes) == len(inets)):
+        dir_path = os.path.dirname(os.path.realpath(__file__)) 
+        cluster_members = unique_check(Nodes, inets)
+        for machine in cluster_members:
+            command_3 = "sshpass -p'"+ user_pass + "' scp -r "+ user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name+"/"+machine.node+" "+dir_path
+            print(command_3)
+            try:
+                os.system(command_3)
+            except:
+                print("Error on command: ", command_3)
 
 build_cluster()
 activate_cluster()

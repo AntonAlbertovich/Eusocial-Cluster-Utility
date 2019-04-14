@@ -40,12 +40,11 @@ for line in file:
         inets.append(new_inet)
 file.close()
 name = socket.gethostname()
-closing_time = time.time() + int(job_time)*60*2
+closing_time = time.time() + int(job_time)*60*60
 time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime('Running until  %Y-%m-%d %H:%M:%S')
 while time.time() < closing_time:
     thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval)   
 
 
 os.system("cp distributed_ledger.bin "+socket.gethostname())
-os.system("python3.7 send_"+node_name+".py")
 
