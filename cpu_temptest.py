@@ -4,7 +4,7 @@
 import socket
 from distributed_ledger_functions import view_distributed_public_ledger
 
-def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp):
+def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp, password):
     import psutil
     import time
     import datetime
@@ -43,6 +43,7 @@ def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp):
     recorded_cycles = 0
     testing_phase = time.time() + 60*int(test_interval)
     danger_zone = int(max_temp)
+    kill_command = "sshpass -p '"+password+"' sudo poweroff -f "
     while(time.time() < testing_phase):
         time.sleep(.5)
         data_structure = psutil.sensors_temperatures()
@@ -60,13 +61,13 @@ def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp):
         for a in sub_structure:
             if a[0][0] == "C":
                 if (int(a[1]) > danger_zone):
-                    os.system("shutdown")
+
+                    os.system(kill_command)
                     
                 ave_recorded_temps_per_core[this_core] = ave_recorded_temps_per_core[this_core] + int(a[1])
 
                 if int(max_recorded_temps_per_core[this_core]) <= int(a[1]):
 
-                    #print("!!! New Max Temp on ", a[0], " !!!") 
                     max_recorded_temps_per_core[this_core] = a[1]
                     max_recorded_temps_clocked[this_core] = servey_time
                     max_recorded_temps_job_time[this_core] = servey_time - job_start_time

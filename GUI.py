@@ -279,7 +279,7 @@ def jobtime():
     txt.mainloop()
 
 #putting widgets in order
-pad1 = tkinter.Frame(top, width=500, height=45, bg = "black")
+pad1 = tkinter.Frame(top, width=600, height=45, bg = "black")
 pad2 = tkinter.Frame(top, width=350, height=45, bg = "black")
 pad3 = tkinter.Frame(top, width=350, height=45, bg = "black")
 pad4 = tkinter.Frame(top, width=350, height=20, bg = "black")
@@ -292,7 +292,7 @@ D = tkinter.Button(top, text ="Set username", font = fnt,command = user)
 E = tkinter.Button(top, text ="Set ssh password", font = fnt,command = setpass)
 F = tkinter.Button(top, text ="Set node title", font = fnt,command = setnodename)
 G = tkinter.Button(top, text ="Create new cluster", font = fnt,command = reset)
-H = tkinter.Button(top, text ="Finish", font = fnt, command = finish)
+H = tkinter.Button(top, text ="Finish and Run", font = fnt, command = finish)
 I = tkinter.Button(top, text ="Max CPU temperature", font = fnt, command = temp)
 J = tkinter.Button(top, text ="Set testing interval", font = fnt, command = test)
 K = tkinter.Button(top, text ="Set job time", font = fnt, command = jobtime)

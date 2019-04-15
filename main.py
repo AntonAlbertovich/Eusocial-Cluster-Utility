@@ -1,11 +1,12 @@
+import os
 class Nodes_Macs:
-    def __init__(self, node, mac):
+    def __init__(self, node, mac, boolean):
         self.node = node
         self.mac = mac
+        self.gpu = boolean
 
 
-
-def unique_check(list_nodes, list_macs): 
+def unique_check(list_nodes, list_macs, list_gpus): 
   
     # intilize a null list 
     unique_nodes = [] 
@@ -18,7 +19,7 @@ def unique_check(list_nodes, list_macs):
         if ((list_nodes[x] not in unique_nodes) and (list_macs[x] not in unique_macs)): 
             unique_nodes.append(list_nodes[x])
             unique_macs.append(list_macs[x])
-            n_m = Nodes_Macs(list_nodes[x], list_macs[x])
+            n_m = Nodes_Macs(list_nodes[x], list_macs[x], list_gpus[x])
             output_list.append(n_m)   
         else:
             print("Warning, a duplicate Node name or Mac address has been detected!")
@@ -47,14 +48,7 @@ def build_cluster():
     job_time = 1 #c
     Nodes = [] 
     inets = []
-
-    print(cluster_name)
-    print(user_name)
-    print(user_pass)
-    print(node_name)
-    print(max_temperature)
-    print(job_interval)
-    print(job_time)
+    gpus = []
 
     file = open("info.txt", "r")
     for line in file:
@@ -72,14 +66,8 @@ def build_cluster():
             job_interval = line[1:].rstrip(' \n')
         elif(line[0] == "c"):
             job_time = line[1:].rstrip(' \n')
-    print(cluster_name)
-    print(user_name)
-    print(user_pass)
-    print(node_name)
-    print(max_temperature)
-    print(job_interval)
-    print(job_time) 
     file.close()
+    
     file = open("nodes.txt", "r")
     
     for line in file:
@@ -89,9 +77,13 @@ def build_cluster():
         elif(line[0] == "m"):
             new_inet = line[1:].rstrip(' \n')
             inets.append(new_inet)
+        elif(line[0] == "g"):
+            new_gpu = line[1:].rstrip(' \n')
+            gpus.append(new_gpu)
+    
     file.close()
     if(len(Nodes) == len(inets)):
-        cluster_members = unique_check(Nodes, inets)
+        cluster_members = unique_check(Nodes, inets, gpus)
         numerical_designation = 0 
         create_genesis_block()
         cluster_birth_certificate = "Cluster: "+ cluster_name + "Made by: " + user_name 
@@ -209,18 +201,30 @@ def build_cluster():
                 os.system(command_6)
             except:
                 print("Error on command: ", command_6)
+            
             command_6 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/nodes.txt"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
             try:
                 os.system(command_6)
             except:
-                print("Error on command: ", command_6)
+                print("Error on command: ", command_6)            
+            
+            if(machine.gpu == "yes"):
+                print("Sending GPU test bench to ", machine.node)
+                command_6 = "sshpass -p'"+ user_pass + "' scp -r "+dir_path+"/nlp_test_bench"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
+                try:
+                    os.system(command_6)
+                except:
+                    print("Error on command: ", command_6)            
+            else:
+                print(machine.node, " GPU status:", machine.gpu)
             try:
-                print("cleaning...",file_designation )
+                print("cleaning up ")
                 os.system("rm "+ file_designation)
                 os.system("rm -r " + machine.node +"/")
             except:
                 print("Error on cleaning up files")
             
+            print("Node ", machine.node, " creation complete.")
             numerical_designation = numerical_designation + 1
         import time    
         import datetime
@@ -238,7 +242,6 @@ def build_cluster():
 
 def activate_cluster():
     import os
-    print("READY? OKAY LETS GO!")
 
     os.system("python3.7 run_parallel.py")
 
@@ -254,6 +257,7 @@ def activate_cluster():
     job_time = 1 #c
     Nodes = [] 
     inets = []
+    gpus = []
 
     file = open("info.txt", "r")
     for line in file:
@@ -280,10 +284,15 @@ def activate_cluster():
         elif(line[0] == "m"):
             new_inet = line[1:].rstrip(' \n')
             inets.append(new_inet)
+        elif(line[0] == "g"):
+            new_inet = line[1:].rstrip(' \n')
+            gpus.append(new_inet)
     file.close()
+    
+    
     if(len(Nodes) == len(inets)):
         dir_path = os.path.dirname(os.path.realpath(__file__)) 
-        cluster_members = unique_check(Nodes, inets)
+        cluster_members = unique_check(Nodes, inets, gpus)
         for machine in cluster_members:
             command_3 = "sshpass -p'"+ user_pass + "' scp -r "+ user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name+"/"+machine.node+" "+dir_path
             print(command_3)
@@ -292,17 +301,8 @@ def activate_cluster():
             except:
                 print("Error on command: ", command_3)
 
+os.system("python3 GUI.py")
 build_cluster()
 activate_cluster()
-
-
-
-
-
-
-
-
-
-
-
+os.system("python3 verify_all_distributed_ledgers.py"
 
