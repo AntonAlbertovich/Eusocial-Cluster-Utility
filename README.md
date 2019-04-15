@@ -18,3 +18,8 @@ python3.7 -m pip install psutil
 ```
 sudo apt-get install python-tk python3-tk tk-dev
 ```
+To run simply download Eusocial-Cluster-Utility, extract the master directory, navigate into Eusocial-Cluster-Utility-master, and run the command:
+```
+python3 main.py
+```
+Eusocial-Cluster-Utility includes a graphic uster interface which will guide you through the creation of your cluster. 
