@@ -4,7 +4,7 @@
 import socket
 from distributed_ledger_functions import view_distributed_public_ledger
 
-def monitor_cluster_node_high_cpu_temp(node_name, test_interval):
+def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp):
     import psutil
     import time
     import datetime
@@ -42,6 +42,7 @@ def monitor_cluster_node_high_cpu_temp(node_name, test_interval):
     time_stamp1 = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     recorded_cycles = 0
     testing_phase = time.time() + 60*int(test_interval)
+    danger_zone = int(max_temp)
     while(time.time() < testing_phase):
         time.sleep(.5)
         data_structure = psutil.sensors_temperatures()
@@ -58,6 +59,9 @@ def monitor_cluster_node_high_cpu_temp(node_name, test_interval):
         time_stamp = str(datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
         for a in sub_structure:
             if a[0][0] == "C":
+                if (int(a[1]) > danger_zone):
+                    os.system("shutdown")
+                    
                 ave_recorded_temps_per_core[this_core] = ave_recorded_temps_per_core[this_core] + int(a[1])
 
                 if int(max_recorded_temps_per_core[this_core]) <= int(a[1]):

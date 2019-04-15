@@ -43,7 +43,7 @@ name = socket.gethostname()
 closing_time = time.time() + int(job_time)*60*60
 time_stamp2 = datetime.datetime.fromtimestamp(closing_time).strftime('Running until  %Y-%m-%d %H:%M:%S')
 while time.time() < closing_time:
-    thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval)   
+    thermal_data = monitor_cluster_node_high_cpu_temp(name, job_interval, max_temperature)   
 
 
 os.system("cp distributed_ledger.bin "+socket.gethostname())
