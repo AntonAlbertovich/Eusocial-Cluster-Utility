@@ -174,12 +174,6 @@ def build_cluster():
             except:
                 print("Error on command: ", command_4)
 
-            command_4 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/view_distributed_ledger_local.py"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
-            try:
-                os.system(command_4)
-            except:
-                print("Error on command: ", command_4)
-
             command_4 = "sshpass -p'"+ user_pass + "' scp "+dir_path+"/cpu_temptest.py"+" " + user_name + "@" + machine.mac +":/home/"+user_name+"/"+cluster_name
             try:
                 os.system(command_4)
