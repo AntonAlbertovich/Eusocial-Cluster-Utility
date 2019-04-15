@@ -304,5 +304,5 @@ def activate_cluster():
 os.system("python3 GUI.py")
 build_cluster()
 activate_cluster()
-os.system("python3 verify_all_distributed_ledgers.py"
+os.system("python3 verify_all_distributed_ledgers.py")
 
