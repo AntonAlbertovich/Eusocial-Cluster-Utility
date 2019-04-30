@@ -21,10 +21,13 @@ img = PhotoImage(file="light.gif")
 canvas = Canvas(top, width = 325, height = 300, bg = "black", highlightthickness=0)
 canvas.create_image(2,2, anchor = NW, image=img)
 #functions for each button
+
+#this function displays the instructions for first time use
 def first():
    messagebox.showinfo( "Instructions for first time use", "Please install the following dependencies before " +
     "using!\n 1.)Openssh-server \n 2.)cssh \n 3.)gfortran \n\nPlease fill out all information, as all fields will be necessary. " +
     "\nYou will need to repeat the add node step for every node, including the steps for finding each MAC address.")
+#this function contains the code for the add node option/widget
 def addnode():
     messagebox.showinfo("Add node",
                         "Please enter the name of the new node. \nNote that this should be the name of the machine " +
@@ -42,6 +45,7 @@ def addnode():
     file = open("nodes.txt", "a")
     file.write("##################\n")
     file.close()
+   #this function takes a node name
     def add():
         comname = E1.get()
         file = open("nodes.txt", "a")
@@ -50,6 +54,7 @@ def addnode():
         file.close()
         E1.destroy()
         button.destroy()
+    #this function takes a MAC address
     def setmac():
         macadd = E2.get()
         file = open("nodes.txt", "a")
@@ -57,6 +62,7 @@ def addnode():
         file.close()
         E2.destroy()
         button2.destroy()
+    #asks whether the node has a gpu
     def gpu():
         def yes():
             file = open("nodes.txt", "a")
@@ -79,6 +85,7 @@ def addnode():
         label.grid()
         but.grid()
         but1.grid()
+    #saves the entered data and exits
     def exit():
         txt.destroy()
     button = Button(txt, text="Set node name", width=20, command=add)
@@ -91,7 +98,7 @@ def addnode():
     button4.grid()
     button3.grid()
     txt.mainloop()
-
+#this function contains the code for storing the username in a text file
 def user():
     messagebox.showinfo("Enter username",
                         "Make sure there is a profile on each computer with administrative priveleges " +
@@ -112,7 +119,7 @@ def user():
     button = Button(txt, text="Set username", width=10, command=username)
     button.grid()
     txt.mainloop()
-
+#this saves the entered info in the text file
 def setname():
     txt = tkinter.Tk()
     v = StringVar()
@@ -129,7 +136,7 @@ def setname():
     button = Button(txt, text="Set name", width=10, command=setclus)
     button.grid()
     txt.mainloop()
-
+#this function contains the code for storing the node title in a text file
 def setnodename():
     messagebox.showinfo("Enter node title","The title you enter will have a number appended to it to keep all " +
                                   "node titles uniform. \n(e.g. Unit001, Unit002, etc.)")
@@ -148,7 +155,7 @@ def setnodename():
     button = Button(txt, text="Set node title", width=10, command=nodename)
     button.grid()
     txt.mainloop()
-
+#this function contains the code for storing the password in a text file
 def setpass():
     messagebox.showinfo("Enter ssh password", "Make sure the password you enter is the administrative password for all nodes in the cluster.")
     txt = tkinter.Tk()
@@ -167,7 +174,7 @@ def setpass():
     button = Button(txt, text="Set password", width=10, command=password)
     button.grid()
     txt.mainloop()
-
+#this function contains the code for reseting the text file and clearing the data
 def reset():
     txt = tkinter.Tk()
     txt.title("Create new cluster")
@@ -187,10 +194,10 @@ def reset():
     button = Button(txt, text="Clear data", width=10, command=clear)
     button.pack()
     txt.mainloop()
-
+#this closes the gui
 def finish():
     top.destroy()
-
+#this function contains the code for storing the maximum temperature setting in the text file
 def temp():
     messagebox.showinfo("Enter max CPU temp","Set the temperature limit for all machines across the cluster. It is recommended that you choose a temperature between 90 to 105 degrees. "
                                              +"Setting a temperature below 50 degrees or above 120 degrees will result in an error.")
@@ -219,6 +226,7 @@ def temp():
     button = Button(txt, text="Set CPU temp(°C)", width=20, command=settemp)
     button.grid()
     txt.mainloop()
+#this function stores the entered test interval information in the text file.
 def test():
     messagebox.showinfo("Set test interval","This will set how often data will be sampled across the cluster.  ECU will "
                                             +"survey the hardware in each machine once per number of minutes entered. "
@@ -248,6 +256,7 @@ def test():
     button = Button(txt, text="Set interval", width=10, command=setint)
     button.grid()
     txt.mainloop()
+#this function stores the job time information in the text file
 def jobtime():
     messagebox.showinfo("Set job time","This will set how long data will be sampled across the cluster.  "
                                        +"ECU will survey the hardware throughout the cluster for  up to 96 hours.  "
