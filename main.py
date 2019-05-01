@@ -1,5 +1,7 @@
 import os
 class Nodes_Macs:
+    #by Anton Rakos
+    # A simple data structure containing all information which may change from node to node of members within a cluster.
     def __init__(self, node, mac, boolean):
         self.node = node
         self.mac = mac
@@ -7,7 +9,8 @@ class Nodes_Macs:
 
 
 def unique_check(list_nodes, list_macs, list_gpus): 
-  
+    #Reformatted to ECU specifications by Anton Rakos
+    #Checks to make sure all members of ECU are unique.
     # intilize a null list 
     unique_nodes = [] 
     unique_macs = []
@@ -29,16 +32,17 @@ def unique_check(list_nodes, list_macs, list_gpus):
 
 
 def build_cluster():
-
-
-    # defual variables
+    #By Anton Rakos
+    #This script writes to and reads from the info.txt and and nodes.txt files, 
+    #this being the primary means by which initial installation details are exchanged throughout the cluster. 
     import os
     import socket
     from distributed_ledger_functions import create_genesis_block
     create_genesis_block()
     from distributed_ledger_functions import next_block
-    
-    
+        
+    # defual variables
+
     cluster_name = "Eusocial-Cluster" #n
     user_name = "user" #u
     user_pass = "root" #p
@@ -88,6 +92,7 @@ def build_cluster():
         create_genesis_block()
         cluster_birth_certificate = "Cluster: "+ cluster_name + "Made by: " + user_name 
         next_block(cluster_birth_certificate)
+        #The most complicated part the this method are the script generation features of the code.
         parallel_file = open("run_parallel.py", 'w')
         parallel_file.write("import os \n")
         parallel_file.write("from multiprocessing import Process  \n") 
@@ -235,6 +240,9 @@ def build_cluster():
     #inets = unique(inets)
 
 def activate_cluster():
+    #by Anton Rakos
+    #This method as developed to serve as the activation 
+    #of the monitoring of all machines in the cluster as well as perform any post-monitoring functions
     import os
 
     os.system("python3.7 run_parallel.py")
