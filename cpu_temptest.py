@@ -5,6 +5,7 @@ import socket
 from distributed_ledger_functions import view_distributed_public_ledger
 
 def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp, password):
+    #written by Anton Rakos
     import psutil
     import time
     import datetime
