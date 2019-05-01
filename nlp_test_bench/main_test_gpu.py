@@ -4,7 +4,9 @@ import spacy
 import time
 import sys
 import os
-
+#By Anton Rakos
+#If the user has declared that a given node has a 
+#GPU with the appropriate drivers and tool kits install then they may run a test bench using the spaCy NLP tool kit.
 spacy.prefer_gpu()
 nlp = spacy.load('en_core_web_sm')
 wikipedia.set_lang("en")
