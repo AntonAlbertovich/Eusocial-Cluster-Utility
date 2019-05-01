@@ -1,5 +1,10 @@
 // CPP program to demonstrate multithreading 
-// using three different callables. 
+// using three different callables.
+// By Anton Rakos
+// Once executed, this sprict will max out the CPU usage on all course of any machine with 8 or less corse.
+//This will cause said machine to produce more waste heat.
+//This was developed only as a method for testing out the Emergency shutdown protocol of the Utility
+//DO NOT RUN THIS SCRIPT 
 #include <iostream> 
 #include <thread> 
 #include <chrono>
