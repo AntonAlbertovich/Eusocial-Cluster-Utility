@@ -6,6 +6,8 @@ from distributed_ledger_functions import view_distributed_public_ledger
 
 def monitor_cluster_node_high_cpu_temp(node_name, test_interval, max_temp, password):
     #written by Anton Rakos
+    #This method checks the temperature and CPU usage of a machine in a cluster.
+    #The Readings are recorded and placed inside a distributed public ledger, also know as a block chain.
     import psutil
     import time
     import datetime
