@@ -1,5 +1,8 @@
 // CPP program to demonstrate multithreading 
 // using three different callables. 
+// By Anton Rakos
+//This is a simple test which uses multithreading to test out the basic capabilites of a node within a cluster.
+//This program should only cause a minor spike in waste heat production and CPU usage.
 #include <iostream> 
 #include <thread> 
 #include <chrono>
