@@ -3,6 +3,7 @@ import datetime as date
 import pickle
 
 class Block:
+    #written by Anton Rakos
     def __init__(self, timestamp, data, previous_hash):
         self.timestamp = timestamp
         self.data = data
@@ -10,6 +11,11 @@ class Block:
         self.hash = self.hash_block()
 
     def hash_block(self):
+        #written by Anton Rakos
+        #This is the data structure which is often refured to as the block. It contains information such as the time when the 
+        #block is created, the hash of the previous block in the chain, the hash of the current block and data relevent to a 
+        #survey time for the local node within the cluster. 
+
         sha = ""
         sha.encode('utf-8')
         sha = hasher.sha256()
@@ -20,8 +26,8 @@ class Block:
         return sha.hexdigest()
 
 def create_genesis_block():
-    # Manually construct a block with
-    # index zero and arbitrary previous hash
+    #By Anton Rakos
+    #builds the first block in a blockchain
     output_file = open("distributed_ledger.bin", "wb")
     genesis_block = Block(date.datetime.now(), "Genesis Block", "0")
     blockchain = [genesis_block]
@@ -29,6 +35,8 @@ def create_genesis_block():
     output_file.close()
 
 def next_block(this_input):
+    #by Anton Rakos
+    #generates the next block
     this_timestamp = date.datetime.now()
     this_data = str(this_input)
     input_file = open("distributed_ledger.bin", "rb")
@@ -43,6 +51,8 @@ def next_block(this_input):
     output_file.close()
 
 def view_distributed_public_ledger():
+    #By Anton Rakos
+    #prints the local distributed_ledger.bin file.
     input_file = open("distributed_ledger.bin", "rb")
     distributed_public_ledger = pickle.load(input_file)
     for i in range(0, len(distributed_public_ledger)):
@@ -58,6 +68,9 @@ def view_distributed_public_ledger():
     input_file.close()
 
 def verify_distributed_public_ledger():
+    #by Anton Rakos
+    #verifies that all the blocks in a block chain contain the correct previous hash
+    # this ensure that the blocks were not tampered with.
     input_file = open("distributed_ledger.bin", "rb")
     distributed_public_ledger = pickle.load(input_file)
     verified = True
