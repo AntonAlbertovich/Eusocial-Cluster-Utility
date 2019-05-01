@@ -5,6 +5,9 @@ import datetime
 from distributed_ledger_functions import create_genesis_block
 from distributed_ledger_functions import next_block
 from cpu_temptest import monitor_cluster_node_high_cpu_temp
+#By Anton Rakos
+#This script runs locally on all members of a cluster. 
+#This script serves to run the cpu)temptest.py script for only as long as has been requested by the user.
 dir_path = os.path.dirname(os.path.realpath(__file__))
 cluster_name = "Eusocial-Cluster-Utility-master" #n
 user_name = "user" #u
