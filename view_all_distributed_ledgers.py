@@ -1,6 +1,8 @@
 import os
 import pickle
-
+#By Anton Rakos
+# These are isolated methods from distributed_ledger_functions. 
+# See distributed_ledger_functions.py for more specific comments
 class Nodes_Macs:
     def __init__(self, node, mac):
         self.node = node
