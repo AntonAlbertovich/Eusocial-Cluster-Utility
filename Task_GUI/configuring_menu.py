@@ -72,11 +72,6 @@ output_file= open("GUI_functions/Tasks_details.bin", "wb")
 pickle.dump(Tasks, output_file)
 output_file.close()
 
-Cluster = [["Machine 1", "192.168.1.00", Machine_Netwk, Machine_tools, Machine_hours, ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "], Machine_Processor_count, "Ubuntu18.04",  ], ["Machine 2", "192.168.1.01", Machine_Netwk, Machine_tools, Machine_hours, ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "], Machine_Processor_count, "Ubuntu18.04"], ["Machine 3", "192.168.1.02", Machine_Netwk, Machine_hours, ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "], Machine_Processor_count, "Ubuntu18.04"],["Machine 4", "192.168.1.03", Machine_Netwk, Machine_tools, Machine_hours, ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "], Machine_Processor_count, "Ubuntu18.04"],["Machine 5", "192.168.1.04", Machine_Netwk, Machine_tools, Machine_hours, ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "],Machine_Processor_count, "Ubuntu18.04"]]
-
-output_file= open("GUI_functions/Cluster_details.bin", "wb")
-pickle.dump(Cluster, output_file)
-output_file.close()
 
 class ScrollFrame(tk.Frame):
     def __init__(self, parent):

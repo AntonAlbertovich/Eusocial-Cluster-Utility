@@ -2,6 +2,7 @@ import tkinter
 from tkinter import messagebox
 from tkinter import font
 from tkinter import *
+import pickle
 #setting up
 clustername = ""
 username = ""
@@ -46,36 +47,28 @@ def addnode():
     file.write("##################\n")
     file.close()
    #this function takes a node name
+    new_machine = []
+    new_machine.append("name")
+    new_machine.append("0.0")
+    new_machine.append(0)
+    
     def add():
-        comname = E1.get()
-        file = open("nodes.txt", "a")
-        #when adding a new node, it will start with a pound sign as an identifier
-        file.write("%"  + comname+ "\n")
-        file.close()
+        new_machine[0] = E1.get()
         E1.destroy()
         button.destroy()
     #this function takes a MAC address
     def setmac():
-        macadd = E2.get()
-        file = open("nodes.txt", "a")
-        file.write("m" + macadd + "\n")
-        file.close()
+        new_machine[1] = E2.get()
         E2.destroy()
         button2.destroy()
     #asks whether the node has a gpu
     def gpu():
         def yes():
-            file = open("nodes.txt", "a")
-            # when adding a new node, GPU uses a g as identifier
-            file.write("gyes" + "\n")
-            file.close()
+            new_machine[2] = 1
             ex.destroy()
             button4.destroy()
         def no():
-            file = open("nodes.txt", "a")
-            # when adding a new node, GPU uses a g as identifier
-            file.write("gno" + "\n")
-            file.close()
+            new_machine[2] = 0
             ex.destroy()
             button4.destroy()
         ex = tkinter.Tk()
@@ -87,6 +80,70 @@ def addnode():
         but1.grid()
     #saves the entered data and exits
     def exit():
+        print(new_machine)
+        if len(new_machine) == 3:
+            
+            file = open("nodes.txt", "a")
+            #when adding a new node, it will start with a pound sign as an identifier
+            file.write("%"  + new_machine[0] + "\n")
+            
+            # when adding a new node, GPU uses a g as identifier
+
+            file.write("m" + new_machine[1] + "\n")
+            
+            file = open("nodes.txt", "a")
+            # when adding a new node, GPU uses a g as identifier
+            if new_machine[2] == 1:
+                file.write("gyes" + "\n")
+            else:
+                file.write("gno" + "\n")
+           
+            input_file= open("Task_GUI/GUI_functions/Cluster_details.bin", "rb")
+            all_tasks= list(pickle.load(input_file))
+            input_file.close()
+            for i in range(len(all_tasks)):
+                #searching by MAC address, not machines name
+                if new_machine[1] == all_tasks[i][1]:
+                    all_tasks.remove(all_tasks[i])
+                    print("A double was deleted")
+                    break
+            viable_machine = []
+            Machine_Netwk=[]
+            Machine_tools=[]
+            Machine_hours=[]
+            Machine_Processor_count=4
+
+
+            viable_machine.append(new_machine[0])       #This can be later cleaned up as new_machine[2] is not used
+            viable_machine.append(new_machine[1])       #new_machine[2] is true or false if the machine has a GPU, but knowing this may not be needed 
+            viable_machine.append(Machine_Netwk)        
+            viable_machine.append(Machine_tools)
+            viable_machine.append(Machine_hours)
+            viable_machine.append(["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "])
+            viable_machine.append(Machine_Processor_count)
+            viable_machine.append("Ubuntu 18.04 [Desktop Edition]")
+            print("_____________________")
+            print(viable_machine)
+            print("_____________________")
+            all_tasks.append(viable_machine)
+            
+            print(all_tasks)
+            for i in range(len(all_tasks)):
+                print("---------------") 
+                print(all_tasks[i])
+            output_file = open("Task_GUI/GUI_functions/Cluster_details.bin", "wb")
+            pickle.dump(all_tasks, output_file)
+            output_file.close()
+
+
+
+            all_tasks.append(new_machine) 
+
+
+
+            
+            file.close()
+
         txt.destroy()
     button = Button(txt, text="Set node name", width=20, command=add)
     button2 = Button(txt, text ="Set MAC address", width=20, command=setmac)
@@ -99,6 +156,9 @@ def addnode():
     button3.grid()
     txt.mainloop()
 #this function contains the code for storing the username in a text file
+def build_schedule():
+    print("e")
+
 def user():
     messagebox.showinfo("Enter username",
                         "Make sure there is a profile on each computer with administrative priveleges " +
@@ -181,6 +241,10 @@ def reset():
     label = Label(txt, text = "Warning: This will clear previous cluster data.", bd = 30)
     label.pack()
     def clear():
+        new_machines = []
+        output_file = open("Task_GUI/GUI_functions/Cluster_details.bin", "wb")
+        pickle.dump(new_machines, output_file)
+        output_file.close()
         file = open("info.txt", "w")
         file.close()
         file = open("nodes.txt", "w")
@@ -305,6 +369,7 @@ H = tkinter.Button(top, text ="Finish and run", font = fnt, command = finish, wi
 I = tkinter.Button(top, text ="Max CPU temperature", font = fnt, command = temp, width = 20)
 J = tkinter.Button(top, text ="Set testing interval", font = fnt, command = test, width = 20)
 K = tkinter.Button(top, text ="Set job time", font = fnt, command = jobtime, width = 20)
+L = tkinter.Button(top, text ="Build Schedule", font = fnt, command = build_schedule, width = 20)
 pad3.grid()
 label.grid()
 canvas.grid()
@@ -318,6 +383,7 @@ F.grid()
 I.grid()
 J.grid()
 K.grid()
+L.grid()
 H.grid()
 pad2.grid()
 top.mainloop()
