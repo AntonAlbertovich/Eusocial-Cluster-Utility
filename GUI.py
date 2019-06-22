@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter import font
 from tkinter import *
 import pickle
+import os
 #setting up
 clustername = ""
 username = ""
@@ -98,7 +99,7 @@ def addnode():
             else:
                 file.write("gno" + "\n")
            
-            input_file= open("Task_GUI/GUI_functions/Cluster_details.bin", "rb")
+            input_file= open("GUI_functions/Cluster_details.bin", "rb")
             all_tasks= list(pickle.load(input_file))
             input_file.close()
             for i in range(len(all_tasks)):
@@ -122,9 +123,7 @@ def addnode():
             viable_machine.append(["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "])
             viable_machine.append(Machine_Processor_count)
             viable_machine.append("Ubuntu 18.04 [Desktop Edition]")
-            print("_____________________")
-            print(viable_machine)
-            print("_____________________")
+            #print(viable_machine)
             all_tasks.append(viable_machine)
             
             print(all_tasks)
@@ -157,6 +156,7 @@ def addnode():
     txt.mainloop()
 #this function contains the code for storing the username in a text file
 def build_schedule():
+    os.system("python3 configuring_menu.py")
     print("e")
 
 def user():

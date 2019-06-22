@@ -1,0 +1,8 @@
+#a := (~T V (T ^ F) -> F ) VT; #b := F; #b := TVa; #c := F^F; #d := T; a^d.
+~TVT^(F^T)->F.
+(T->F)V~F.
+(T->F) #V~F.
+~(T^T)F.
+~((T^(FVa)->T)^(T)).
+F->T- >F.    
+TVF.
