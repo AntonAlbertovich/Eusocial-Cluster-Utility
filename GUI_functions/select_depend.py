@@ -33,8 +33,8 @@ class ScrollFrame(tk.Frame):
         super().__init__(parent) 
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
-        self.viewPort = tk.Frame(self.canvas, background="#ffffff")       
+        self.canvas = tk.Canvas(self, borderwidth=0, background="black")
+        self.viewPort = tk.Frame(self.canvas, background="black")       
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -58,25 +58,42 @@ class Example(tk.Frame):
         tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
 
-        mypath = os.path.dirname(os.path.realpath(__file__))
-        mypath = mypath+"/Tasks"
-
-        possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         chosen_programs = [] 
         programs = []
-        for i in possible_programs:
-            if ".py" in i:
-                programs.append(i)
-            elif ".c" in i:
-                programs.append(i)
-            elif ".h" in i:
-                programs.append(i)
-            elif ".asm" in i:
-                programs.append(i)
-            elif ".f90" in i:
-                programs.append(i)
-            if ".swp" in i:
-                programs.remove(i)
+        
+        input_file = open("GUI_functions/Tasks_details.bin", "rb")
+        possible_programs = pickle.load(input_file)
+        input_file.close()
+
+        print(possible_programs)
+        
+        for i in range(len(possible_programs)):
+            if ".py" in  possible_programs[i][0]:
+                programs.append(possible_programs[i]) 
+            if ".swp" in  possible_programs[i][0]:
+                programs.remove(possible_programs[i])
+
+        for i in range(len(possible_programs)):
+            if ".c" in possible_programs[i][0]:
+                programs.append(possible_programs[i])
+            if ".cpp" in possible_programs[i][0]:
+                programs.remove(possible_programs[i])
+
+        for i in range(len(possible_programs)):
+            if ".cpp" in possible_programs[i][0]:
+                programs.append(possible_programs[i])
+        
+        for i in range(len(possible_programs)):
+            if ".asm" in  possible_programs[i][0]:
+                programs.append(possible_programs[i])
+        
+        for i in range(len(possible_programs)):
+            if ".f90" in  possible_programs[i][0]:
+                programs.append(possible_programs[i])
+
+        for i in range(len(possible_programs)):
+            if this_task[0] in possible_programs[i][0]:
+                programs.remove(possible_programs[i])
 
         os_0_Label = ttk.Label(self.scrollFrame.viewPort, text="Select an Operating System: ", width=20)
         os_0_Label.grid(column=0, row=0)
@@ -119,8 +136,8 @@ class Example(tk.Frame):
 
         for row in range(len(programs)):
             a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= "Files produced by: " + programs[row], width=35, relief="solid",command=lambda x=a:
-                    self.add_remove(str(programs[x]), chosen_programs)).grid(row=row+8, column=0)
+            tk.Checkbutton(self.scrollFrame.viewPort, text= "Files produced by: " + programs[row][0], width=35, relief="solid",command=lambda x=a: self.add_remove(programs[x], chosen_programs)).grid(row=row+8, column=0)
+
                     
 
         toolkits = ["CUDA", "spaCy", "psutil", "clingo"]

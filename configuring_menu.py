@@ -78,8 +78,8 @@ class ScrollFrame(tk.Frame):
         super().__init__(parent) # create a frame (self)
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")          #place canvas on self
-        self.viewPort = tk.Frame(self.canvas, background="#ffffff")                    #place a frame on the canvas, this frame will hold the child widgets 
+        self.canvas = tk.Canvas(self, width = 700, height = 800, borderwidth=0, background="black")          #place canvas on self
+        self.viewPort = tk.Frame(self.canvas, width = 325, height = 300, background="black")                    #place a frame on the canvas, this frame will hold the child widgets 
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -102,7 +102,7 @@ class Example(tk.Frame):
         tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
         mypath = os.path.dirname(os.path.realpath(__file__))
-        mypath = mypath+"/GUI_functions/Tasks"
+        mypath = mypath+"/Tasks"
         possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         chosen_machines = []
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
@@ -116,38 +116,60 @@ class Example(tk.Frame):
             tk.Checkbutton(self.scrollFrame.viewPort, text= "Configure Machine: " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=30).grid(row=row + 7, column=0)
                     
         tk.Label(self.scrollFrame.viewPort, text="Program Dependency Options", width=40).grid(row= 0, column=0)
+        tk.Label(self.scrollFrame.viewPort, text="Reset Options").grid(row= 0, column=2)
+        
         tk.Label(self.scrollFrame.viewPort, text="Program Thead Options", width=40).grid(row=6, column=0)
         tk.Label(self.scrollFrame.viewPort, text="Number of Theads Needed for processing", width=40).grid(row=8+len(machines), column=0)
 
         tk.Button(self.scrollFrame.viewPort, text="Python program dependency settings", command=lambda x=a: self.py_settings(".py"), width=35, relief="solid").grid(row= 1, column=0)
+
         tk.Button(self.scrollFrame.viewPort, text="Fortran program dependency settings", command=lambda x=a: self.fr_settings(".f90"), width=35, relief="solid").grid(row= 2, column=0)
         tk.Button(self.scrollFrame.viewPort, text="C program dependency settings", command=lambda x=a: self.c_settings(".c"), width=35, relief="solid").grid(row= 3, column=0)
         tk.Button(self.scrollFrame.viewPort, text="C++ program dependency settings", command=lambda x=a: self.cpp_settings(".cpp"), width=35, relief="solid").grid(row= 4, column=0)
         tk.Button(self.scrollFrame.viewPort, text="Assembly program dependency settings", command=lambda x=a: self.asm_settings(".asm"), width=35, relief="solid").grid(row= 5, column=0)
 
-        
-        
-        
-        tk.Button(self.scrollFrame.viewPort, text="Save changes to all marked items", command=lambda x=a: self.printMsg_kill(chosen_programs), width=30).grid(row= len(machines) + 7, column=0)
-        self.scrollFrame.pack(side="top", fill="both", expand=True)
+
         
         chosen_programs = []
         programs = []
         thread_cost = []
         j = 0 
+
+        tk.Button(self.scrollFrame.viewPort, text="Reset All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row= 1, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="Reset All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 2, column=2)
+        tk.Label(self.scrollFrame.viewPort, text="View Options").grid(row= 3, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row= 4, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 5, column=2)
+
+        tk.Button(self.scrollFrame.viewPort, text="Save changes to all marked machines", command=lambda x=a: self.reset_machines(chosen_machines), width=30).grid(row= len(machines) + 7, column=0)
+        self.scrollFrame.pack(side="top", fill="both", expand=True)
+
         for i in possible_programs:
-            print("---------------------")
-            print(i)
             if ".py" in i:
                 programs.append(i)
                 thread_cost.append([i,str(1)])
-            elif ".c" in i:
+            
+        for i in possible_programs:
+            if ".c" in i:
                 programs.append(i)
                 thread_cost.append([i,str(1)])
-            elif ".f90" in i:
+            if ".cpp" in i:
+                programs.remove(i)
+                thread_cost.remove([i,str(1)])
+
+        for i in possible_programs:
+            if ".cpp" in i:
                 programs.append(i)
                 thread_cost.append([i,str(1)])
-            elif ".asm" in i:
+
+
+        for i in possible_programs:
+            if ".f90" in i:
+                programs.append(i)
+                thread_cost.append([i,str(1)])
+        
+        for i in possible_programs:
+            if ".asm" in i:
                 programs.append(i)
                 thread_cost.append([i,str(1)])
 
@@ -170,16 +192,17 @@ class Example(tk.Frame):
                 viable_add = False
                 break
         if (viable_add == True):
-
             output_file = open("GUI_functions/update.bin", "wb")
             machine_data = []
             machine_data.append(selected[0])
             machine_data.append(selected[1])
-            print("? " + str(machine_data))
             pickle.dump(machine_data, output_file)
             output_file.close()
             os.system("python3 GUI_functions/machine_submenu.py")
             chosen.append(selected)
+            print(chosen)
+    
+    
     def py_settings(self, msg):
         print(msg)
         os.system("python3 GUI_functions/select_py_GUI.py")
@@ -217,10 +240,8 @@ class Example(tk.Frame):
         input_file = open("GUI_functions/Tasks_details.bin", "rb")
         all_tasks= list(pickle.load(input_file))
         input_file.close()
-        print("_________________")
         for j in range(len(all_tasks)):
             print(all_tasks[j])
-        print("_________________")
         for i in range(len(msg)):
             for j in range(len(all_tasks)):
                 if msg[i][0] == all_tasks[j][0]:
@@ -228,10 +249,17 @@ class Example(tk.Frame):
                     break
         for j in range(len(all_tasks)):
             print(all_tasks[j])
-        print("_________________")
         output_file = open("GUI_functions/Tasks_details.bin", "wb")
         pickle.dump(all_tasks, output_file)
         output_file.close()
+
+
+    def update_machines(self, msg):
+        print("ping")
+        print(msg)
+        for i in range(len(msg)):
+            print(msg[i])
+
 
     def printMsg_kill(self, msg):
         print(msg)
@@ -239,12 +267,40 @@ class Example(tk.Frame):
             print(msg[i])
         root.quit()
         
+    def reset_machines(self, msg):
+        input_file= open("GUI_functions/Cluster_details.bin", "rb")
+        all_tasks= list(pickle.load(input_file))
+        input_file.close()
+        for i in range(len(all_tasks)):
+            all_tasks[i][2] = []
+            all_tasks[i][3] = []
+            all_tasks[i][4] = []
+            all_tasks[i][4] = ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "]
+            all_tasks[i][5] = 4
+            all_tasks[i][6] = "Ubuntu 18.04 [Desktop Edition]"
+        
+        output_file = open("GUI_functions/Cluster_details.bin", "wb")
+        pickle.dump(all_tasks, output_file)
+        output_file.close()
 
+    def reset_programs(self, machines, costs):
+        input_file= open("GUI_functions/Tasks_details.bin", "rb")
+        all_tasks= list(pickle.load(input_file))
+        input_file.close() 
+        for i in range(len(all_tasks)):
+            print(all_tasks[i])
+            all_tasks[i][1] = [0, "N/A"]
+            all_tasks[i][2] = []
+            all_tasks[i][3] = []
+            all_tasks[i][4] = 1
+            costs[i][1] = str(0) 
+            tk.Button(self.scrollFrame.viewPort, text="Thread Cost: " + str(all_tasks[i][4])).grid(row=i+9+len(machines), column=2)
+            tk.Button(self.scrollFrame.viewPort, text="Decrease Coss", state='disabled').grid(row=i+9+len(machines), column=3)
 
 
 if __name__ == "__main__":
 
     root=tk.Tk()
-    root.title('Select a Machine')
+    root.title('Schedule Builder')
     Example(root).pack(side="top", fill="both", expand=True)
     root.mainloop()

@@ -12,7 +12,6 @@ win = tk.Tk()
 input_file = open("GUI_functions/update.bin", "rb")
 this_machine = list(pickle.load(input_file))
 input_file.close()
-print("!!!   "+str(this_machine))
 win.title(str(this_machine[0])+"@"+this_machine[1])
 # window
 input_file.close()

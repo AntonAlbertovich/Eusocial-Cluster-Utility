@@ -5,16 +5,15 @@ from os import walk
 import os
 from os import listdir
 from os.path import isfile, join
-# ************************
-# Scrollable Frame Class
-# ************************
+import pickle
+
 class ScrollFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent) # create a frame (self)
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")          #place canvas on self
-        self.viewPort = tk.Frame(self.canvas, background="#ffffff")                    #place a frame on the canvas, this frame will hold the child widgets 
+        self.canvas = tk.Canvas(self, borderwidth=0, background="black")          #place canvas on self
+        self.viewPort = tk.Frame(self.canvas, background="black")                    #place a frame on the canvas, this frame will hold the child widgets 
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -30,9 +29,6 @@ class ScrollFrame(tk.Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
 
 
-# ********************************
-# Example usage of the above class
-# ********************************
 
 class Example(tk.Frame):
     
@@ -41,45 +37,62 @@ class Example(tk.Frame):
         tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
 
-        mypath = os.path.dirname(os.path.realpath(__file__))
-        mypath = mypath+"/Tasks"
-
-        possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        chosen_programs = [] 
+        chosen_programs = []
         programs = []
-        for i in possible_programs:
-            if ".f90" in i:
-                programs.append(i)
+        
+        input_file = open("GUI_functions/Tasks_details.bin", "rb")
+        possible_programs = pickle.load(input_file)
+        input_file.close()
+
+        for i in range(len(possible_programs)):
+            if ".f90" in possible_programs[i][0]:
+                programs.append(possible_programs[i])
 
         for row in range(len(programs)):
             a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= "Files produced by: " + programs[row], width=35, relief="solid",command=lambda x=a:
-                    self.add_remove(str(programs[x]), chosen_programs)).grid(row=row, column=0)
-                    
+            tk.Checkbutton(self.scrollFrame.viewPort, text= "Settings for: " + programs[row][0], width=35, relief="solid",command=lambda x=a: self.add_remove(programs[x], chosen_programs)).grid(row=row, column=0)
 
-        tk.Button(self.scrollFrame.viewPort, text="Done", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row +1, column=0)
+
+        tk.Button(self.scrollFrame.viewPort, text="Save and Update Settings", command = lambda x=1: self.printMsg_kill(chosen_programs)).grid(row=len(programs) +1, column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
     
     def add_remove(self, msg, chosen_programs):
         viable_add = True
         for i in range(len(chosen_programs)):
-            if msg == chosen_programs[i]:
+            if msg[0] == chosen_programs[i][0]:
                 chosen_programs.remove(chosen_programs[i])
                 viable_add = False
                 break
         if (viable_add == True):
+            output_file = open("GUI_functions/update.bin", "wb")
+            pickle.dump(msg, output_file)
+            output_file.close()
             os.system("python3 GUI_functions/select_depend.py")
-            chosen_programs.append(msg)
+            input_file = open("GUI_functions/update.bin", "rb")
+            new_task = pickle.load(input_file)
+            input_file.close()
+            chosen_programs.append(new_task)
     
+        
     def printMsg_kill(self, msg):
-        print(msg)
-        for i in range(len(msg)):
-            print(msg[i])
+        input_file = open("GUI_functions/Tasks_details.bin", "rb")
+        all_programs = pickle.load(input_file)
+        input_file.close()
+
+        for i in range(len(all_programs)):
+            for j in range(len(msg)):
+                if all_programs[i][0] == msg[j][0]:
+                    all_programs[i] = msg[j]
+
+        output_file = open("GUI_functions/Tasks_details.bin", "wb")
+        pickle.dump(all_programs, output_file)
+        output_file.close()
+        print(all_programs)
         root.quit()
     
 if __name__ == "__main__":
 
     root=tk.Tk()
-    root.title('Select Fortran Dependecies')
+    root.title('Select C Dependecies')
     Example(root).pack(side="top", fill="both", expand=True)
     root.mainloop()

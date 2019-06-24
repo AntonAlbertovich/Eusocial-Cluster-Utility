@@ -130,7 +130,7 @@ def addnode():
             for i in range(len(all_tasks)):
                 print("---------------") 
                 print(all_tasks[i])
-            output_file = open("Task_GUI/GUI_functions/Cluster_details.bin", "wb")
+            output_file = open("GUI_functions/Cluster_details.bin", "wb")
             pickle.dump(all_tasks, output_file)
             output_file.close()
 
@@ -242,7 +242,7 @@ def reset():
     label.pack()
     def clear():
         new_machines = []
-        output_file = open("Task_GUI/GUI_functions/Cluster_details.bin", "wb")
+        output_file = open("GUI_functions/Cluster_details.bin", "wb")
         pickle.dump(new_machines, output_file)
         output_file.close()
         file = open("info.txt", "w")
