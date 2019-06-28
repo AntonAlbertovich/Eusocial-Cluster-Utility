@@ -15,18 +15,19 @@ holds(F,0) :- init(F).
 
 #program step(t).
 % Generate
-1{ move(X,Y,t) : task(X), location(Y)}.
-{ turn(X,Y,t) : task(X), status(Y), holds(on(X,Z),t), valid_on(X, Z), valid_os(X, Z)}.
+{ move(X,Y,t) : task(X), location(Y)}.
+0{ turn(X,Y,t)}1 :- status(Y), task(X), holds(on(X,Z),t), valid_on(X, Z), valid_os(X, Z).
 
 % Test
 
 :- move(X,Y,t), holds(on(B,Y),t-1), B != X, Y != home.
 :- move(X,Y,t), Y == home.
 
+
 :- turn(X,Y,t), holds(at(X,done),t-1).
 :- turn(X,Y,t), holds(at(B,Y),t-1), B != X, Y != done.
 :- turn(X,Y,t), holds(on(X,M),t), os_needed(X,Z1), os_on(M,Z2), Z1 != Z2.
-
+:- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t-1) .
 
 % Define
 
@@ -40,7 +41,7 @@ turned_at(X, M, t) :- turned(X, t), holds(on(X,M),t).
 :- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.
 :- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.
 
-:- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2.
+:- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2, moved(X2,T) .
 
 holds(on(X,Y),t) :- move(X,Y,t).
 holds(on(X,Z),t) :- holds(on(X,Z),t-1), not moved(X,t).
@@ -48,6 +49,7 @@ holds(on(X,Z),t) :- holds(on(X,Z),t-1), not moved(X,t).
 
 holds(at(X,Y),t) :- turn(X,Y,t).
 holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).
+
 
 :- turned(X1, T1), turned(X2, T2), sum_valid_on(X1, Y, Z1), sum_valid_on(X2, Y, Z2), X1 != X2, T1 == T2,  Z = Z1+Z2, machine_threads(Y, Z4), Z > Z4.
 
@@ -65,9 +67,9 @@ valid_os(X, Y) :- os_needed(X, Z1), os_on(Y, Z2), Z1 == Z2.
 :- query(t), goal(F), not holds(F,t).
 
 % Display
-%#show move/3.
-%#show turned_at/3.
-#show cuda_not_on/1.
+#show move/3.
+#show turned_at/3.
+%#show cuda_not_on/1.
 %#show valid_os/2.
 %#show valid_on/2.
 %#show less_valid_on/2.
@@ -101,6 +103,7 @@ clingo_needed(task_b).
 
 cuda_on(mac_a).
 cuda_on(mac_b).
+
 spacy_on(mac_b).
 psutil_on(mac_b).
 clingo_on(mca_b).
@@ -109,8 +112,6 @@ cuda_not_on(X) :- location(X), not cuda_on(X).
 spacy_not_on(X) :- location(X), not spacy_on(X).
 psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
-
-
 
 os_needed(task_a, ubuntu_DE).
 os_needed(task_b, centOS_7_DE).
