@@ -138,10 +138,9 @@ class Example(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="Reset All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row= 1, column=2)
         tk.Button(self.scrollFrame.viewPort, text="Reset All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 2, column=2)
         tk.Label(self.scrollFrame.viewPort, text="View Options").grid(row= 3, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="View All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row= 4, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 5, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Machines", command=lambda x=a: self.view_machines("reset"), width=15, relief="solid").grid(row= 4, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.view_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 5, column=2)
 
-        tk.Button(self.scrollFrame.viewPort, text="Save changes to all marked machines", command=lambda x=a: self.reset_machines(chosen_machines), width=30).grid(row= len(machines) + 7, column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
 
         for i in possible_programs:
@@ -182,7 +181,10 @@ class Example(tk.Frame):
         
         
         tk.Button(self.scrollFrame.viewPort, text="Update Program Thread Costs", command=lambda x=a: self.update_cost(thread_cost), width=25).grid(row=row+10+len(machines), column=0)
-        tk.Button(self.scrollFrame.viewPort, text="Done, Build Schedule", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+11+len(machines), column=0)
+        tk.Label(self.scrollFrame.viewPort, text="Schedule Options").grid(row= row+11+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Build Schedule", command=lambda x=a: self.build_schedule(chosen_programs)).grid(row=row+12+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="View Schedule", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+13+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Exit Schedule Builder", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+14+len(machines), column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
     def add_remove(self, selected, chosen):
         viable_add = True
@@ -275,9 +277,9 @@ class Example(tk.Frame):
             all_tasks[i][2] = []
             all_tasks[i][3] = []
             all_tasks[i][4] = []
-            all_tasks[i][4] = ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "]
-            all_tasks[i][5] = 4
-            all_tasks[i][6] = "Ubuntu 18.04 [Desktop Edition]"
+            all_tasks[i][5] = ["python3 ", "gfortran ", "gcc ", "g++", "nasm -felf64 "]
+            all_tasks[i][6] = 4
+            all_tasks[i][7] = "Ubuntu 18.04 [Desktop Edition]"
         
         output_file = open("GUI_functions/Cluster_details.bin", "wb")
         pickle.dump(all_tasks, output_file)
@@ -297,6 +299,29 @@ class Example(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="Thread Cost: " + str(all_tasks[i][4])).grid(row=i+9+len(machines), column=2)
             tk.Button(self.scrollFrame.viewPort, text="Decrease Coss", state='disabled').grid(row=i+9+len(machines), column=3)
 
+    def view_machines(self, msg):
+        input_file= open("GUI_functions/Cluster_details.bin", "rb")
+        all_tasks= list(pickle.load(input_file))
+        input_file.close()
+        for i in range(len(all_tasks)):
+            print(all_tasks[i])
+        os.system("python3 GUI_functions/print_machines.py")
+        
+    def view_programs(self, machines, costs):
+        input_file= open("GUI_functions/Tasks_details.bin", "rb")
+        all_tasks= list(pickle.load(input_file))
+        input_file.close() 
+        for i in range(len(all_tasks)):
+            print(all_tasks[i])
+        os.system("python3 GUI_functions/print_programs.py")
+
+    def build_schedule(self, msg):
+        input_file= open("GUI_functions/Cluster_details.bin", "rb")
+        all_tasks= list(pickle.load(input_file))
+        input_file.close()
+        for i in range(len(all_tasks)):
+            print(all_tasks[i])
+        os.system("python3 GUI_functions/print_machines.py")
 
 if __name__ == "__main__":
 

@@ -375,7 +375,6 @@ def checkCallback2(*ignoredArgs):
     if chVarAn.get(): 
         check5.configure(state='disabled')
         action_TZ.configure(state='disabled')
-        print("GPU disabled up!")
     else:       
         check5.configure(state='normal')
 chVarAm.trace('w', lambda unused3, unused4, unused5 : checkCallback2())
@@ -403,7 +402,25 @@ def checkCallback3(*ignoredArgs):
     if chVarBn.get(): 
         check7.configure(state='disabled')
         action_CN.configure(state='disabled')
-        print("GPU disabled up!")
+        check7.configure(state='disabled')
+        action_CN.configure(state='disabled')
+        
+        
+        input_file= open("GUI_functions/Cluster_details.bin", "rb")
+        machines = pickle.load(input_file)
+        input_file.close()
+        
+        for i in range(len(machines)):
+            if this_machine[1] == machines[i][1]:
+                new_net = []
+                for j in range(len(machines)):
+                    if this_machine[1] != machines[j][1]:
+                        new_net.append(machines[j][0])
+                machines[i][2] = new_net 
+                output_file= open("GUI_functions/Cluster_details.bin", "wb")
+                pickle.dump(machines, output_file)
+                output_file.close()
+                break
     else:       
         check7.configure(state='normal')
 chVarBm.trace('w', lambda unused3, unused4, unused5 : checkCallback3())
@@ -431,6 +448,18 @@ def checkCallback4(*ignoredArgs):
     if chVarCn.get(): 
         check9.configure(state='disabled')
         action_CT.configure(state='disabled')
+        
+        input_file= open("GUI_functions/Cluster_details.bin", "rb")
+        machines = pickle.load(input_file)
+        input_file.close()
+        
+        for i in range(len(machines)):
+            if this_machine[1] == machines[i][1]:
+                machines[i][3] = ["CUDA", "spaCy", "psutil", "clingo"]
+                output_file= open("GUI_functions/Cluster_details.bin", "wb")
+                pickle.dump(machines, output_file)
+                output_file.close()
+                break
     else:       
         check9.configure(state='normal')
 chVarCm.trace('w', lambda unused3, unused4, unused5 : checkCallback4())
@@ -442,14 +471,14 @@ os_0_Label = ttk.Label(win, text="Select an Operating System: ")
 os_0_Label.grid(column=0, row=12)
 
 
-os_distor= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Destop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS']
+os_distor= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Desktop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS']
 
 def os_Call():
     coreSel=os_Var.get()
     if coreSel == 0:
         print("Ubuntu 18.04 [Desktop Edition]")
     elif coreSel == 1:
-        print("CentOS 7 [Destop Edition]")
+        print("CentOS 7 [Desktop Edition]")
     elif coreSel == 2:
         print("CentOS 7 [Node/server Edition]")
     elif coreSel == 3:

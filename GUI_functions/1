@@ -11,9 +11,8 @@ class ScrollFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent) 
 
-    
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
-        self.viewPort = tk.Frame(self.canvas, background="#ffffff")       
+        self.canvas = tk.Canvas(self, width = 700, height = 800, borderwidth=0, background="black")          #place canvas on self
+        self.viewPort = tk.Frame(self.canvas, width = 325, height = 300, background="black")
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -38,7 +37,7 @@ class Example_net(tk.Frame):
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
 
         mypath = os.path.dirname(os.path.realpath(__file__))
-        mypath.replace("/GUI_functions","/Tasks")
+        mypath = mypath+"/Tasks"
 
         possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         chosen_machines = [] 
@@ -52,14 +51,6 @@ class Example_net(tk.Frame):
         input_file.close()
         
 
-        for i in range(len(machines)):
-            if str(machines[i][1]) == str(this_machine[1]):
-                machines.remove(machines[i])
-                break
-
-        for row in range(len(machines)):
-            a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= str(this_machine[0]) + " Is Connected to " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=40).grid(row=row, column=0)
 
 
         tk.Button(self.scrollFrame.viewPort, text="Done", command=lambda x=a: self.printMsg_kill(chosen_machines)).grid(row=row +1, column=0)
@@ -68,18 +59,22 @@ class Example_net(tk.Frame):
     def add_remove(self, msg, chosen_programs):
         viable_add = True
         for i in range(len(chosen_programs)):
+            print(str(msg[1]) +" = "+ str(chosen_programs[i]))
             if msg[1] == chosen_programs[i]:
                 chosen_programs.remove(chosen_programs[i])
                 viable_add = False
                 break
         if (viable_add == True):
-            chosen_programs.append(msg[0])
+            chosen_programs.append(msg[1])
     
     def printMsg_kill(self, msg):
+        print(msg)
         output_file= open("GUI_functions/update.bin", "wb")
         pickle.dump(msg, output_file)
         output_file.close()
         
+        for i in range(len(msg)):
+            print(msg[i])
         root_net.quit()
     
 if __name__ == "__main__":
