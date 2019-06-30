@@ -8,16 +8,14 @@ if __name__ == "__main__":
     all_jobs= list(pickle.load(input_file))
     input_file.close()
 
-    asp_file = open("asp.lp")
-
-    asp_file.write("  \n"
+    asp_file = open("asp.lp", 'w')
 
     asp_file.write("#include <incmode>. \n")
 
     asp_file.write("#program base. \n")
     asp_file.write("% Define\n")
     asp_file.write("status(-done).\n")
-    ssp_file.write("tatus(done).\n")
+    asp_file.write("tatus(done).\n")
     asp_file.write("location(home).\n")
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
@@ -90,8 +88,9 @@ if __name__ == "__main__":
 
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
-        job.replace(" ", "")
-        job.lower()
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
         asp_file.write("task("+job+").\n")
 
     asp_file.write("os(ubuntu_DE).\n")
@@ -99,96 +98,120 @@ if __name__ == "__main__":
     asp_file.write("os(centOS_7_NE).\n")
     asp_file.write("os(debian).\n")
     asp_file.write("os(red_hat).\n")
+    asp_file.write("os(no_os).\n")
 
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
-        job.replace(" ", "")
-        job.lower()
-        asp_file.write("task("+job+").\n")
-        for j in range(len(all_macs[i][2])):
-            if all_macs[i][2][j] == "CUDA":
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
+        for j in range(len(all_jobs[i][3])):
+            if all_jobs[i][3][j] == "CUDA":
                 asp_file.write("cuda_needed("+job+").\n")
-            elif all_macs[i][2][j] == "psutil":
+            elif all_jobs[i][3][j] == "psutil":
                 asp_file.write("psutil_needed("+job+").\n")
-            elif all_macs[i][2][j] == "spaCy":
+            elif all_jobs[i][3][j] == "spaCy":
                 asp_file.write("spacy_needed("+job+").\n")
-            elif all_macs[i][2][j] == "clingo":
+            elif all_jobs[i][3][j] == "clingo":
                 asp_file.write("clingo_needed("+job+").\n")
     
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
         mac.replace(" ", "")
         mac.lower()
-        for j in range(len(all_macs[i][2])):
-            mac1 = all_macs[i][2][j]
-            mac1.replace(" ", "")
-            mac1.lower()
-            asp_file.write("connection("+mac+", "+mac1+").\n")
+        for j in range(len(all_macs[i][3])):
+            if all_macs[i][3][j] == "CUDA":
+                asp_file.write("cuda_on("+mac+").\n")
+            elif all_macs[i][3][j] == "psutil":
+                asp_file.write("psutil_on("+mac+").\n")
+            elif all_macs[i][3][j] == "spaCy":
+                asp_file.write("spacy_on("+mac+").\n")
+            elif all_macs[i][3][j] == "clingo":
+                asp_file.write("clingo_on("+mac+").\n")
 
-    cuda_on(mac_a).
 
-    cuda_on(mac_b).
-    spacy_on(mac_b).
-    psutil_on(mac_b).
-    clingo_on(mac_b).
 
-    cuda_not_on(X) :- location(X), not cuda_on(X).
-    spacy_not_on(X) :- location(X), not spacy_on(X).
-    psutil_not_on(X) :- location(X), not psutil_on(X).
-    clingo_not_on(X) :- location(X), not clingo_on(X).
+    asp_file.write("cuda_not_on(X) :- location(X), not cuda_on(X).\n")
+    asp_file.write("spacy_not_on(X) :- location(X), not spacy_on(X).\n")
+    asp_file.write("psutil_not_on(X) :- location(X), not psutil_on(X).\n")
+    asp_file.write("clingo_not_on(X) :- location(X), not clingo_on(X).\n")
 
-    os_needed(task_a, ubuntu_DE).
-    os_needed(task_b, centOS_7_DE).
-    os_needed(task_c, centOS_7_NE).
-    os_needed(task_d, debian).
-    os_needed(task_e, red_hat).
-    %os_needed(task_f, NA).
 
-    os_on(mac_a, ubuntu_DE).
-    os_on(mac_b, centOS_7_DE).
-    os_on(mac_c, centOS_7_NE).
-    os_on(mac_d, debian).
-    os_on(mac_e, red_hat).
-    %os_on(task_f, NA).
+    for i in range(len(all_jobs)):
+        job = all_jobs[i][0]
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
+        if all_jobs[i][1][1] == "Ubuntu 18.04 [Desktop Edition]":
+            asp_file.write("os_needed("+job+", ubuntu_DE).\n")
+        elif all_jobs[i][1][1] == "CentOS 7 [Desktop Edition]":
+            asp_file.write("os_needed("+job+", centOS_7_DE).\n")
+        elif all_jobs[i][1][1] == "CentOS 7 [Node/server Edition]":
+            asp_file.write("os_needed("+job+", centOS_7_NE).\n")
+        elif all_jobs[i][1][1] == "Unlisted Debian based OS":
+            asp_file.write("os_needed("+job+", debian).\n")
+        elif all_jobs[i][1][1] == "Unlisted Red Hat based OS":
+            asp_file.write("os_needed("+job+", red_hat).\n")
+        elif all_jobs[i][1][1] == "N/A":
+            asp_file.write("os_needed("+job+", no_os).\n")
+    
+    for i in range(len(all_macs)):
+        mac = all_macs[i][0]
+        mac.replace(" ", "")
+        mac.lower()
+        if all_macs[i][7] == "Ubuntu 18.04 [Desktop Edition]":
+            asp_file.write("os_on("+mac+", ubuntu_DE).\n")
+        elif all_macs[i][7] ==  "CentOS 7 [Desktop Edition]":
+            asp_file.write("os_on("+mac+", centOS_7_DE).\n")
+        elif all_macs[i][7] == "CentOS 7 [Node/server Edition]":
+            asp_file.write("os_on("+mac+", centOS_7_NE).\n")
+        elif all_macs[i][7] == "Unlisted Debian based OS":
+            asp_file.write("os_on("+mac+", debian).\n")
+        elif all_macs[i][7] == "Unlisted Red Hat based OS":
+            asp_file.write("os_on("+mac+").\n")
+    
+    for i in range(len(all_jobs)):
+        job = all_jobs[i][0]
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
+        thread = str(all_jobs[i][4])
+        asp_file.write("thread_cost("+job+", "+thread+").\n")
 
-    thread_cost(task_a, 1).
-    thread_cost(task_b, 2).
-    thread_cost(task_c, 3).
-    thread_cost(task_d, 4).
-    thread_cost(task_e, 4).
 
-    %needs_toolkit(task_a , CUDA).
-    %needs_toolkit(task_b , CUDA).
-    %needs_toolkit(task_c , spaCy).
-    %needs_toolkit(task_d , psutil).
-    %needs_toolkit(task_e , clingo).
+    for i in range(len(all_jobs)):
+        job0 = all_jobs[i][0]
+        job0 = job0.replace(" ", "")
+        job0 = job0.replace(".", "_")
+        job0 = job0.lower()
+        for j in range(len(all_jobs[i][2])):
+            job1 = all_jobs[i][2][j]
+            job1 = job1.replace(" ", "")
+            job1 = job1.replace(".", "_")
+            job1 = job1.lower()
+            asp_file.write("depends_on("+job0+", "+job1+").\n")
+    
 
-    depends_on(task_a, task_e).
-    depends_on(task_d, task_a).
-    depends_on(task_d, task_b).
-    depends_on(task_d, task_c).
+    for i in range(len(all_macs)):
+        mac = all_macs[i][0]
+        mac.replace(" ", "")
+        mac.lower()
+        thread = str(all_macs[i][6])
+        asp_file.write("thread_cost("+mac+", "+thread+").\n")
 
-    machine_threads(mac_a, 1).
-    machine_threads(mac_b, 2).
-    machine_threads(mac_c, 3).
-    machine_threads(mac_d, 4).
-    machine_threads(mac_e, 4).
-    %
-    %
-    init(on(task_a, home)).
-    init(on(task_b, home)).
-    init(on(task_c, home)).
-    init(on(task_d, home)).
-    init(on(task_e, home)).
-    init(at(task_a,-done)).
-    init(at(task_b,-done)).
-    init(at(task_c,-done)).
-    init(at(task_d,-done)).
-    init(at(task_e,-done)).
-    %
-    %
-    goal(at(task_a,done)).
-    goal(at(task_b,done)).
-    goal(at(task_c,done)).
-    goal(at(task_d,done)).
-    goal(at(task_e,done)).
+    for i in range(len(all_jobs)):
+        job = all_jobs[i][0]
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
+        asp_file.write("init(on("+job+", home)).\n")
+        asp_file.write("init(at("+job+", -done)).\n")
+
+    for i in range(len(all_jobs)):
+        job = all_jobs[i][0]
+        job = job.replace(" ", "")
+        job = job.replace(".", "_")
+        job = job.lower()
+        asp_file.write("goal(at("+job+", done)).\n")
+
+    asp_file.close()

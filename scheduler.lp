@@ -8,40 +8,20 @@ location(home).
 location(mac_a).
 location(mac_b).
 location(mac_c).
-location(mac_d).
-location(mac_e).
 
 %Network connections
 connection(home, mac_a). 
 connection(home, mac_b). 
 connection(home, mac_c). 
-connection(home, mac_d). 
-connection(home, mac_e). 
 
 connection(mac_a, mac_b). 
 connection(mac_a, mac_c). 
-connection(mac_a, mac_d). 
-connection(mac_a, mac_e). 
 
 connection(mac_b, mac_a). 
 connection(mac_b, mac_c). 
-connection(mac_b, mac_d). 
-connection(mac_b, mac_e). 
 
 connection(mac_c, mac_a). 
 connection(mac_c, mac_b). 
-connection(mac_c, mac_d). 
-connection(mac_c, mac_e). 
-
-connection(mac_d, mac_a). 
-connection(mac_d, mac_b). 
-connection(mac_d, mac_c). 
-connection(mac_d, mac_e). 
-
-connection(mac_e, mac_a). 
-connection(mac_e, mac_b). 
-connection(mac_e, mac_c). 
-connection(mac_e, mac_d). 
 
 holds(F,0) :- init(F).
 
@@ -106,9 +86,6 @@ valid_os(X, Y) :- os_needed(X, Z1), os_on(Y, Z2), Z1 == Z2.
 task(task_a).
 task(task_b).
 task(task_c).
-task(task_d).
-task(task_e).
-%task(task_f).
 
 os(ubuntu_DE).
 os(centOS_7_DE).
@@ -138,22 +115,14 @@ clingo_not_on(X) :- location(X), not clingo_on(X).
 os_needed(task_a, ubuntu_DE).
 os_needed(task_b, centOS_7_DE).
 os_needed(task_c, centOS_7_NE).
-os_needed(task_d, debian).
-os_needed(task_e, red_hat).
-%os_needed(task_f, NA).
 
 os_on(mac_a, ubuntu_DE).
 os_on(mac_b, centOS_7_DE).
 os_on(mac_c, centOS_7_NE).
-os_on(mac_d, debian).
-os_on(mac_e, red_hat).
-%os_on(task_f, NA).
 
 thread_cost(task_a, 1).
 thread_cost(task_b, 2).
 thread_cost(task_c, 3).
-thread_cost(task_d, 4).
-thread_cost(task_e, 4).
 
 %needs_toolkit(task_a , CUDA).
 %needs_toolkit(task_b , CUDA).
@@ -161,32 +130,21 @@ thread_cost(task_e, 4).
 %needs_toolkit(task_d , psutil).
 %needs_toolkit(task_e , clingo).
 
-depends_on(task_a, task_e).
-depends_on(task_d, task_a).
-depends_on(task_d, task_b).
-depends_on(task_d, task_c).
+depends_on(task_a, task_c).
 
-machine_threads(mac_a, 1).
-machine_threads(mac_b, 2).
-machine_threads(mac_c, 3).
-machine_threads(mac_d, 4).
-machine_threads(mac_e, 4).
+machine_threads(mac_a, 4).
+machine_threads(mac_b, 4).
+machine_threads(mac_c, 4).
 %
 %
 init(on(task_a, home)).
 init(on(task_b, home)).
 init(on(task_c, home)).
-init(on(task_d, home)).
-init(on(task_e, home)).
 init(at(task_a,-done)).
 init(at(task_b,-done)).
 init(at(task_c,-done)).
-init(at(task_d,-done)).
-init(at(task_e,-done)).
 %
 %
 goal(at(task_a,done)).
 goal(at(task_b,done)).
 goal(at(task_c,done)).
-goal(at(task_d,done)).
-goal(at(task_e,done)).

@@ -321,7 +321,7 @@ class Example(tk.Frame):
         input_file.close()
         for i in range(len(all_tasks)):
             print(all_tasks[i])
-        os.system("python3 GUI_functions/print_machines.py")
+        os.system("python3 GUI_functions/build_asp.py")
 
 if __name__ == "__main__":
 
