@@ -101,7 +101,7 @@ class Example(tk.Frame):
         os_0_Label = ttk.Label(self.scrollFrame.viewPort, text="Select Programs Which Produce Dependencies: ", width=45)
         os_0_Label.grid(column=0, row=7)
 
-        os_distor= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Destop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS', 'N/A']
+        os_distor= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Desktop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS', 'N/A']
         def os_Call():
             coreSel=os_Var.get()
             if coreSel == 0:
@@ -109,7 +109,7 @@ class Example(tk.Frame):
                 all_tasks[task_loc][1][1] = "Ubuntu 18.04 [Desktop Edition]"
             elif coreSel == 1:
                 all_tasks[task_loc][1][0] = 1
-                all_tasks[task_loc][1][1] = "CentOS 7 [Destop Edition]"
+                all_tasks[task_loc][1][1] = "CentOS 7 [Desktop Edition]"
             elif coreSel == 2:
                 all_tasks[task_loc][1][0] = 1
                 all_tasks[task_loc][1][1] = "CentOS 7 [Node/server Edition]"
