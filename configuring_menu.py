@@ -373,14 +373,31 @@ class Example(tk.Frame):
     
     def view_schedule(self, solution):
         output_file = open("GUI_functions/update.bin", "wb")
+        final = 0
+        for i in range(len(solution)):
+            this_turn = solution[i].split(",")
+            this_turn[2] = this_turn[2].replace(")", "")
+            this_final = int(this_turn[2])
+            if this_final > final:
+                final = this_final
+
         machine_data = []
         machine_data.append(0)
         machine_data.append(solution)
         pickle.dump(machine_data, output_file)
         output_file.close()
-        for i in range(len(machine_data[1])):
+        while(True):
             os.system("python3 GUI_functions/view_asp.py")
+            
+            input_file = open("GUI_functions/update.bin", "rb")
+            all_turns = list(pickle.load(input_file))
+            input_file.close()
+            turn = int(all_turns[0])
+            if turn >= final:
+                break
+            
 
+            
 
 if __name__ == "__main__":
 
