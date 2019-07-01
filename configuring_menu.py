@@ -3,6 +3,7 @@ import tkinter as ttk
 from tkinter import *
 from os import walk
 import os
+import subprocess
 from os import listdir
 from os.path import isfile, join
 import pickle
@@ -21,8 +22,6 @@ Machine_time=1
 
 
 Programs = []
-
-
 
 Program_ruels=[]
 Program_needs=[]
@@ -181,10 +180,13 @@ class Example(tk.Frame):
         
         
         tk.Button(self.scrollFrame.viewPort, text="Update Program Thread Costs", command=lambda x=a: self.update_cost(thread_cost), width=25).grid(row=row+10+len(machines), column=0)
-        tk.Label(self.scrollFrame.viewPort, text="Schedule Options").grid(row= row+11+len(machines), column=0)
-        tk.Button(self.scrollFrame.viewPort, text="Build Schedule", command=lambda x=a: self.build_schedule(chosen_programs)).grid(row=row+12+len(machines), column=0)
-        tk.Button(self.scrollFrame.viewPort, text="View Schedule", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+13+len(machines), column=0)
-        tk.Button(self.scrollFrame.viewPort, text="Exit Schedule Builder", command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+14+len(machines), column=0)
+        tk.Label(self.scrollFrame.viewPort, text="Schedule Options", width=31 ).grid(row= row+11+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Build Schedule [15s Attempt]", width=28, command=lambda x=a: self.build_schedule_15(machines)).grid(row=row+12+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Build Schedule [60s Attempt]", width=28, command=lambda x=a: self.build_schedule_30(machines)).grid(row=row+13+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Build Schedule [5m Attempt]", width=28, command=lambda x=a: self.build_schedule_300(machines)).grid(row=row+14+len(machines), column=0)
+        tk.Label(self.scrollFrame.viewPort, text="Schedule Build Not Yet Attempted", width=31).grid(row= row+15+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=a: self.view_schedule(chosen_programs),state = 'disabled').grid(row=row+16+len(machines), column=0)
+        tk.Button(self.scrollFrame.viewPort, text="Exit Schedule Builder", width=28, command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+17+len(machines), column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
     def add_remove(self, selected, chosen):
         viable_add = True
@@ -235,7 +237,7 @@ class Example(tk.Frame):
             costs[a][1] = str(cost_value) 
             tk.Button(self.scrollFrame.viewPort, text="Thread Cost: " + costs[a][1]).grid(row=a+9+len(machines), column=2)
         else:
-            tk.Button(self.scrollFrame.viewPort, text="Decrease Coss", state='disabled').grid(row=a+9+len(machines), column=3)
+            tk.Button(self.scrollFrame.viewPort, text="Decrease Cost", state='disabled').grid(row=a+9+len(machines), column=3)
     
     def update_cost(self, msg):
         print(msg)
@@ -297,7 +299,7 @@ class Example(tk.Frame):
             all_tasks[i][4] = 1
             costs[i][1] = str(0) 
             tk.Button(self.scrollFrame.viewPort, text="Thread Cost: " + str(all_tasks[i][4])).grid(row=i+9+len(machines), column=2)
-            tk.Button(self.scrollFrame.viewPort, text="Decrease Coss", state='disabled').grid(row=i+9+len(machines), column=3)
+            tk.Button(self.scrollFrame.viewPort, text="Decrease Cost", state='disabled').grid(row=i+9+len(machines), column=3)
 
     def view_machines(self, msg):
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
@@ -315,13 +317,70 @@ class Example(tk.Frame):
             print(all_tasks[i])
         os.system("python3 GUI_functions/print_programs.py")
 
-    def build_schedule(self, msg):
-        input_file= open("GUI_functions/Cluster_details.bin", "rb")
-        all_tasks= list(pickle.load(input_file))
-        input_file.close()
-        for i in range(len(all_tasks)):
-            print(all_tasks[i])
+    def build_schedule_15(self, machines):
         os.system("python3 GUI_functions/build_asp.py")
+        output = str(subprocess.check_output("clingo --time-limit=15 GUI_functions/asp.lp", shell=True))
+        out = output.split("\\n")
+        solution = []
+        satisfiable = False
+        for i in range(len(out)):
+                if out[i] == "SATISFIABLE":
+                    satisfiable = True
+                    solution = out[i-1].split(" ")
+                    break
+        if satisfiable == True:
+            tk.Label(self.scrollFrame.viewPort, text="15s Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+        else:
+            tk.Label(self.scrollFrame.viewPort, text="15s Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+
+    def build_schedule_60(self, machines):
+        os.system("python3 GUI_functions/build_asp.py")
+        output = str(subprocess.check_output("clingo --time-limit=60 GUI_functions/asp.lp", shell=True))
+        out = output.split("\\n")
+        solution = []
+        satisfiable = False
+        for i in range(len(out)):
+                if out[i] == "SATISFIABLE":
+                    satisfiable = True
+                    solution = out[i-1].split(" ")
+                    break
+        if satisfiable == True:
+            tk.Label(self.scrollFrame.viewPort, text="60s Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+        else:
+            tk.Label(self.scrollFrame.viewPort, text="60s Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+    
+    def build_schedule_300(self, machines):
+        os.system("python3 GUI_functions/build_asp.py")
+        output = str(subprocess.check_output("clingo --time-limit=300 GUI_functions/asp.lp", shell=True))
+        out = output.split("\\n")
+        solution = []
+        satisfiable = False
+        for i in range(len(out)):
+                if out[i] == "SATISFIABLE":
+                    satisfiable = True
+                    solution = out[i-1].split(" ")
+                    break
+        if satisfiable == True:
+            tk.Label(self.scrollFrame.viewPort, text="5m Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+        else:
+            tk.Label(self.scrollFrame.viewPort, text="5m Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+    
+    def view_schedule(self, solution):
+        output_file = open("GUI_functions/update.bin", "wb")
+        machine_data = []
+        machine_data.append(0)
+        machine_data.append(solution)
+        pickle.dump(machine_data, output_file)
+        output_file.close()
+        for i in range(len(machine_data[1])):
+            os.system("python3 GUI_functions/view_asp.py")
+
 
 if __name__ == "__main__":
 

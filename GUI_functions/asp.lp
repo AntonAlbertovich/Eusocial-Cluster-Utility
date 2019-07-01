@@ -19,7 +19,7 @@ connection(mac_c, mac_b).
 holds(F,0) :- init(F).
 #program step(t).
 { move(X,Y,t) : task(X), location(Y)} :- holds(on(X,M),t-1), connection(M, Y).
-0{ turn(X,Y,t)}3 :- status(Y), task(X), holds(on(X,Z),t), valid_on(X, Z).
+0{ turn(X,Y,t)}1 :- status(Y), task(X), holds(on(X,Z),t), valid_on(X, Z).
 :- move(X,Y,t), holds(on(X,Y1),t-1), Y == home.
 :- turn(X,Y,t), holds(at(X,done),t-1).
 :- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t-1).
@@ -35,12 +35,10 @@ turned_at(X, M, t) :- turned(X, t), holds(on(X,M),t).
 :- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.
 :- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.
 :- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2, moved(X2,T).
-:- turned(X1, T1), turned(X2, T1), X1 != X2, moved(X2,T).
 holds(on(X,Y),t) :- move(X,Y,t).
 holds(on(X,Z),t) :- holds(on(X,Z),t-1), not moved(X,t).
 holds(at(X,Y),t) :- turn(X,Y,t).
 holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).
-:- turned(X1, T1), turned(X2, T2), sum_valid_on(X1, Y, Z1), sum_valid_on(X2, Y, Z2), X1 != X2, T1 == T2,  Z = Z1+Z2, machine_threads(Y, Z4), Z > Z4.
 cost_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.
 sum_valid_on(X1, X2, Y, Z) :- cost_valid_on(X1, Y, Z1), cost_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.
 -sum_valid_on(X1, X2, Y):- task(X1), task(X2), machine_threads(Y, Z), not sum_valid_on(X1, X2, Y, Z).
@@ -50,8 +48,8 @@ valid_os(X, M, S, t) :- os_needed(X, S), turned_at(X, M, t), os_on(M, S), not -o
 :- os_needed(X, S), turned_at(X, M, t), not os_on(M, S), not -os_needed(X).
 #program check(t).
 :- query(t), goal(F), not holds(F,t).
-%#show move/3.
-%#show turned_at/3.
+#show move/3.
+#show turned_at/3.
 #program base.
 task(asp_py).
 task(days_in_month_c).
@@ -63,8 +61,6 @@ os(centOS_7_NE).
 os(debian).
 os(red_hat).
 os(no_os).
-
-
 cuda_on(mac_a).
 spacy_on(mac_a).
 psutil_on(mac_a).
@@ -81,22 +77,17 @@ cuda_not_on(X) :- location(X), not cuda_on(X).
 spacy_not_on(X) :- location(X), not spacy_on(X).
 psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
-
-os_needed(asp_py, ubuntu_DE).
-os_needed(days_in_month_c, ubuntu_DE).
+-os_needed(asp_py).
+-os_needed(days_in_month_c).
 -os_needed(project_asm).
 -os_needed(timer_f90).
-
-
-
 os_on(mac_a, ubuntu_DE).
-os_on(mac_b, ubuntu_DE).
-os_on(mac_c, ubuntu_DE).
-
+os_on(mac_b, centOS_7_DE).
+os_on(mac_c, centOS_7_NE).
 thread_cost(asp_py, 1).
 thread_cost(days_in_month_c, 1).
-thread_cost(project_asm, 3).
-thread_cost(timer_f90, 2).
+thread_cost(project_asm, 1).
+thread_cost(timer_f90, 1).
 machine_threads(mac_a, 4).
 machine_threads(mac_b, 4).
 machine_threads(mac_c, 4).

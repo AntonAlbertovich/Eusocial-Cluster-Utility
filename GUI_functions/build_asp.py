@@ -55,7 +55,7 @@ if __name__ == "__main__":
     asp_file.write(":- turned_at(X, M, t), spacy_not_on(M),  spacy_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), psutil_not_on(M),  psutil_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), clingo_not_on(M),  clingo_needed(X).\n")
-    asp_file.write(":- :- -turned_at(X1, X2,  M, t).\n")
+    asp_file.write(":- -turned_at(X1, X2,  M, t).\n")
     asp_file.write(":- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.\n")
     asp_file.write(":- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.\n")
     asp_file.write(":- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.\n")
@@ -69,8 +69,8 @@ if __name__ == "__main__":
     asp_file.write("holds(at(X,Y),t) :- turn(X,Y,t).\n")
     asp_file.write("holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).\n")
 
-
-    asp_file.write(":- turned(X1, T1), turned(X2, T2), sum_valid_on(X1, Y, Z1), sum_valid_on(X2, Y, Z2), X1 != X2, T1 == T2,  Z = Z1+Z2, machine_threads(Y, Z4), Z > Z4.\n")
+    asp_file.write("cost_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
+    asp_file.write("sum_valid_on(X1, X2, Y, Z) :- cost_valid_on(X1, Y, Z1), cost_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.\n")
     asp_file.write("-sum_valid_on(X1, X2, Y):- task(X1), task(X2), machine_threads(Y, Z), not sum_valid_on(X1, X2, Y, Z).\n")
     asp_file.write("-turned_at(X1, X2,  M, t) :- turned(X1, t), holds(on(X1,M),t), holds(on(X2,M),t), turned(X2, t), X1 != X2, -sum_valid_on(X1, X2, M, Z).\n")
     asp_file.write("valid_on(X, Y) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
