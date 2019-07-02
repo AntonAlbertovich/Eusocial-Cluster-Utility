@@ -8,14 +8,14 @@ if __name__ == "__main__":
     all_jobs= list(pickle.load(input_file))
     input_file.close()
 
-    asp_file = open("asp.lp", 'w')
+    asp_file = open("GUI_functions/asp.lp", 'w')
 
     asp_file.write("#include <incmode>. \n")
 
     asp_file.write("#program base. \n")
     asp_file.write("% Define\n")
     asp_file.write("status(-done).\n")
-    asp_file.write("tatus(done).\n")
+    asp_file.write("status(done).\n")
     asp_file.write("location(home).\n")
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         mac = all_macs[i][0]
         mac.replace(" ", "")
         mac.lower()
+        asp_file.write("connection(home, "+mac+").\n")
         for j in range(len(all_macs[i][2])):
             mac1 = all_macs[i][2][j]
             mac1.replace(" ", "")
@@ -38,12 +39,11 @@ if __name__ == "__main__":
 
     asp_file.write("#program step(t).\n")
     asp_file.write("{ move(X,Y,t) : task(X), location(Y)} :- holds(on(X,M),t-1), connection(M, Y).\n")
-    asp_file.write("0{ turn(X,Y,t)}1 :- status(Y), task(X), holds(on(X,Z),t), valid_on(X, Z), valid_os(X, Z).\n")
+    asp_file.write("0{ turn(X,Y,t)}1 :- status(Y), task(X), holds(on(X,Z),t), valid_on(X, Z).\n")
 
     asp_file.write(":- move(X,Y,t), holds(on(X,Y1),t-1), Y == home.\n")
 
     asp_file.write(":- turn(X,Y,t), holds(at(X,done),t-1).\n")
-    asp_file.write(":- turn(X,Y,t), holds(on(X,M),t), os_needed(X,Z1), os_on(M,Z2), Z1 != Z2.\n")
     asp_file.write(":- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t-1).\n")
 
     asp_file.write("moved(X,t) :- move(X,Y,t).\n")
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     asp_file.write(":- turned_at(X, M, t), spacy_not_on(M),  spacy_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), psutil_not_on(M),  psutil_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), clingo_not_on(M),  clingo_needed(X).\n")
-
+    asp_file.write(":- -turned_at(X1, X2,  M, t).\n")
     asp_file.write(":- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.\n")
     asp_file.write(":- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.\n")
     asp_file.write(":- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.\n")
@@ -69,14 +69,14 @@ if __name__ == "__main__":
     asp_file.write("holds(at(X,Y),t) :- turn(X,Y,t).\n")
     asp_file.write("holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).\n")
 
-
-    asp_file.write(":- turned(X1, T1), turned(X2, T2), sum_valid_on(X1, Y, Z1), sum_valid_on(X2, Y, Z2), X1 != X2, T1 == T2,  Z = Z1+Z2, machine_threads(Y, Z4), Z > Z4.\n")
-
-    asp_file.write("sum_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
-    asp_file.write("sum_valid_on(X1, X2, Y, Z) :- sum_valid_on(X1, Y, Z1), sum_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.\n")
-
+    asp_file.write("cost_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
+    asp_file.write("sum_valid_on(X1, X2, Y, Z) :- cost_valid_on(X1, Y, Z1), cost_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.\n")
+    asp_file.write("-sum_valid_on(X1, X2, Y):- task(X1), task(X2), machine_threads(Y, Z), not sum_valid_on(X1, X2, Y, Z).\n")
+    asp_file.write("-turned_at(X1, X2,  M, t) :- turned(X1, t), holds(on(X1,M),t), holds(on(X2,M),t), turned(X2, t), X1 != X2, -sum_valid_on(X1, X2, M, Z).\n")
     asp_file.write("valid_on(X, Y) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
-    asp_file.write("valid_os(X, Y) :- os_needed(X, Z1), os_on(Y, Z2), Z1 == Z2.\n")
+    asp_file.write("valid_os(X, M, S, t) :- os_needed(X, S), turned_at(X, M, t), os_on(M, S), not -os_needed(X).\n")
+    asp_file.write(":- os_needed(X, S), turned_at(X, M, t), not os_on(M, S), not -os_needed(X).\n")
+
 
     asp_file.write("#program check(t).\n")
     asp_file.write(":- query(t), goal(F), not holds(F,t).\n")
@@ -153,7 +153,7 @@ if __name__ == "__main__":
         elif all_jobs[i][1][1] == "Unlisted Red Hat based OS":
             asp_file.write("os_needed("+job+", red_hat).\n")
         elif all_jobs[i][1][1] == "N/A":
-            asp_file.write("os_needed("+job+", no_os).\n")
+            asp_file.write("-os_needed("+job+").\n")
     
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         mac.replace(" ", "")
         mac.lower()
         thread = str(all_macs[i][6])
-        asp_file.write("thread_cost("+mac+", "+thread+").\n")
+        asp_file.write("machine_threads("+mac+", "+thread+").\n")
 
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]

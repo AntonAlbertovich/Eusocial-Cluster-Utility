@@ -33,7 +33,7 @@ def go_dw():
 
 
 def finish():
-    all_turns[0] = turn_title
+    all_turns[0] = str(len(all_turns[1]))
     output_file= open("GUI_functions/update.bin", "wb")
     pickle.dump(all_turns, output_file)
     output_file.close()
@@ -66,11 +66,12 @@ canvas2 = Canvas(top, width = 325, height = 300, bg = "black", highlightthicknes
 canvas2.create_image(2,2, anchor = NW, image=img2)
 UP = tkinter.Button(top, text ="Next Turn", font = fnt, command = go_up, width = 20)
 DW = tkinter.Button(top, text ="Last Turn", font = fnt, command = go_dw, width = 20)
-
+EN = tkinter.Button(top, text ="Exit", font = fnt, command = finish, width = 20)
 
 
 
 canvas1.grid(row= 0, column=0)
+canvas2.grid(row= 0, column=1 )
 tkinter.Label(top, text="Turn "+turn_title +" Dependency Moves", relief="solid", width=60).grid(row=1, column=0)
 tkinter.Label(top, text="Turn "+turn_title +" Program Executions", relief="solid", width=60).grid(row=1, column=1)
 place = 0
@@ -96,6 +97,7 @@ for i in range(len(all_turns[1])):
 
 UP.grid(row = len(all_turns[1]) +3, column = 1 ) 
 DW.grid(row = len(all_turns[1]) +3, column = 0 ) 
-canvas2.grid(row= 0, column=1 )
+EN.grid(row = len(all_turns[1]) +4, column = 0 ) 
+
 top.mainloop()
 

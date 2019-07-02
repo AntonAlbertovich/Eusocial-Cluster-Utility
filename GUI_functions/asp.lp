@@ -7,6 +7,8 @@ location(home).
 location(mac_a).
 location(mac_b).
 location(mac_c).
+location(mac_d).
+location(mac_e).
 connection(home, mac_a).
 connection(mac_a, mac_b).
 connection(mac_a, mac_c).
@@ -16,6 +18,8 @@ connection(mac_b, mac_c).
 connection(home, mac_c).
 connection(mac_c, mac_a).
 connection(mac_c, mac_b).
+connection(home, mac_d).
+connection(home, mac_e).
 holds(F,0) :- init(F).
 #program step(t).
 { move(X,Y,t) : task(X), location(Y)} :- holds(on(X,M),t-1), connection(M, Y).
@@ -51,10 +55,15 @@ valid_os(X, M, S, t) :- os_needed(X, S), turned_at(X, M, t), os_on(M, S), not -o
 #show move/3.
 #show turned_at/3.
 #program base.
-task(asp_py).
-task(days_in_month_c).
-task(project_asm).
-task(timer_f90).
+task(prog_py_1_py).
+task(prog_py_2_py).
+task(prog_f90_1_f90).
+task(prog_f90_2_f90).
+task(prog_cpp_1_cpp).
+task(prog_asm_1_asm).
+task(prog_asm_2_asm).
+task(prog_py_3_py).
+task(prog_cpp_2_cpp).
 os(ubuntu_DE).
 os(centOS_7_DE).
 os(centOS_7_NE).
@@ -77,29 +86,58 @@ cuda_not_on(X) :- location(X), not cuda_on(X).
 spacy_not_on(X) :- location(X), not spacy_on(X).
 psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
--os_needed(asp_py).
--os_needed(days_in_month_c).
--os_needed(project_asm).
--os_needed(timer_f90).
+-os_needed(prog_py_1_py).
+-os_needed(prog_py_2_py).
+-os_needed(prog_f90_1_f90).
+-os_needed(prog_f90_2_f90).
+-os_needed(prog_cpp_1_cpp).
+-os_needed(prog_asm_1_asm).
+-os_needed(prog_asm_2_asm).
+-os_needed(prog_py_3_py).
+-os_needed(prog_cpp_2_cpp).
 os_on(mac_a, ubuntu_DE).
 os_on(mac_b, centOS_7_DE).
 os_on(mac_c, centOS_7_NE).
-thread_cost(asp_py, 1).
-thread_cost(days_in_month_c, 1).
-thread_cost(project_asm, 1).
-thread_cost(timer_f90, 1).
-machine_threads(mac_a, 4).
+os_on(mac_d, ubuntu_DE).
+os_on(mac_e, ubuntu_DE).
+thread_cost(prog_py_1_py, 1).
+thread_cost(prog_py_2_py, 1).
+thread_cost(prog_f90_1_f90, 1).
+thread_cost(prog_f90_2_f90, 1).
+thread_cost(prog_cpp_1_cpp, 1).
+thread_cost(prog_asm_1_asm, 1).
+thread_cost(prog_asm_2_asm, 1).
+thread_cost(prog_py_3_py, 1).
+thread_cost(prog_cpp_2_cpp, 1).
+machine_threads(mac_a, 8).
 machine_threads(mac_b, 4).
 machine_threads(mac_c, 4).
-init(on(asp_py, home)).
-init(at(asp_py, -done)).
-init(on(days_in_month_c, home)).
-init(at(days_in_month_c, -done)).
-init(on(project_asm, home)).
-init(at(project_asm, -done)).
-init(on(timer_f90, home)).
-init(at(timer_f90, -done)).
-goal(at(asp_py, done)).
-goal(at(days_in_month_c, done)).
-goal(at(project_asm, done)).
-goal(at(timer_f90, done)).
+machine_threads(mac_d, 4).
+machine_threads(mac_e, 4).
+init(on(prog_py_1_py, home)).
+init(at(prog_py_1_py, -done)).
+init(on(prog_py_2_py, home)).
+init(at(prog_py_2_py, -done)).
+init(on(prog_f90_1_f90, home)).
+init(at(prog_f90_1_f90, -done)).
+init(on(prog_f90_2_f90, home)).
+init(at(prog_f90_2_f90, -done)).
+init(on(prog_cpp_1_cpp, home)).
+init(at(prog_cpp_1_cpp, -done)).
+init(on(prog_asm_1_asm, home)).
+init(at(prog_asm_1_asm, -done)).
+init(on(prog_asm_2_asm, home)).
+init(at(prog_asm_2_asm, -done)).
+init(on(prog_py_3_py, home)).
+init(at(prog_py_3_py, -done)).
+init(on(prog_cpp_2_cpp, home)).
+init(at(prog_cpp_2_cpp, -done)).
+goal(at(prog_py_1_py, done)).
+goal(at(prog_py_2_py, done)).
+goal(at(prog_f90_1_f90, done)).
+goal(at(prog_f90_2_f90, done)).
+goal(at(prog_cpp_1_cpp, done)).
+goal(at(prog_asm_1_asm, done)).
+goal(at(prog_asm_2_asm, done)).
+goal(at(prog_py_3_py, done)).
+goal(at(prog_cpp_2_cpp, done)).
