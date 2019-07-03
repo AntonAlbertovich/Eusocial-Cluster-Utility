@@ -50,11 +50,15 @@ if __name__ == "__main__":
     asp_file.write("turned(X,t) :- turn(X, Y, t).\n")
 
     asp_file.write("turned_at(X, M, t) :- turned(X, t), holds(on(X,M),t).\n")
-    asp_file.write("turned_with(X, M, C, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C).\n")
-    asp_file.write(":- turned_with(X1, M, C1, t), turned_with(X2, M, C2, t), X1 != X2, C0 = C1 + C2, machine_threads(C, M), C0 > C.\n")
-    asp_file.write(":- turned_with(X1, M, C1, t), turned_with(X2, M, C2, t), turned_with(X3, M, C3, t), X1 != X2, X1 != X3, X2 != X3, C0 = C1 + C2 + C3, machine_threads(C, M), C0 > C. \n")
-    asp_file.write(":- turned_with(X1, M, C1, t), turned_with(X2, M, C2, t), turned_with(X3, M, C3, t), turned_with(X4, M, C4, t), X1 != X2,  X1 != X3, X1 != X4,  X2 != X3, X2 != X4, X3 != X4, C0 = C1 + C2 + C3 +  C4, machine_threads(C, M), C0 > C.\n")
-    asp_file.write(":- turned_with(X1, M, C1, t), turned_with(X2, M, C2, t), turned_with(X3, M, C3, t), turned_with(X4, M, C4, t), turned_with(X5, M, C5, t), X1 != X2,  X1 != X3, X1 != X4, X1 != X5, X2 != X3, X2 != X4, X2 != X5, X3 != X4, X3 != X5, X4 != X5.\n")
+    
+    asp_file.write("turned_with_2(M, X, X1, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned(X1,t), holds(on(X1,M),t), thread_cost(X1, C1), X != X1, Z = C + C1.\n")
+    asp_file.write("turned_with_3(M, X, X1, X2, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_2(M, X1, X2, C1, t), X != X1, X != X2, Z = C + C1.\n")
+
+    asp_file.write(":- turned_with_2(M, X, X1, Z, t), machine_threads(M, C), Z > C.\n")
+    asp_file.write(":- turned_with_3(M, X, X1, X2, Z, t), machine_threads(M, C), Z > C.\n")
+    asp_file.write(":- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_3(M, X1, X2, X3, C1, t), X != X1, X != X2, X != X3.\n")
+
+
     asp_file.write(":- turned_at(X, M, t), cuda_not_on(M),  cuda_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), spacy_not_on(M),  spacy_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), psutil_not_on(M),  psutil_needed(X).\n")

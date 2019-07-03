@@ -11,6 +11,8 @@ input_file = open("GUI_functions/update.bin", "rb")
 all_turns = list(pickle.load(input_file))
 input_file.close()
 turn = int(all_turns[0])
+print(all_turns)
+#last_turn = str(all_turns[2])
 turn_title = str(turn + 1)
 
 def go_up():
@@ -19,7 +21,6 @@ def go_up():
     pickle.dump(all_turns, output_file)
     output_file.close()
     top.destroy()
-    os.system("python3 GUI_functions/view_asp.y ")
 
 def go_dw():
     if turn > 0:
@@ -29,7 +30,6 @@ def go_dw():
         pickle.dump(all_turns, output_file)
         output_file.close()
         top.destroy()
-        os.system("python3 GUI_functions/view_asp.y ")
 
 
 def finish():
@@ -38,7 +38,6 @@ def finish():
     pickle.dump(all_turns, output_file)
     output_file.close()
     top.destroy()
-    os.system("python3 GUI_functions/view_asp.y ")
 
 
         
@@ -50,7 +49,14 @@ nodes = 0
 tempe = 0
 stemp = ""
 top = tkinter.Tk()
-top.title("Turn " + turn_title)
+
+last = 0
+for i in range(len(all_turns[1])):
+    this_turn = all_turns[1][i].split(",")
+    this_turn[0] = this_turn[0].split("(")
+    last = this_turn[2].replace(")", "")
+
+top.title("Turn " + turn_title + " of " + last)
 top.configure(bg = "black")
 # Code to add widgets will go here...
 var = StringVar()
