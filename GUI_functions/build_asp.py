@@ -53,23 +53,20 @@ if __name__ == "__main__":
     
     asp_file.write("turned_with_2(M, X, X1, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned(X1,t), holds(on(X1,M),t), thread_cost(X1, C1), X != X1, Z = C + C1.\n")
     asp_file.write("turned_with_3(M, X, X1, X2, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_2(M, X1, X2, C1, t), X != X1, X != X2, Z = C + C1.\n")
+    asp_file.write("turned_with_4(M, X, X1, X2, X3, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_3(M, X1, X2, X3, C1, t), X != X1, X != X2, X != X3, Z = C + C1.\n")
 
     asp_file.write(":- turned_with_2(M, X, X1, Z, t), machine_threads(M, C), Z > C.\n")
     asp_file.write(":- turned_with_3(M, X, X1, X2, Z, t), machine_threads(M, C), Z > C.\n")
-    asp_file.write(":- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_3(M, X1, X2, X3, C1, t), X != X1, X != X2, X != X3.\n")
-
+    asp_file.write(":- turned_with_4(M, X, X1, X2, X3, Z, t), machine_threads(M, C), Z > C.\n")
+    asp_file.write(":- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_4(M, X1, X2, X3, X4, C1, t), X != X1, X != X2, X != X3, X != X4.\n")
 
     asp_file.write(":- turned_at(X, M, t), cuda_not_on(M),  cuda_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), spacy_not_on(M),  spacy_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), psutil_not_on(M),  psutil_needed(X).\n")
     asp_file.write(":- turned_at(X, M, t), clingo_not_on(M),  clingo_needed(X).\n")
-    asp_file.write(":- -turned_at(X1, X2,  M, t).\n")
     asp_file.write(":- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.\n")
     asp_file.write(":- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.\n")
-    asp_file.write(":- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.\n")
-
     asp_file.write(":- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2, moved(X2,T).\n")
-
     asp_file.write("holds(on(X,Y),t) :- move(X,Y,t).\n")
     asp_file.write("holds(on(X,Z),t) :- holds(on(X,Z),t-1), not moved(X,t).\n")
 
@@ -77,12 +74,7 @@ if __name__ == "__main__":
     asp_file.write("holds(at(X,Y),t) :- turn(X,Y,t).\n")
     asp_file.write("holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).\n")
 
-    asp_file.write("cost_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
-    asp_file.write("sum_valid_on(X1, X2, Y, Z) :- cost_valid_on(X1, Y, Z1), cost_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.\n")
-    asp_file.write("-sum_valid_on(X1, X2, Y):- task(X1), task(X2), machine_threads(Y, Z), not sum_valid_on(X1, X2, Y, Z).\n")
-    asp_file.write("-turned_at(X1, X2,  M, t) :- turned(X1, t), holds(on(X1,M),t), holds(on(X2,M),t), turned(X2, t), X1 != X2, -sum_valid_on(X1, X2, M, Z).\n")
     asp_file.write("valid_on(X, Y) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.\n")
-    asp_file.write("valid_os(X, M, S, t) :- os_needed(X, S), turned_at(X, M, t), os_on(M, S), not -os_needed(X).\n")
     asp_file.write(":- os_needed(X, S), turned_at(X, M, t), not os_on(M, S), not -os_needed(X).\n")
 
 

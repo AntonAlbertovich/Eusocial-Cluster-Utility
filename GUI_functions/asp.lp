@@ -34,28 +34,23 @@ turned(X,t) :- turn(X, Y, t).
 turned_at(X, M, t) :- turned(X, t), holds(on(X,M),t).
 turned_with_2(M, X, X1, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned(X1,t), holds(on(X1,M),t), thread_cost(X1, C1), X != X1, Z = C + C1.
 turned_with_3(M, X, X1, X2, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_2(M, X1, X2, C1, t), X != X1, X != X2, Z = C + C1.
+turned_with_4(M, X, X1, X2, X3, Z, t) :- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_3(M, X1, X2, X3, C1, t), X != X1, X != X2, X != X3, Z = C + C1.
 :- turned_with_2(M, X, X1, Z, t), machine_threads(M, C), Z > C.
 :- turned_with_3(M, X, X1, X2, Z, t), machine_threads(M, C), Z > C.
-:- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_3(M, X1, X2, X3, C1, t), X != X1, X != X2, X != X3.
+:- turned_with_4(M, X, X1, X2, X3, Z, t), machine_threads(M, C), Z > C.
+:- turned(X,t), holds(on(X,M),t), thread_cost(X, C), turned_with_4(M, X1, X2, X3, X4, C1, t), X != X1, X != X2, X != X3, X != X4.
 :- turned_at(X, M, t), cuda_not_on(M),  cuda_needed(X).
 :- turned_at(X, M, t), spacy_not_on(M),  spacy_needed(X).
 :- turned_at(X, M, t), psutil_not_on(M),  psutil_needed(X).
 :- turned_at(X, M, t), clingo_not_on(M),  clingo_needed(X).
-:- -turned_at(X1, X2,  M, t).
 :- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.
 :- move(X, Z1, Y), move(X, Z2, Y), Z1 != Z2.
-:- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.
 :- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2, moved(X2,T).
 holds(on(X,Y),t) :- move(X,Y,t).
 holds(on(X,Z),t) :- holds(on(X,Z),t-1), not moved(X,t).
 holds(at(X,Y),t) :- turn(X,Y,t).
 holds(at(X,Z),t) :- holds(at(X,Z),t-1), not turned(X,t).
-cost_valid_on(X, Y, Z1) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.
-sum_valid_on(X1, X2, Y, Z) :- cost_valid_on(X1, Y, Z1), cost_valid_on(X2, Y, Z2), X1 != X2,  Z = Z1+Z2, machine_threads(Y, Z4), Z <= Z4.
--sum_valid_on(X1, X2, Y):- task(X1), task(X2), machine_threads(Y, Z), not sum_valid_on(X1, X2, Y, Z).
--turned_at(X1, X2,  M, t) :- turned(X1, t), holds(on(X1,M),t), holds(on(X2,M),t), turned(X2, t), X1 != X2, -sum_valid_on(X1, X2, M, Z).
 valid_on(X, Y) :- thread_cost(X, Z1), machine_threads(Y, Z2), Z1 <= Z2.
-valid_os(X, M, S, t) :- os_needed(X, S), turned_at(X, M, t), os_on(M, S), not -os_needed(X).
 :- os_needed(X, S), turned_at(X, M, t), not os_on(M, S), not -os_needed(X).
 #program check(t).
 :- query(t), goal(F), not holds(F,t).
@@ -93,7 +88,7 @@ spacy_not_on(X) :- location(X), not spacy_on(X).
 psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
 -os_needed(nrpcpa_cpp).
--os_needed(wikipedia_gpu_py).
+os_needed(wikipedia_gpu_py, ubuntu_DE).
 os_needed(spacy_test_py, ubuntu_DE).
 -os_needed(psutil_example_py).
 -os_needed(wikipedia_cpu_py).

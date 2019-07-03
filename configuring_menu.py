@@ -1,3 +1,6 @@
+# This is the main interface menu for the Schedule Builder
+# Writen by Anton A Rakos in summer of 2019 for CS 4398, Theory and Practice of Logic Programming at Texas Tech University
+
 import tkinter as tk
 import tkinter as ttk
 from tkinter import *
@@ -8,8 +11,9 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 
-Schedule = []
+#These are global variables that may be used throughout the schedule building process.
 
+Schedule = []
 Machines = []
 
 Machine_rules=[]
@@ -66,6 +70,8 @@ for row in range(len(programs)):
 
     Tasks.append(Job)
 
+#Original builder for the .bin file which stores detials pertaining to the tasks a cluster may execute.
+
 #print(Tasks)
 #output_file= open("GUI_functions/Tasks_details.bin", "wb")
 #pickle.dump(Tasks, output_file)
@@ -73,51 +79,62 @@ for row in range(len(programs)):
 
 
 class ScrollFrame(tk.Frame):
+    # This class allows for a frame which can be scrolled vertically.
+    # This is very need as a given cluster may contain many machines or be tasked with many jobs.
     def __init__(self, parent):
         super().__init__(parent) # create a frame (self)
 
     
-        self.canvas = tk.Canvas(self, width = 700, height = 800, borderwidth=0, background="black")          #place canvas on self
-        self.viewPort = tk.Frame(self.canvas, width = 325, height = 300, background="black")                    #place a frame on the canvas, this frame will hold the child widgets 
-        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
-        self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
+        self.canvas = tk.Canvas(self, width = 700, height = 800, borderwidth=0, background="black")         
+        self.viewPort = tk.Frame(self.canvas, width = 325, height = 300, background="black")                     
+        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)  
+        self.canvas.configure(yscrollcommand=self.vsb.set)                   
 
-        self.vsb.pack(side="right", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="left", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            #add view port frame to canvas
+        self.vsb.pack(side="right", fill="y")                                       
+        self.canvas.pack(side="left", fill="both", expand=True)                     
+        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            
                                   tags="self.viewPort")
 
-        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       #bind an event whenever the size of the viewPort frame changes.
+        self.viewPort.bind("<Configure>", self.onFrameConfigure)                      
 
     def onFrameConfigure(self, event):                                              
-        '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 
 
 
-class Example(tk.Frame):
-    
+class menu_frame(tk.Frame):
+    #This class is the main frame for this part of the menu        
     def __init__(self, root):
-
+        # This initializes the menu
         tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
         mypath = os.path.dirname(os.path.realpath(__file__))
         mypath = mypath+"/Tasks"
+        # Tasks is where all the programs which are going to be executed on the various nodes of the cluster.  These are not programs which aid in the fucntionality of the cluster. 
+        # Future releases will have another directory called "/Data" which will contain non-executable dependencies which will contain data that needs to exit only on a machine which is running a given program. 
+        # As of 3/07/2019 this feature has not been yet built. 
         possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         chosen_machines = []
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
         machines = pickle.load(input_file)
         input_file.close()
 
-        #machines = [["Machine 1", "192.168.1.00" ], ["Machine 2", "192.168.1.01" ], ["Machine 3", "192.168.1.02" ],["Machine 4", "192.168.1.03" ]]
 
         for row in range(len(machines)):
+            # This loop builds the menu for the configuration of each machine in the cluster.
             a = row
             tk.Checkbutton(self.scrollFrame.viewPort, text= "Configure Machine: " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=30).grid(row=row + 7, column=0)
-                    
-        tk.Label(self.scrollFrame.viewPort, text="Program Dependency Options", width=40).grid(row= 0, column=0)
-        tk.Label(self.scrollFrame.viewPort, text="Reset Options").grid(row= 0, column=2)
         
-        tk.Label(self.scrollFrame.viewPort, text="Program Thead Options", width=40).grid(row=6, column=0)
+
+        tk.Label(self.scrollFrame.viewPort, text="Program Dependency Options", width=40).grid(row= 0, column=0)
+        # Program Dependency Options is the section of the menu which allows for each program's needs to be enetered into the data structure which will later build the ASP file for the schedule. 
+        #Programs are organized by file type, at this time ECU supports the organization of Python, Fortran, C, C++, and Assembly files.
+        
+
+        tk.Label(self.scrollFrame.viewPort, text="Reset Options").grid(row= 0, column=2)
+        # Reset options is the section of the menu which allows for the data structures pertaining to machines and tasks to be cleared.
+        tk.Label(self.scrollFrame.viewPort, text="Machine Options", width=40).grid(row=6, column=0)
+        # Machine options is the section of the menu which allows for the individual configuration of each machine in the cluster, this section is built with the loop above.
+
         tk.Label(self.scrollFrame.viewPort, text="Number of Theads Needed for processing", width=40).grid(row=8+len(machines), column=0)
 
         tk.Button(self.scrollFrame.viewPort, text="Python program dependency settings", command=lambda x=a: self.py_settings(".py"), width=35, relief="solid").grid(row= 1, column=0)
@@ -141,6 +158,8 @@ class Example(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.view_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 5, column=2)
 
         self.scrollFrame.pack(side="top", fill="both", expand=True)
+
+        # These loops help organized the programs for the /Tasks directory, they are organized by file type. 
 
         for i in possible_programs:
             if ".py" in i:
@@ -180,6 +199,9 @@ class Example(tk.Frame):
         
         
         tk.Button(self.scrollFrame.viewPort, text="Update Program Thread Costs", command=lambda x=a: self.update_cost(thread_cost), width=25).grid(row=row+10+len(machines), column=0)
+        # This button must be pused inorder to commit the updated thread costs displayed in the interface.
+        # A current issue is that the tasks displayed may not currently reflect the thread costs in the task_details data structure.
+
         tk.Label(self.scrollFrame.viewPort, text="Schedule Options", width=31 ).grid(row= row+11+len(machines), column=0)
         tk.Button(self.scrollFrame.viewPort, text="Build Schedule [15s Attempt]", width=28, command=lambda x=a: self.build_schedule_15(machines)).grid(row=row+12+len(machines), column=0)
         tk.Button(self.scrollFrame.viewPort, text="Build Schedule [60s Attempt]", width=28, command=lambda x=a: self.build_schedule_30(machines)).grid(row=row+13+len(machines), column=0)
@@ -189,6 +211,7 @@ class Example(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="Exit Schedule Builder", width=28, command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+17+len(machines), column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
     def add_remove(self, selected, chosen):
+        # If a machine's details are configured this function allows for those changes to be committed to the appropriate data structure. 
         viable_add = True
         for i in range(len(chosen)):
             if selected == chosen[i]:
@@ -197,33 +220,36 @@ class Example(tk.Frame):
                 break
         if (viable_add == True):
             output_file = open("GUI_functions/update.bin", "wb")
+            # Here update.bin contains the information which specifies which machine is to edited by machine_submenu.py
             machine_data = []
             machine_data.append(selected[0])
             machine_data.append(selected[1])
             pickle.dump(machine_data, output_file)
             output_file.close()
+            # machine_submenu.py is a script which edits the data structure pertaining to the machines in the cluster
             os.system("python3 GUI_functions/machine_submenu.py")
             chosen.append(selected)
             print(chosen)
     
     
     def py_settings(self, msg):
-        print(msg)
+        # This function opens the script pertaining to python dependencies. 
         os.system("python3 GUI_functions/select_py_GUI.py")
     def fr_settings(self, msg):
-        print(msg)
+        # This function opens the script pertaining to fortran dependencies. 
         os.system("python3 GUI_functions/select_f90_GUI.py")
     def cpp_settings(self, msg):
         os.system("python3 GUI_functions/select_cpp_GUI.py")
-        print(msg)
+        # This function opens the script pertaining to C++ dependencies. 
     def c_settings(self, msg):
         os.system("python3 GUI_functions/select_c_GUI.py")
-        print(msg)
+        # This function opens the script pertaining to C dependencies. 
     def asm_settings(self, msg):
         os.system("python3 GUI_functions/select_asm_GUI.py")
-        print(msg)
+        # This function opens the script pertaining to assembly dependencies. 
     
     def click_change_up(self, costs, a, machines):
+        #This increments the thread cost of a particular task.
         cost_value = int(costs[a][1])
         cost_value = cost_value + 1
         costs[a][1] = str(cost_value) 
@@ -231,6 +257,7 @@ class Example(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="Decrease Cost", command=lambda x=a: self.click_change_down(costs, x, machines)).grid(row=a+9+len(machines), column=3)
     
     def click_change_down(self, costs, a, machines):
+        #This decrements the thread cost of a particular task.
         cost_value = int(costs[a][1])
         if(cost_value > 1):
             cost_value = cost_value - 1
@@ -240,38 +267,31 @@ class Example(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="Decrease Cost", state='disabled').grid(row=a+9+len(machines), column=3)
     
     def update_cost(self, msg):
-        print(msg)
+        # This will update the data structure pertaining to the thread cost of each task to the displayed costs for said task in the interface. 
         input_file = open("GUI_functions/Tasks_details.bin", "rb")
         all_tasks= list(pickle.load(input_file))
         input_file.close()
-        for j in range(len(all_tasks)):
-            print(all_tasks[j])
         for i in range(len(msg)):
             for j in range(len(all_tasks)):
                 if msg[i][0] == all_tasks[j][0]:
                     all_tasks[j][4] = msg[i][1]
                     break
-        for j in range(len(all_tasks)):
-            print(all_tasks[j])
         output_file = open("GUI_functions/Tasks_details.bin", "wb")
         pickle.dump(all_tasks, output_file)
         output_file.close()
 
 
-    def update_machines(self, msg):
-        print("ping")
-        print(msg)
-        for i in range(len(msg)):
-            print(msg[i])
 
 
     def printMsg_kill(self, msg):
-        print(msg)
-        for i in range(len(msg)):
-            print(msg[i])
+        # This exits the window.
+        
         root.quit()
         
     def reset_machines(self, msg):
+        # This will reset all the machines in the cluster to default settings, these include a core count of 4 and an OS of Ubuntu 18.04 [Desktop Edition].
+        # Default assumes that no toolkits are installed on any machines.
+        # Default assumes that no machine is networked to any other machine.
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
         all_tasks= list(pickle.load(input_file))
         input_file.close()
@@ -284,16 +304,21 @@ class Example(tk.Frame):
             all_tasks[i][7] = "Ubuntu 18.04 [Desktop Edition]"
         
         output_file = open("GUI_functions/Cluster_details.bin", "wb")
+        # This updates the data structure pertaining to the machines in the cluster.
+        # This will not completely reset the cluster, if there were initially n many machines prior to a reset then n many machines will remain after the reset, names and IPs will not be changeds. 
         pickle.dump(all_tasks, output_file)
         output_file.close()
 
     def reset_programs(self, machines, costs):
+        # This wil reset all the tasks in the cluster to default settings.
+        # Default assumes that a task is not dependent on an OS.
+        # Default assumes that multi-threading is not used by any task, thus that the tasks do not require more than one core.
         input_file= open("GUI_functions/Tasks_details.bin", "rb")
         all_tasks= list(pickle.load(input_file))
         input_file.close() 
         for i in range(len(all_tasks)):
             print(all_tasks[i])
-            all_tasks[i][1] = [0, "N/A"]
+            all_tasks[i][1] = [0, "N/A"] # No OS specified
             all_tasks[i][2] = []
             all_tasks[i][3] = []
             all_tasks[i][4] = 1
@@ -403,5 +428,5 @@ if __name__ == "__main__":
 
     root=tk.Tk()
     root.title('Schedule Builder')
-    Example(root).pack(side="top", fill="both", expand=True)
+    menu_frame(root).pack(side="top", fill="both", expand=True)
     root.mainloop()
