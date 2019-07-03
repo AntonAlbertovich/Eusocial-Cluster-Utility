@@ -10,6 +10,10 @@ location(mac_c).
 location(mac_d).
 location(mac_e).
 connection(home, mac_a).
+connection(mac_a, mac_b).
+connection(mac_a, mac_c).
+connection(mac_a, mac_d).
+connection(mac_a, mac_e).
 connection(home, mac_b).
 connection(mac_b, mac_a).
 connection(mac_b, mac_c).
@@ -74,6 +78,12 @@ os(centOS_7_NE).
 os(debian).
 os(red_hat).
 os(no_os).
+cuda_needed(spacy_test_py).
+spacy_needed(spacy_test_py).
+cuda_on(mac_a).
+spacy_on(mac_a).
+psutil_on(mac_a).
+clingo_on(mac_a).
 cuda_on(mac_b).
 spacy_on(mac_b).
 psutil_on(mac_b).
@@ -84,7 +94,7 @@ psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
 -os_needed(nrpcpa_cpp).
 -os_needed(wikipedia_gpu_py).
--os_needed(spacy_test_py).
+os_needed(spacy_test_py, ubuntu_DE).
 -os_needed(psutil_example_py).
 -os_needed(wikipedia_cpu_py).
 -os_needed(fibinachi_nasm64bit_asm).
@@ -107,7 +117,10 @@ thread_cost(wikipedia_pull_py, 1).
 thread_cost(days_in_month_c, 1).
 thread_cost(timer_f90, 1).
 thread_cost(project_asm, 1).
-machine_threads(mac_a, 4).
+depends_on(nrpcpa_cpp, project_asm).
+depends_on(nrpcpa_cpp, fibinachi_nasm64bit_asm).
+depends_on(spacy_test_py, wikipedia_pull_py).
+machine_threads(mac_a, 8).
 machine_threads(mac_b, 4).
 machine_threads(mac_c, 4).
 machine_threads(mac_d, 4).

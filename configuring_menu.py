@@ -66,10 +66,10 @@ for row in range(len(programs)):
 
     Tasks.append(Job)
 
-print(Tasks)
-output_file= open("GUI_functions/Tasks_details.bin", "wb")
-pickle.dump(Tasks, output_file)
-output_file.close()
+#print(Tasks)
+#output_file= open("GUI_functions/Tasks_details.bin", "wb")
+#pickle.dump(Tasks, output_file)
+#output_file.close()
 
 
 class ScrollFrame(tk.Frame):
