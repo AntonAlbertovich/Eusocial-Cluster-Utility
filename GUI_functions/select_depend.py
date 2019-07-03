@@ -166,7 +166,7 @@ class Example(tk.Frame):
 
     def save_prg(self, msg):
         msg_out = []
-        for i in range(len(msg):
+        for i in range(len(msg)):
                 msg_out.append(msg[i][0])
         all_tasks[task_loc][2] = msg_out
 
