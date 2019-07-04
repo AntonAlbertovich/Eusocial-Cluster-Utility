@@ -5,15 +5,16 @@ from os import walk
 import os
 from os import listdir
 from os.path import isfile, join
-import pickle
-
+# ************************
+# Scrollable Frame Class
+# ************************
 class ScrollFrame(tk.Frame):
     def __init__(self, parent):
-        super().__init__(parent) 
+        super().__init__(parent) # create a frame (self)
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="black")
-        self.viewPort = tk.Frame(self.canvas, background="black")       
+        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")          #place canvas on self
+        self.viewPort = tk.Frame(self.canvas, background="#ffffff")                    #place a frame on the canvas, this frame will hold the child widgets 
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -29,63 +30,50 @@ class ScrollFrame(tk.Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
 
 
+# ********************************
+# Example usage of the above class
+# ********************************
 
-class Example_net(tk.Frame):
+class Example(tk.Frame):
     
-    def __init__(self, root_net):
+    def __init__(self, root):
 
-        tk.Frame.__init__(self, root_net)
+        tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
 
         mypath = os.path.dirname(os.path.realpath(__file__))
-        mypath.replace("/GUI_functions","/Tasks")
 
-        possible_programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        chosen_machines = [] 
-        programs = []
-        input_file= open("GUI_functions/Cluster_details.bin", "rb")
-        machines = pickle.load(input_file)
-        input_file.close()
-        
-        input_file= open("GUI_functions/update.bin", "rb")
-        this_machine = pickle.load(input_file)
-        input_file.close()
-        
+        programs = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+        chosen_programs = [] 
 
-        for i in range(len(machines)):
-            if str(machines[i][1]) == str(this_machine[1]):
-                machines.remove(machines[i])
-                break
-
-        for row in range(len(machines)):
+        for row in range(len(programs)):
             a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= str(this_machine[0]) + " Is Connected to " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=40).grid(row=row, column=0)
+            tk.Checkbutton(self.scrollFrame.viewPort, text=programs[row], width=25, relief="solid",command=lambda x=a:
+                    self.add_remove(str(programs[x]), chosen_programs)).grid(row=row, column=0)
+                    
 
-
-        tk.Button(self.scrollFrame.viewPort, text="Done", command=lambda x=a: self.printMsg_kill(chosen_machines)).grid(row=row +1, column=0)
+        tk.Button(self.scrollFrame.viewPort, text=t, command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row +1, column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
     
     def add_remove(self, msg, chosen_programs):
         viable_add = True
         for i in range(len(chosen_programs)):
-            if msg[1] == chosen_programs[i]:
+            if msg == chosen_programs[i]:
                 chosen_programs.remove(chosen_programs[i])
                 viable_add = False
                 break
         if (viable_add == True):
-            chosen_programs.append(msg[0])
+            chosen_programs.append(msg)
     
     def printMsg_kill(self, msg):
-        if msg != []:
-            output_file= open("GUI_functions/update.bin", "wb")
-            pickle.dump(msg, output_file)
-            output_file.close()
-        
-        root_net.quit()
+        print(msg)
+        for i in range(len(msg)):
+            print(msg[i])
+        root.quit()
     
 if __name__ == "__main__":
 
-    root_net=tk.Tk()
-    root_net.title('Select program dependencies')
-    Example_net(root_net).pack(side="top", fill="both", expand=True)
-    root_net.mainloop()
+    root=tk.Tk()
+    root.title('Select program dependencies')
+    Example(root).pack(side="top", fill="both", expand=True)
+    root.mainloop()

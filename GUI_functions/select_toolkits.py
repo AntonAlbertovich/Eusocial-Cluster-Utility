@@ -12,8 +12,8 @@ class ScrollFrame(tk.Frame):
         super().__init__(parent) 
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
-        self.viewPort = tk.Frame(self.canvas, background="#ffffff")       
+        self.canvas = tk.Canvas(self, borderwidth=0, background="black")
+        self.viewPort = tk.Frame(self.canvas, background="black")       
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
 
@@ -43,7 +43,6 @@ class Example_net(tk.Frame):
         this_machine = pickle.load(input_file)
         input_file.close()
         
-        print(this_machine[1])
 
         for row in range(len(toolkits)):
             a = row
@@ -64,16 +63,16 @@ class Example_net(tk.Frame):
             chosen_toolkits.append(msg)
     
     def printMsg_kill(self, msg):
-        print(msg)
-        output_file= open("GUI_functions/update.bin", "wb")
-        pickle.dump(msg, output_file)
-        output_file.close()
+        if msg != []:
+            output_file= open("GUI_functions/update.bin", "wb")
+            pickle.dump(msg, output_file)
+            output_file.close()
         
         root_net.quit()
     
 if __name__ == "__main__":
 
     root_net=tk.Tk()
-    root_net.title('Select program dependencies')
+    root_net.title('Select Dependency Toolkits')
     Example_net(root_net).pack(side="top", fill="both", expand=True)
     root_net.mainloop()

@@ -206,7 +206,9 @@ def click_configure_networks():
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
         machines = pickle.load(input_file)
         input_file.close()
-        
+        print("------------------------------------------------")
+        print(machines)
+        print("------------------------------------------------")
         for i in range(len(machines)):
             if this_machine[1] == machines[i][1]:
                 machines[i][2] = this_update 
