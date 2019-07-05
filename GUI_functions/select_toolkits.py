@@ -8,6 +8,9 @@ from os.path import isfile, join
 import pickle
 
 class ScrollFrame(tk.Frame):
+    # This class allows for a frame which can be scrolled vertically.
+    # This is very need as a given cluster may contain many machines or be tasked with many jobs.
+
     def __init__(self, parent):
         super().__init__(parent) 
 
@@ -15,18 +18,14 @@ class ScrollFrame(tk.Frame):
         self.canvas = tk.Canvas(self, borderwidth=0, background="black")
         self.viewPort = tk.Frame(self.canvas, background="black")       
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
-        self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
-
-        self.vsb.pack(side="right", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="left", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            #add view port frame to canvas
-                                  tags="self.viewPort")
-
-        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       #bind an event whenever the size of the viewPort frame changes.
+        self.canvas.configure(yscrollcommand=self.vsb.set)
+        self.vsb.pack(side="right", fill="y")             
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",tags="self.viewPort")
+        self.viewPort.bind("<Configure>", self.onFrameConfigure)
 
     def onFrameConfigure(self, event):                                              
-        '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 
 
 
 
@@ -35,7 +34,7 @@ class Example_net(tk.Frame):
     def __init__(self, root_net):
 
         tk.Frame.__init__(self, root_net)
-        self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
+        self.scrollFrame = ScrollFrame(self) 
 
         toolkits = ["CUDA", "spaCy", "psutil", "clingo"]
         chosen_toolkits = []

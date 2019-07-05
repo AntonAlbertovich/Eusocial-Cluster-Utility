@@ -160,7 +160,6 @@ class menu_frame(tk.Frame):
         self.scrollFrame.pack(side="top", fill="both", expand=True)
 
         # These loops help organized the programs for the /Tasks directory, they are organized by file type. 
-
         for i in possible_programs:
             if ".py" in i:
                 programs.append(i)
@@ -327,22 +326,18 @@ class menu_frame(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="Decrease Cost", state='disabled').grid(row=i+9+len(machines), column=3)
 
     def view_machines(self, msg):
-        input_file= open("GUI_functions/Cluster_details.bin", "rb")
-        all_tasks= list(pickle.load(input_file))
-        input_file.close()
-        for i in range(len(all_tasks)):
-            print(all_tasks[i])
+        # This function simply runs a script which will show the contents of the Cluster_details data structure in a GUI.
         os.system("python3 GUI_functions/print_machines.py")
         
     def view_programs(self, machines, costs):
-        input_file= open("GUI_functions/Tasks_details.bin", "rb")
-        all_tasks= list(pickle.load(input_file))
-        input_file.close() 
-        for i in range(len(all_tasks)):
-            print(all_tasks[i])
+        # This function simply runs a script which will show the contents of the Tasks_details data structure in a GUI.
         os.system("python3 GUI_functions/print_programs.py")
 
     def build_schedule_15(self, machines):
+        # This function first runs the script which will build the ASP script, and then attempts to build the script with a 15 secound time limit. 
+        # If the ASP is not solved within the limited time then the program prints a lable to the GUI inidcating that the failure.
+        # If the ASP is solved then a success message is printed to the GUI and a button which allows for the ASP output to be viewed is enabled.
+        # This function will parse the output of asp.lp if the solver is successful.
         os.system("python3 GUI_functions/build_asp.py")
         output = str(subprocess.check_output("clingo --time-limit=15 GUI_functions/asp.lp", shell=True))
         out = output.split("\\n")
@@ -361,6 +356,10 @@ class menu_frame(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
 
     def build_schedule_60(self, machines):
+        # This function first runs the script which will build the ASP script, and then attempts to build the script with a 60 secound time limit. 
+        # If the ASP is not solved within the limited time then the program prints a lable to the GUI inidcating that the failure.
+        # If the ASP is solved then a success message is printed to the GUI and a button which allows for the ASP output to be viewed is enabled.
+        # This function will parse the output of asp.lp if the solver is successful.
         os.system("python3 GUI_functions/build_asp.py")
         output = str(subprocess.check_output("clingo --time-limit=60 GUI_functions/asp.lp", shell=True))
         out = output.split("\\n")
@@ -379,6 +378,10 @@ class menu_frame(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
     
     def build_schedule_300(self, machines):
+        # This function first runs the script which will build the ASP script, and then attempts to build the script with a 300 secound time limit. 
+        # If the ASP is not solved within the limited time then the program prints a lable to the GUI inidcating that the failure.
+        # If the ASP is solved then a success message is printed to the GUI and a button which allows for the ASP output to be viewed is enabled.
+        # This function will parse the output of asp.lp if the solver is successful.
         os.system("python3 GUI_functions/build_asp.py")
         output = str(subprocess.check_output("clingo --time-limit=300 GUI_functions/asp.lp", shell=True))
         out = output.split("\\n")
@@ -397,6 +400,7 @@ class menu_frame(tk.Frame):
             tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
     
     def view_schedule(self, solution):
+        # This function will call the view_asp.py script, a program which displays a task schedule in a GUI.
         output_file = open("GUI_functions/update.bin", "wb")
         final = 0
         for i in range(len(solution)):
@@ -425,7 +429,7 @@ class menu_frame(tk.Frame):
             
 
 if __name__ == "__main__":
-
+    # The main for the schedule builder GUI.
     root=tk.Tk()
     root.title('Schedule Builder')
     menu_frame(root).pack(side="top", fill="both", expand=True)
