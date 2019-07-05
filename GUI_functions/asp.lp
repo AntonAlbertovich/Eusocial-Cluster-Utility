@@ -15,6 +15,7 @@ location(mac_c).
 location(mac_d).
 location(mac_e).
 connection(home, mac_a).
+connection(mac_a, mac_b).
 connection(mac_a, mac_c).
 connection(mac_a, mac_d).
 connection(mac_a, mac_e).
