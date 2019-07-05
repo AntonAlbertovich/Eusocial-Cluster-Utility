@@ -6,6 +6,8 @@ import os
 from os import listdir
 from os.path import isfile, join
 import pickle
+# This script simply builds the sub-menu for the delaration of what machines a particular machine as network access to.
+# A scrollable window is generated
 
 class ScrollFrame(tk.Frame):
     def __init__(self, parent):
@@ -23,12 +25,11 @@ class ScrollFrame(tk.Frame):
         self.viewPort.bind("<Configure>", self.onFrameConfigure) 
 
     def onFrameConfigure(self, event):                                              
-        '''Reset the scroll region to encompass the inner frame'''
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
 
 
 
-class Example_net(tk.Frame):
+class menu_frame(tk.Frame):
     
     def __init__(self, root_net):
 
@@ -57,7 +58,7 @@ class Example_net(tk.Frame):
 
         for row in range(len(machines)):
             a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= str(this_machine[0]) + " Is Connected to " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=40).grid(row=row, column=0)
+            tk.Checkbutton(self.scrollFrame.viewPort, text= str(this_machine[0]) + " Has Access to " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=40).grid(row=row, column=0)
 
 
         tk.Button(self.scrollFrame.viewPort, text="Done", command=lambda x=a: self.printMsg_kill(chosen_machines)).grid(row=row +1, column=0)
@@ -84,6 +85,6 @@ class Example_net(tk.Frame):
 if __name__ == "__main__":
 
     root_net=tk.Tk()
-    root_net.title('Select program dependencies')
-    Example_net(root_net).pack(side="top", fill="both", expand=True)
+    root_net.title('Cluster Network')
+    menu_frame(root_net).pack(side="top", fill="both", expand=True)
     root_net.mainloop()

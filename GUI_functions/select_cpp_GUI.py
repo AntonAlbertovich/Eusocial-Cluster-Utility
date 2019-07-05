@@ -7,30 +7,32 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 
+# This script simply builds the sub-menu for all assembly programs.
+# A scrollable window is generated
+# When a program is selected then the universal depenecies sub-menu is open via select_depend.py
+# Once the edits have been made to the universal depenecies sub-menu the user may update the task detials data structure via clicking the button: "Save and Update Settings"
+
 class ScrollFrame(tk.Frame):
     def __init__(self, parent):
-        super().__init__(parent) # create a frame (self)
+        super().__init__(parent) 
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0, background="black")          #place canvas on self
-        self.viewPort = tk.Frame(self.canvas, background="black")                    #place a frame on the canvas, this frame will hold the child widgets 
-        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
-        self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
+        self.canvas = tk.Canvas(self, borderwidth=0, background="black")
+        self.viewPort = tk.Frame(self.canvas, background="black")
+        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.vsb.set)      
 
-        self.vsb.pack(side="right", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="left", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            #add view port frame to canvas
-                                  tags="self.viewPort")
+        self.vsb.pack(side="right", fill="y")           
+        self.canvas.pack(side="left", fill="both", expand=True)     
+        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",tags="self.viewPort")
 
-        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       #bind an event whenever the size of the viewPort frame changes.
+        self.viewPort.bind("<Configure>", self.onFrameConfigure)
 
     def onFrameConfigure(self, event):                                              
-        '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
+        self.canvas.configure(scrollregion=self.canvas.bbox("all")) 
 
 
-
-class Example(tk.Frame):
+class menu_frame(tk.Frame):
     
     def __init__(self, root):
 
@@ -94,5 +96,5 @@ if __name__ == "__main__":
 
     root=tk.Tk()
     root.title('C++ Programs')
-    Example(root).pack(side="top", fill="both", expand=True)
+    menu_frame(root).pack(side="top", fill="both", expand=True)
     root.mainloop()

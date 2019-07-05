@@ -7,6 +7,10 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 
+
+# This script simply builds the sub-menu for configuring the individual needs of any particular program in the cluster.
+# A scrollable window is generated
+
 input_file = open("GUI_functions/update.bin", "rb")
 this_task = list(pickle.load(input_file))
 print(this_task)
@@ -29,29 +33,31 @@ for i in range(len(all_tasks)):
 
 
 class ScrollFrame(tk.Frame):
+    # This class allows for a frame which can be scrolled vertically.
+    # This is very need as a given cluster may contain many machines or be tasked with many jobs.
+
     def __init__(self, parent):
         super().__init__(parent) 
 
     
         self.canvas = tk.Canvas(self, borderwidth=0, background="black")
         self.viewPort = tk.Frame(self.canvas, background="black")       
-        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
-        self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
+        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)  
+        self.canvas.configure(yscrollcommand=self.vsb.set)                          
 
-        self.vsb.pack(side="right", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="left", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            #add view port frame to canvas
-                                  tags="self.viewPort")
+        self.vsb.pack(side="right", fill="y")                                       
+        self.canvas.pack(side="left", fill="both", expand=True)                     
+        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",tags="self.viewPort")
 
-        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       #bind an event whenever the size of the viewPort frame changes.
+        self.viewPort.bind("<Configure>", self.onFrameConfigure)
 
     def onFrameConfigure(self, event):                                              
         '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
+        self.canvas.configure(scrollregion=self.canvas.bbox("all")) 
 
 
 
-class Example(tk.Frame):
+class menu_frame(tk.Frame):
     
     def __init__(self, root):
         import os
@@ -66,7 +72,7 @@ class Example(tk.Frame):
         input_file.close()
 
         print(possible_programs)
-        
+        # This section will print out an organized list of all other programs in the cluster
         for i in range(len(possible_programs)):
             if ".py" in  possible_programs[i][0]:
                 programs.append(possible_programs[i]) 
@@ -154,6 +160,7 @@ class Example(tk.Frame):
 
     
     def add_remove(self, msg, chosen_programs):
+        # this function manages the chack mark buttons, futher testing is needed to determin if this function is still needed.
         viable_add = True
         for i in range(len(chosen_programs)):
             if msg == chosen_programs[i]:
@@ -165,12 +172,14 @@ class Example(tk.Frame):
     
 
     def save_prg(self, msg):
+        # This updates program dependencies.
         msg_out = []
         for i in range(len(msg)):
                 msg_out.append(msg[i][0])
         all_tasks[task_loc][2] = msg_out
 
     def save_tools(self, msg):
+        # This updates toolkit dependencies.
         all_tasks[task_loc][3] = msg 
 
     def printMsg_kill(self, msg):
@@ -183,5 +192,5 @@ if __name__ == "__main__":
 
     root=tk.Tk() 
     root.title(str(this_task[0]) + ' Program  Settings')
-    Example(root).pack(side="top", fill="both", expand=True)
+    menu_frame(root).pack(side="top", fill="both", expand=True)
     root.mainloop()

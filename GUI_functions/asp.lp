@@ -98,10 +98,12 @@ clingo_on(mac_a).
 psutil_on(mac_c).
 clingo_on(mac_c).
 clingo_on(mac_e).
+% If a toolkit is not on on a machine then this rule is ture for that machine.
 cuda_not_on(X) :- location(X), not cuda_on(X).
 spacy_not_on(X) :- location(X), not spacy_on(X).
 psutil_not_on(X) :- location(X), not psutil_on(X).
 clingo_not_on(X) :- location(X), not clingo_on(X).
+% If a task can only be executed on a specific OS then the rule os_needed() represents this in the model.
 -os_needed(nrpcpa_cpp).
 os_needed(wikipedia_gpu_py, ubuntu_DE).
 os_needed(spacy_test_py, ubuntu_DE).
@@ -112,11 +114,13 @@ os_needed(spacy_test_py, ubuntu_DE).
 -os_needed(days_in_month_c).
 -os_needed(timer_f90).
 -os_needed(project_asm).
+% Here the OS of each machine in the cluster is represented in the model.
 os_on(mac_a, ubuntu_DE).
 os_on(mac_b, centOS_7_DE).
 os_on(mac_c, centOS_7_NE).
 os_on(mac_d, debian).
 os_on(mac_e).
+% The thread_cost() rule represents how many threads a given task requires.
 thread_cost(nrpcpa_cpp, 1).
 thread_cost(wikipedia_gpu_py, 1).
 thread_cost(spacy_test_py, 1).
@@ -127,14 +131,17 @@ thread_cost(wikipedia_pull_py, 1).
 thread_cost(days_in_month_c, 1).
 thread_cost(timer_f90, 1).
 thread_cost(project_asm, 1).
+% The depends_on(X1, X2) rule represents that X2 must be exectued and on the machine executing X1.
 depends_on(nrpcpa_cpp, project_asm).
 depends_on(nrpcpa_cpp, fibinachi_nasm64bit_asm).
 depends_on(spacy_test_py, wikipedia_pull_py).
+% The machine_threads() rule represents how many cores on any given machine.
 machine_threads(mac_a, 8).
 machine_threads(mac_b, 4).
 machine_threads(mac_c, 4).
 machine_threads(mac_d, 4).
 machine_threads(mac_e, 8).
+% Initialization of the statuses of all tasks.
 init(on(nrpcpa_cpp, home)).
 init(at(nrpcpa_cpp, -done)).
 init(on(wikipedia_gpu_py, home)).
@@ -155,6 +162,7 @@ init(on(timer_f90, home)).
 init(at(timer_f90, -done)).
 init(on(project_asm, home)).
 init(at(project_asm, -done)).
+% Declartion of the goals of the system.
 goal(at(nrpcpa_cpp, done)).
 goal(at(wikipedia_gpu_py, done)).
 goal(at(spacy_test_py, done)).

@@ -134,6 +134,7 @@ if __name__ == "__main__":
 
     asp_file.write("#program base.\n")
 
+    # Here all the tasks are added to the model
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
@@ -148,6 +149,8 @@ if __name__ == "__main__":
     asp_file.write("os(red_hat).\n")
     asp_file.write("os(no_os).\n")
 
+
+    # Here the needed toolkits for each task are added
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
@@ -163,6 +166,7 @@ if __name__ == "__main__":
             elif all_jobs[i][3][j] == "clingo":
                 asp_file.write("clingo_needed("+job+").\n")
     
+    # Here, if a toolkit is designated to be installed on a machine then this fact is added to the model.
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
         mac.replace(" ", "")
@@ -178,13 +182,14 @@ if __name__ == "__main__":
                 asp_file.write("clingo_on("+mac+").\n")
 
 
-
+    asp_file.write("% If a toolkit is not on on a machine then this rule is ture for that machine.\n")
     asp_file.write("cuda_not_on(X) :- location(X), not cuda_on(X).\n")
     asp_file.write("spacy_not_on(X) :- location(X), not spacy_on(X).\n")
     asp_file.write("psutil_not_on(X) :- location(X), not psutil_on(X).\n")
     asp_file.write("clingo_not_on(X) :- location(X), not clingo_on(X).\n")
 
 
+    asp_file.write("% If a task can only be executed on a specific OS then the rule os_needed() represents this in the model.\n")
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
@@ -202,7 +207,7 @@ if __name__ == "__main__":
             asp_file.write("os_needed("+job+", red_hat).\n")
         elif all_jobs[i][1][1] == "N/A":
             asp_file.write("-os_needed("+job+").\n")
-    
+    asp_file.write("% Here the OS of each machine in the cluster is represented in the model.\n")
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
         mac.replace(" ", "")
@@ -217,7 +222,9 @@ if __name__ == "__main__":
             asp_file.write("os_on("+mac+", debian).\n")
         elif all_macs[i][7] == "Unlisted Red Hat based OS":
             asp_file.write("os_on("+mac+").\n")
-    
+   
+    asp_file.write("% The thread_cost() rule represents how many threads a given task requires.\n")
+    # At this time, ECU assumes that the user knows how many threads each task needs.
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
@@ -226,7 +233,8 @@ if __name__ == "__main__":
         thread = str(all_jobs[i][4])
         asp_file.write("thread_cost("+job+", "+thread+").\n")
 
-
+    asp_file.write("% The depends_on(X1, X2) rule represents that X2 must be exectued and on the machine executing X1.\n")
+    # A program P1 may need to be executed at a different machine than another program P2, even if P2 depends on P1. 
     for i in range(len(all_jobs)):
         job0 = all_jobs[i][0]
         job0 = job0.replace(" ", "")
@@ -239,22 +247,26 @@ if __name__ == "__main__":
             job1 = job1.lower()
             asp_file.write("depends_on("+job0+", "+job1+").\n")
     
-
+    asp_file.write("% The machine_threads() rule represents how many cores on any given machine.\n")
+    # Though a task which has a higher multi-threading demand than the total cores on the machine which said task is being ran on may execute without issue, this is not always the case.
+    # ECU assumes that every task being executed in a cluster is an exspensive task requiring near full usage of the core on any given machine.
     for i in range(len(all_macs)):
         mac = all_macs[i][0]
         mac.replace(" ", "")
         mac.lower()
         thread = str(all_macs[i][6])
         asp_file.write("machine_threads("+mac+", "+thread+").\n")
-
+    
+    asp_file.write("% Initialization of the statuses of all tasks.\n")
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
         job = job.replace(".", "_")
         job = job.lower()
-        asp_file.write("init(on("+job+", home)).\n")
+        asp_file.write("init(on("+job+", home)).\n") # All tasks are started at home.
         asp_file.write("init(at("+job+", -done)).\n")
-
+    
+    asp_file.write("% Declartion of the goals of the system.\n")
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
@@ -262,4 +274,6 @@ if __name__ == "__main__":
         job = job.lower()
         asp_file.write("goal(at("+job+", done)).\n")
 
+    # Comments for all loops are written to asp.lp
+    
     asp_file.close()

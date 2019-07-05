@@ -5,17 +5,17 @@ from tkinter import *
 import pickle
 import os
 
-
+# This script will build a GUI displaying a successfully solved answer set for a generated schedule modeled on the details given elsewhere in the interface.  
 
 input_file = open("GUI_functions/update.bin", "rb")
 all_turns = list(pickle.load(input_file))
 input_file.close()
 turn = int(all_turns[0])
 print(all_turns)
-#last_turn = str(all_turns[2])
 turn_title = str(turn + 1)
 
 def go_up():
+    # This function will allow for the GUI to open up another window showing only the details for the next step in the cluster. 
     all_turns[0] = turn_title
     output_file= open("GUI_functions/update.bin", "wb")
     pickle.dump(all_turns, output_file)
@@ -23,6 +23,7 @@ def go_up():
     top.destroy()
 
 def go_dw():
+    # This function will allow for the GUI to open up another window showing only the details for the previous step in the cluster. 
     if turn > 0:
         turn_title = str(turn - 1)
         all_turns[0] = turn_title
@@ -33,6 +34,7 @@ def go_dw():
 
 
 def finish():
+    # This will close the schedule display GUI.
     all_turns[0] = str(len(all_turns[1]))
     output_file= open("GUI_functions/update.bin", "wb")
     pickle.dump(all_turns, output_file)
@@ -58,7 +60,6 @@ for i in range(len(all_turns[1])):
 
 top.title("Turn " + turn_title + " of " + last)
 top.configure(bg = "black")
-# Code to add widgets will go here...
 var = StringVar()
 fnt = font.Font(family='Times', size=15, weight='bold')
 label = Label(top, textvariable=var, bd = 30, relief = GROOVE, font = fnt, pady = 10, padx = 5, bg = "black", fg = "white")
@@ -83,23 +84,22 @@ tkinter.Label(top, text="Turn "+turn_title +" Program Executions", relief="solid
 place = 0
 
 for i in range(len(all_turns[1])):
+    # Here all "moves" made in the cluster are parsed and printed to the GUI.
     this_turn = all_turns[1][i].split(",")
     this_turn[0] = this_turn[0].split("(")
     this_turn[2] = this_turn[2].replace(")", "")
     if this_turn[0][0] == "move" and this_turn[2] == turn_title:
-        print("Move")
         tkinter.Label(top, text="Program "+this_turn[0][1] + " Moved to Machine " + this_turn[1], relief="solid", width=60).grid(row=place+2, column=0)
         place = place + 1
-        print(this_turn)
 
 for i in range(len(all_turns[1])):
+    # Here all "executions" made in the cluster are parsed and printed to the GUI.
     this_turn = all_turns[1][i].split(",")
     this_turn[0] = this_turn[0].split("(")
     this_turn[2] = this_turn[2].replace(")", "")
     if this_turn[0][0] == "turned_at" and this_turn[2] == turn_title:
         tkinter.Label(top, text="Program "+this_turn[0][1] + " Executed on Machine " + this_turn[1], relief="solid", width=60).grid(row=place+2, column=1)
         place = place + 1
-        print(this_turn)
 
 UP.grid(row = len(all_turns[1]) +3, column = 1 ) 
 DW.grid(row = len(all_turns[1]) +3, column = 0 ) 

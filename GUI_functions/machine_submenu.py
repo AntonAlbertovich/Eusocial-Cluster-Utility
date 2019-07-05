@@ -8,14 +8,15 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 
+# This script builds the menu for editing the details for each machine in the cluster.
+
 win = tk.Tk()
 input_file = open("GUI_functions/update.bin", "rb")
 this_machine = list(pickle.load(input_file))
 input_file.close()
 win.title(str(this_machine[0])+"@"+this_machine[1])
-# window
+# Here the name and IP of the machine displayed as the title of this window. 
 input_file.close()
-# win.resizable(0,0)
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -28,10 +29,7 @@ files = [f for f in listdir(path) if isfile(join(path, f))]
 for f in files:
     if ".swp" in f:
         files.remove(f)
-for i in files:
-    print(i)
 
-# modify adding label
 py_Label = ttk.Label(win, text="Python")
 py_Label.grid(column=2, row=1)
 
@@ -50,8 +48,8 @@ asm_Label.grid(column=2, row=5)
 cc_Label = ttk.Label(win, text="Number of Cores in Processor")
 cc_Label.grid(column=2, row=6)
 
-# button click event
 def click_set_py():
+    # This allows the user to enter a default execution command for all python scripts.
     py_Label.configure(text='Python Executed with: $' + py_name.get())
     
     input_file= open("GUI_functions/Cluster_details.bin", "rb")
@@ -59,73 +57,62 @@ def click_set_py():
     input_file.close()
     
     for i in range(len(machines)):
-        print("ping")
         if this_machine[1] == machines[i][1]:
-            print("!")
             machines[i][5][0] = py_name.get() 
-            print(machines)
             output_file= open("GUI_functions/Cluster_details.bin", "wb")
             pickle.dump(machines, output_file)
             output_file.close()
-            print(machines)
             break
 
 def click_set_f90():
+    # This allows the user to enter a default execution command for all fortran scripts.
     f90_Label.configure(text='Fortran Executed with: $' + f90_name.get())
     input_file= open("GUI_functions/Cluster_details.bin", "rb")
     machines = pickle.load(input_file)
     input_file.close()
     
     for i in range(len(machines)):
-        print("ping")
         if this_machine[1] == machines[i][1]:
-            print("!")
             machines[i][5][1] = py_name.get() 
-            print(machines)
             output_file= open("GUI_functions/Cluster_details.bin", "wb")
             pickle.dump(machines, output_file)
             output_file.close()
-            print(machines)
             break
 
 def click_set_c():
+    # This allows the user to enter a default execution command for all C scripts.
     c_Label.configure(text='C Executed with: $' + c_name.get())
     input_file= open("GUI_functions/Cluster_details.bin", "rb")
     machines = pickle.load(input_file)
     input_file.close()
     
     for i in range(len(machines)):
-        print("ping")
         if this_machine[1] == machines[i][1]:
-            print("!")
             machines[i][5][2] = c_name.get() 
-            print(machines)
             output_file= open("GUI_functions/Cluster_details.bin", "wb")
             pickle.dump(machines, output_file)
             output_file.close()
-            print(machines)
             break
 
 def click_set_cpp():
+    # This allows the user to enter a default execution command for all C++ scripts.
     cpp_Label.configure(text='C++ Executed with: $' + cpp_name.get())
     input_file= open("GUI_functions/Cluster_details.bin", "rb")
     machines = pickle.load(input_file)
     input_file.close()
     
     for i in range(len(machines)):
-        print("ping")
+
         if this_machine[1] == machines[i][1]:
-            print("!")
             machines[i][5][3] = cpp_name.get() 
-            print(machines)
             output_file= open("GUI_functions/Cluster_details.bin", "wb")
             pickle.dump(machines, output_file)
             output_file.close()
-            print(machines)
             break
 
 
 def click_set_asm():
+    # This allows the user to enter a default execution command for all assembly scripts.
     asm_Label.configure(text='Assembly Executed with: $' + asm_name.get())
     input_file= open("GUI_functions/Cluster_details.bin", "rb")
     machines = pickle.load(input_file)
@@ -143,6 +130,7 @@ def click_set_asm():
             break
 
 def click_set_cc():
+    # This allows the user to enter the number of CPU cores of a given machine.
     try:
         int_try = int(cc_name.get())
         if int_try > 0:
@@ -168,7 +156,6 @@ def click_set_cc():
         cc_Label.configure(text='Input error, entry not accepted.')
         
 
-# text box entry
 py_name = tk.StringVar()
 py_nameEntered = ttk.Entry(win, width=12, textvariable=py_name)
 py_nameEntered.grid(column=1, row=1)
@@ -196,6 +183,7 @@ cc_nameEntered.grid(column=1, row=6)
 
 
 def click_configure_networks():
+        # This function opens the window for selecting what machines this machine may acccess.
         print("Setting up Network...")
         import os
         os.system("python3 GUI_functions/select_networks.py")
@@ -206,9 +194,6 @@ def click_configure_networks():
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
         machines = pickle.load(input_file)
         input_file.close()
-        print("------------------------------------------------")
-        print(machines)
-        print("------------------------------------------------")
         for i in range(len(machines)):
             if this_machine[1] == machines[i][1]:
                 machines[i][2] = this_update 
@@ -220,6 +205,7 @@ def click_configure_networks():
 
 
 def click_configure_toolkits():
+        # This function opens the window for selecting which toolkits are on this machine.
         print("Setting up toolkits...")
         import os
         os.system("python3 GUI_functions/select_toolkits.py")
@@ -242,6 +228,8 @@ def click_configure_toolkits():
                 break
 
 def click_configure_avil():
+        # This function opens the window for selecting what times a machine is available at.
+        # As of 7/05/2019 this feature has not been fully integrated yet.
         print("Setting time availablity...")
         import os
         os.system("python3 GUI_functions/select_hours.py")
@@ -264,14 +252,15 @@ def click_configure_avil():
                 break
 
 def click_configure_dir():
+        # This function opens the window for entering a custom directory for a machine in a given cluster.
+        # As of 7/05/2019 this feature has not been fully integrated yet.
         print("Setting up directory path...")
-        import os
-        os.system("python3 GUI_functions/select_networks.py")
+
 
 def click_configure_time():
+        # This function opens the window for entering the time zone of a machine in a cluster if said machine is not configured to UTC.
+        # As of 7/05/2019 this feature has not been fully integrated yet.
         print("Setting up time zone...")
-        import os
-        os.system("python3 GUI_functions/select_networks.py")
 
 
 # text box entry
@@ -467,8 +456,6 @@ def checkCallback4(*ignoredArgs):
 chVarCm.trace('w', lambda unused3, unused4, unused5 : checkCallback4())
 chVarCn.trace('w', lambda unused3, unused4, unused5 : checkCallback4())
 
-# Now we are creating all ree Radiobutton widgets within one loop.
-
 os_0_Label = ttk.Label(win, text="Select an Operating System: ")
 os_0_Label.grid(column=0, row=12)
 
@@ -506,7 +493,6 @@ def os_Call():
 
 os_Var = tk.IntVar()
 
-# Next we are selecting a non-existing index value for radVar.
 os_Var.set(99)
 
 for os in range(5):

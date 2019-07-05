@@ -8,41 +8,43 @@ from os.path import isfile, join
 import pickle
 
 class ScrollFrame(tk.Frame):
+    # This class allows for a frame which can be scrolled vertically.
+    # This is very need as a given cluster may contain many machines or be tasked with many jobs.
+
     def __init__(self, parent):
         super().__init__(parent) 
 
-        self.canvas = tk.Canvas(self, width = 1200, height = 800, borderwidth=0, background="black")          #place canvas on self
+        self.canvas = tk.Canvas(self, width = 1200, height = 800, borderwidth=0, background="black")      
         self.viewPort = tk.Frame(self.canvas, width = 325, height = 300, background="black")
-        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) #place a scrollbar on self 
-        self.hsb = tk.Scrollbar(self, orient="horizontal", command=self.canvas.xview) #place a scrollbar on self 
-        self.canvas.configure(yscrollcommand=self.vsb.set)                          #attach scrollbar action to scroll of canvas
-        self.canvas.configure(xscrollcommand=self.hsb.set)                          #attach scrollbar action to scroll of canvas
+        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) 
+        self.hsb = tk.Scrollbar(self, orient="horizontal", command=self.canvas.xview)  
+        self.canvas.configure(yscrollcommand=self.vsb.set)                          
+        self.canvas.configure(xscrollcommand=self.hsb.set)                          
         
-        self.vsb.pack(side="right", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="left", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",            #add view port frame to canvas
-                                  tags="self.viewPort")
+        self.vsb.pack(side="right", fill="y")                                       
+        self.canvas.pack(side="left", fill="both", expand=True)                     
+        self.canvas.create_window((4,4), window=self.viewPort, anchor="nw",tags="self.viewPort")
 
-        self.hsb.pack(side="bottom", fill="y")                                       #pack scrollbar to right of self
-        self.canvas.pack(side="top", fill="both", expand=True)                     #pack canvas to left of self and expand to fil
-        self.canvas.create_window((5,5), window=self.viewPort, anchor="nw",            #add view port frame to canvas
-                                  tags="self.viewPort")
+        self.hsb.pack(side="bottom", fill="y")                                      
+        self.canvas.pack(side="top", fill="both", expand=True)                     
+        self.canvas.create_window((5,5), window=self.viewPort, anchor="nw",tags="self.viewPort")
         
-        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       #bind an event whenever the size of the viewPort frame changes.
+        self.viewPort.bind("<Configure>", self.onFrameConfigure)                       
 
     def onFrameConfigure(self, event):                                              
-        '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))                 #whenever the size of the frame changes, alter the scroll region respectively.
+        self.canvas.configure(scrollregion=self.canvas.bbox("all")) 
 
 
 
 class Example_net(tk.Frame):
-    
+    #This class is the main frame for this part of the menu        
+
     def __init__(self, root_net):
 
         tk.Frame.__init__(self, root_net)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
         input_file= open("GUI_functions/Tasks_details.bin", "rb")
+        # Here the details pertaining to the tasks of the cluster are loaeded.
         all_tasks= list(pickle.load(input_file))
         input_file.close()
         tk.Label(self.scrollFrame.viewPort, text="Program Name", relief="solid").grid(row= 0, column=0)
@@ -67,6 +69,6 @@ class Example_net(tk.Frame):
 if __name__ == "__main__":
 
     root_net=tk.Tk()
-    root_net.title('All Machines')
+    root_net.title('All Programs')
     Example_net(root_net).pack(side="top", fill="both", expand=True)
     root_net.mainloop()
