@@ -34,7 +34,7 @@ class ScrollFrame(tk.Frame):
 
 
 
-class Example(tk.Frame):
+class sub_menu(tk.Frame):
     
     def __init__(self, root):
 
@@ -100,5 +100,5 @@ if __name__ == "__main__":
 
     root=tk.Tk()
     root.title('C Programs')
-    Example(root).pack(side="top", fill="both", expand=True)
+    sub_menu(root).pack(side="top", fill="both", expand=True)
     root.mainloop()
