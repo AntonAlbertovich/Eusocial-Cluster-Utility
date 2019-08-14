@@ -426,9 +426,8 @@ class menu_frame(tk.Frame):
                 break
             
 
-            
 
-if __name__ == "__main__":
+def configuring_build():
     # The main for the schedule builder GUI.
     root=tk.Tk()
     root.title('Schedule Builder')

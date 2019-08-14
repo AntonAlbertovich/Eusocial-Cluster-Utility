@@ -303,8 +303,12 @@ def activate_cluster():
             except:
                 print("Error on command: ", command_3)
 
+from GUI import main_gui
+user_interface = main_gui()
+user_interface.create_gui()
 os.system("python3 GUI.py")
-build_cluster()
-activate_cluster()
-os.system("python3 verify_all_distributed_ledgers.py")
+
+#build_cluster()
+#activate_cluster()
+#os.system("python3 verify_all_distributed_ledgers.py")
 
