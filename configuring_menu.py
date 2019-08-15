@@ -229,7 +229,7 @@ class menu_frame(tk.Frame):
 
             from GUI_functions.sub_system_menu import subsystem_menu
             subsystem_menu()
-            os.system("python3 GUI_functions/machine_submenu.py")
+            #os.system("python3 GUI_functions/machine_submenu.py")
             chosen.append(selected)
             print(chosen)
     

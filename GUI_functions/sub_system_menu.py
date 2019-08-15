@@ -17,7 +17,7 @@ class ScrollFrame(tk.Frame):
         super().__init__(parent) 
 
     
-        self.canvas = tk.Canvas(self, borderwidth=0)          
+        self.canvas = tk.Canvas(self, width = 1200, height = 500, borderwidth=0)
         self.viewPort = tk.Frame(self.canvas)                     
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview) 
         self.canvas.configure(yscrollcommand=self.vsb.set)                          
@@ -148,13 +148,85 @@ class menu_frame(tk.Frame):
                     output_file.close()
                     break
 
+        def click_configure_networks():
+                # This function opens the window for selecting what machines this machine may acccess.
+                print("Setting up Network...")
+                import os
+                os.system("python3 GUI_functions/select_networks.py")
+                input_file = open("GUI_functions/update.bin", "rb")
+                this_update = list(pickle.load(input_file))
+                input_file.close()
+
+                input_file= open("GUI_functions/Cluster_details.bin", "rb")
+                machines = pickle.load(input_file)
+                input_file.close()
+                for i in range(len(machines)):
+                    if this_machine[1] == machines[i][1]:
+                        machines[i][2] = this_update
+                        output_file= open("GUI_functions/Cluster_details.bin", "wb")
+                        pickle.dump(machines, output_file)
+                        output_file.close()
+                        break
+                print(machines)
+
+
+        def click_configure_toolkits():
+                # This function opens the window for selecting which toolkits are on this machine.
+                print("Setting up toolkits...")
+                import os
+                os.system("python3 GUI_functions/select_toolkits.py")
+                input_file = open("GUI_functions/update.bin", "rb")
+                this_update = list(pickle.load(input_file))
+                input_file.close()
+
+                input_file= open("GUI_functions/Cluster_details.bin", "rb")
+                machines = pickle.load(input_file)
+                input_file.close()
+
+                for i in range(len(machines)):
+                    print("ping")
+                    if this_machine[1] == machines[i][1]:
+                        machines[i][3] = this_update
+                        output_file= open("GUI_functions/Cluster_details.bin", "wb")
+                        pickle.dump(machines, output_file)
+                        output_file.close()
+                        print(machines)
+                        break
+
+
+        def click_configure_avil():
+                # This function opens the window for selecting what times a machine is available at.
+                # As of 7/05/2019 this feature has not been fully integrated yet.
+                print("Setting time availablity...")
+                import os
+                os.system("python3 GUI_functions/select_hours.py")
+                input_file = open("GUI_functions/update.bin", "rb")
+                this_update = list(pickle.load(input_file))
+                input_file.close()
+
+                input_file= open("GUI_functions/Cluster_details.bin", "rb")
+                machines = pickle.load(input_file)
+                input_file.close()
+
+                for i in range(len(machines)):
+                    print("ping")
+                    if this_machine[1] == machines[i][1]:
+                        machines[i][4] = this_update
+                        output_file= open("GUI_functions/Cluster_details.bin", "wb")
+                        pickle.dump(machines, output_file)
+                        output_file.close()
+                        print(machines)
+                        break
 
         def click_configure_dir():
                 # This function opens the window for entering a custom directory for a machine in a given cluster.
-                # As of 7/05/2019 this feature has not been fully integrated yet.
+                # As of 8/15/2019 this feature has not been fully integrated yet.
                 print("Setting up directory path...")
 
-
+        def click_configure_time():
+                # This function opens the window for entering the time zone of a machine in a cluster if said machine is not configured to UTC.
+                # As of 8/15/2019 this feature has not been fully integrated yet.
+                print("Setting up time zone...")
 
         tk.Frame.__init__(self, root)
         self.scrollFrame = ScrollFrame(self) # add a new scrollable frame.
@@ -172,27 +244,27 @@ class menu_frame(tk.Frame):
         tk.Label(self.scrollFrame.viewPort, text="Number of Cores in Processor").grid(column=2, row=6)
 
         py_name = tk.StringVar()
-        py_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=py_name)
+        py_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=py_name)
         py_nameEntered.grid(column=1, row=1)
 
         f90_name = tk.StringVar()
-        f90_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=f90_name)
+        f90_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=f90_name)
         f90_nameEntered.grid(column=1, row=2)
 
         c_name = tk.StringVar()
-        c_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=c_name)
+        c_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=c_name)
         c_nameEntered.grid(column=1, row=3)
 
         cpp_name = tk.StringVar()
-        cpp_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=cpp_name)
+        cpp_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=cpp_name)
         cpp_nameEntered.grid(column=1, row=4)
 
         asm_name = tk.StringVar()
-        asm_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=asm_name)
+        asm_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=asm_name)
         asm_nameEntered.grid(column=1, row=5)
 
         cc_name = tk.StringVar()
-        cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=12, textvariable=cc_name)
+        cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=5, textvariable=cc_name)
         cc_nameEntered.grid(column=1, row=6)
 
         click_set_py = tk.Button(self.scrollFrame.viewPort, text="Set Python Program Execution Command", command=click_set_py, width=35)
@@ -218,15 +290,18 @@ class menu_frame(tk.Frame):
             print("ping")
             check0.select()
             check1.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=7)
-            action_CD.configure(state='disabled')
+            action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_1.grid(column=5, row=7)
+            action_1.configure(state='disabled')
         def checkCallback1():
             print("ring")
             check1.select()
             check0.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=7)
+            action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_1.grid(column=5, row=7)
+        action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+        action_1.grid(column=5, row=7)
+        action_1.configure(state='disabled')
         chVarDn = tk.IntVar()
         check0 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does NOT require custom directory configuration.", command=checkCallback0, variable=chVarDn)
         check0.deselect()
@@ -250,11 +325,11 @@ class menu_frame(tk.Frame):
             action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=8)
         chVarAn = tk.IntVar()
-        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does NOT require custom directory configuration.", command=checkCallback2, variable=chVarAn)
+        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text= "This machine is set to UTC time.", command=checkCallback2, variable=chVarAn)
         check2.deselect()
         check2.grid(column=0, row=8, sticky=tk.W, columnspan=3)
         chVarAm = tk.IntVar()
-        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does require custom ECU directory configuration.", command=checkCallback3,  variable=chVarAm)
+        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is NOT set to UTC time.", command=checkCallback3,  variable=chVarAm)
         check3.deselect()
         check3.grid(column=2, row=8, sticky=tk.W, columnspan=3)
 
@@ -263,82 +338,185 @@ class menu_frame(tk.Frame):
             print("ping")
             check4.select()
             check5.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=9)
-            action_CD.configure(state='disabled')
+            action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
+            action_5.grid(column=5, row=9)
+            action_5.configure(state='disabled')
         def checkCallback5():
             print("ring")
             check5.select()
             check4.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=9)
-        chVarBn = tk.IntVar()
-        check4 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does NOT require custom directory configuration.", command=checkCallback4, variable=chVarBn)
+            action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
+            action_5.grid(column=5, row=9)
+        action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
+        action_5.grid(column=5, row=7)
+        action_5.configure(state='disabled')
+        chVar4 = tk.IntVar()
+        check4 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is connected to all other machines.", command=checkCallback4, variable=chVar4)
         check4.deselect()
-        check4.grid(column=0, row=7, sticky=tk.W, columnspan=3)
-        chVarBm = tk.IntVar()
-        check5 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does require custom ECU directory configuration.", command=checkCallback5,  variable=chVarBm)
+        check4.grid(column=0, row=9, sticky=tk.W, columnspan=3)
+        chVar5 = tk.IntVar()
+        check5 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine requires a custom network configuration.", command=checkCallback5,  variable=chVar5)
         check5.deselect()
-        check5.grid(column=2, row=7, sticky=tk.W, columnspan=3)
+        check5.grid(column=2, row=9, sticky=tk.W, columnspan=3)
 
         def checkCallback6():
             print("ping")
             check6.select()
             check7.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=10)
-            action_CD.configure(state='disabled')
+            action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
+            action_7.grid(column=5, row=10)
+            action_7.configure(state='disabled')
         def checkCallback7():
             print("ring")
             check7.select()
             check6.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=10)
+            action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
+            action_7.grid(column=5, row=10)
+        action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
+        action_7.grid(column=5, row=10)
+        action_7.configure(state='disabled')
         chVarCn = tk.IntVar()
-        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does NOT require custom directory configuration.", command=checkCallback6, variable=chVarCn)
+        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine has all necessary toolkits installed.", command=click_configure_toolkits, variable=chVarCn)
         check6.deselect()
         check6.grid(column=0, row=10, sticky=tk.W, columnspan=3)
         chVarCm = tk.IntVar()
-        check7 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does require custom ECU directory configuration.", command=checkCallback7,  variable=chVarCm)
+        check7 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine requires a custom toolkit configuration.", command=checkCallback7,  variable=chVarCm)
         check7.deselect()
         check7.grid(column=2, row=10, sticky=tk.W, columnspan=3)
 
-    
-    
-    def add_remove(self, msg, chosen_programs):
-        viable_add = True
-        for i in range(len(chosen_programs)):
-            if msg[0] == chosen_programs[i][0]:
-                chosen_programs.remove(chosen_programs[i])
-                viable_add = False
-                break
-        if (viable_add == True):
-            output_file = open("GUI_functions/update.bin", "wb")
-            pickle.dump(msg, output_file)
-            output_file.close()
-            os.system("python3 GUI_functions/select_depend.py")
-            input_file = open("GUI_functions/update.bin", "rb")
-            new_task = pickle.load(input_file)
-            input_file.close()
-            chosen_programs.append(new_task)
-    
+        def checkCallback8():
+            print("ping")
+            check8.select()
+            check9.deselect()
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD.grid(column=5, row=11)
+            action_CD.configure(state='disabled')
+        def checkCallback9():
+            print("ring")
+            check9.select()
+            check8.deselect()
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD.grid(column=5, row=11)
+        chVar8 = tk.IntVar()
+        check8 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available for cluster computation 24/7.", command=checkCallback8, variable=chVar8)
+        check8.deselect()
+        check8.grid(column=0, row=11, sticky=tk.W, columnspan=3)
+        chVar9 = tk.IntVar()
+        check9 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available only within a given time frame.", command=checkCallback9,  variable=chVar9)
+        check9.deselect()
+        check9.grid(column=2, row=11, sticky=tk.W, columnspan=3)
         
-    def printMsg_kill(self, msg):
-        input_file = open("GUI_functions/Tasks_details.bin", "rb")
-        all_programs = pickle.load(input_file)
-        input_file.close()
+        
+        tk.Label(self.scrollFrame.viewPort, text="Select Machine OS").grid(column=0, row=12)
+        tk.Label(self.scrollFrame.viewPort, text="Select Machine Architecture").grid(column=2, row=12)
 
-        for i in range(len(all_programs)):
-            for j in range(len(msg)):
-                if all_programs[i][0] == msg[j][0]:
-                    all_programs[i] = msg[j]
+        archit= ['x86', 'ARM Cortex-A72']
+        os_distro= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Desktop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS']
 
-        output_file = open("GUI_functions/Tasks_details.bin", "wb")
-        pickle.dump(all_programs, output_file)
-        output_file.close()
-        print(all_programs)
-        root.quit()
-    
+        def os_deselect(keep):
+            if keep != 0:
+                OS_0.deselect()
+            if keep != 1:
+                OS_1.deselect()
+            if keep != 2:
+                OS_2.deselect()
+            if keep != 3:
+                OS_3.deselect()
+            if keep != 4:
+                OS_4.deselect()
+
+        def ar_deselect(keep):
+            if keep != 0:
+                AR_0.deselect()
+            if keep != 1:
+                AR_1.deselect()
+
+        def os_Call_0():
+            print(os_distro[0])
+            os_deselect(0)
+
+        def os_Call_1():
+            print(os_distro[1])
+            os_deselect(1)
+
+        def os_Call_2():
+            print(os_distro[2])
+            os_deselect(2)
+
+        def os_Call_3():
+            print(os_distro[3])
+            os_deselect(3)
+
+        def os_Call_4():
+            print(os_distro[4])
+            os_deselect(4)
+
+        def ar_Call_0():
+            print(archit[0])
+            ar_deselect(0)
+
+        def ar_Call_1():
+            print(archit[1])
+            ar_deselect(1)
+
+        chOS_0 = tk.IntVar()
+        OS_0 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[0], command=os_Call_0, variable=chOS_0)
+        OS_0.deselect()
+        OS_0.grid(column=0, row=14, sticky=tk.W, columnspan=3)
+        
+        chOS_1 = tk.IntVar()
+        OS_1 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[1], command=os_Call_1, variable=chOS_1)
+        OS_1.deselect()
+        OS_1.grid(column=0, row=15, sticky=tk.W, columnspan=3)
+
+        chOS_2 = tk.IntVar()
+        OS_2 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[2], command=os_Call_2, variable=chOS_2)
+        OS_2.deselect()
+        OS_2.grid(column=0, row=16, sticky=tk.W, columnspan=3)
+        
+        chOS_3 = tk.IntVar()
+        OS_3 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[3], command=os_Call_3, variable=chOS_3)
+        OS_3.deselect()
+        OS_3.grid(column=0, row=17, sticky=tk.W, columnspan=3)
+
+        chOS_4 = tk.IntVar()
+        OS_4 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[4], command=os_Call_4, variable=chOS_4)
+        OS_4.deselect()
+        OS_4.grid(column=0, row=18, sticky=tk.W, columnspan=3)
+        
+        chAR_0 = tk.IntVar()
+        AR_0 = tk.Checkbutton(self.scrollFrame.viewPort, text=archit[0], command=ar_Call_0, variable=chAR_0)
+        AR_0.deselect()
+        AR_0.grid(column=2, row=14, sticky=tk.W, columnspan=3)
+        
+        chAR_1 = tk.IntVar()
+        AR_1 = tk.Checkbutton(self.scrollFrame.viewPort, text=archit[1], command=ar_Call_1, variable=chAR_1)
+        AR_1.deselect()
+        AR_1.grid(column=2, row=15, sticky=tk.W, columnspan=3)
+
+
+
+
+        
+        def printMsg_kill(self, msg):
+            input_file = open("GUI_functions/Tasks_details.bin", "rb")
+            all_programs = pickle.load(input_file)
+            input_file.close()
+
+            for i in range(len(all_programs)):
+                for j in range(len(msg)):
+                    if all_programs[i][0] == msg[j][0]:
+                        all_programs[i] = msg[j]
+
+            output_file = open("GUI_functions/Tasks_details.bin", "wb")
+            pickle.dump(all_programs, output_file)
+            output_file.close()
+            print(all_programs)
+            root.quit()
+
+        action_Q = tk.Button(self.scrollFrame.viewPort, text="Save Cahnges", command=printMsg_kill, width=25)
+        action_Q.grid(column=0, row=19)
+
 
 def subsystem_menu():
     input_file = open("GUI_functions/update.bin", "rb")
