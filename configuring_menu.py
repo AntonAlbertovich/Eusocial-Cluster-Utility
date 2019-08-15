@@ -226,6 +226,9 @@ class menu_frame(tk.Frame):
             pickle.dump(machine_data, output_file)
             output_file.close()
             # machine_submenu.py is a script which edits the data structure pertaining to the machines in the cluster
+
+            from GUI_functions.sub_system_menu import subsystem_menu
+            subsystem_menu()
             os.system("python3 GUI_functions/machine_submenu.py")
             chosen.append(selected)
             print(chosen)
