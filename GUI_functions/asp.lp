@@ -20,9 +20,19 @@ connection(mac_a, mac_c).
 connection(mac_a, mac_d).
 connection(mac_a, mac_e).
 connection(home, mac_b).
+connection(mac_b, mac_d).
+connection(mac_b, mac_a).
+connection(mac_b, mac_e).
 connection(home, mac_c).
+connection(mac_c, mac_a).
+connection(mac_c, mac_b).
 connection(home, mac_d).
+connection(mac_d, mac_e).
+connection(mac_d, mac_c).
 connection(home, mac_e).
+connection(mac_e, mac_c).
+connection(mac_e, mac_b).
+connection(mac_e, mac_a).
 holds(F,0) :- init(F).
 #program step(t).
 { move(X,Y,t) : task(X), location(Y)} :- holds(on(X,M),t-1), connection(M, Y).
@@ -31,7 +41,7 @@ holds(F,0) :- init(F).
 % Programs can not be moved back into the home directory.
 :- turn(X,Y,t), holds(at(X,done),t-1).
 % Programs can not be executed if they are already complete.
-:- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t-1).
+:- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t).
 moved(X,t) :- move(X,Y,t).
 % moved() indicated what task X was moved at turn t.
 turned(X,t) :- turn(X, Y, t).
@@ -55,6 +65,8 @@ turned_with_4(M, X, X1, X2, X3, Z, t) :- turned(X,t), holds(on(X,M),t), thread_c
 % This section will prevent a program which requires a given toolkit from being scheduled to run on a machine
 %  which does not have said toolkit.
 :- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.
+:- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.
+:- move(X, Z, T1), turned(X,T2), T1 > T2, nobody_depends_on(X).
 %  A program can not be moved and executed at the same time.
 :- turned(X1, T1), turned(X2, T2), depends_on(X2, X1), T1 >= T2, moved(X2,T).
 %  A program can executed before all of it's dependencies.
@@ -90,6 +102,8 @@ os(centOS_7_NE).
 os(debian).
 os(red_hat).
 os(no_os).
+cuda_needed(nrpcpa_cpp).
+spacy_needed(nrpcpa_cpp).
 cuda_needed(spacy_test_py).
 spacy_needed(spacy_test_py).
 cuda_on(mac_a).
@@ -113,7 +127,7 @@ os_needed(spacy_test_py, ubuntu_DE).
 -os_needed(fibinachi_nasm64bit_asm).
 -os_needed(wikipedia_pull_py).
 -os_needed(days_in_month_c).
--os_needed(timer_f90).
+os_needed(timer_f90, centOS_7_NE).
 -os_needed(project_asm).
 % Here the OS of each machine in the cluster is represented in the model.
 os_on(mac_a, ubuntu_DE).
@@ -123,7 +137,7 @@ os_on(mac_d, debian).
 os_on(mac_e).
 % The thread_cost() rule represents how many threads a given task requires.
 thread_cost(nrpcpa_cpp, 1).
-thread_cost(wikipedia_gpu_py, 1).
+thread_cost(wikipedia_gpu_py, 6).
 thread_cost(spacy_test_py, 1).
 thread_cost(psutil_example_py, 1).
 thread_cost(wikipedia_cpu_py, 1).
@@ -133,9 +147,17 @@ thread_cost(days_in_month_c, 1).
 thread_cost(timer_f90, 1).
 thread_cost(project_asm, 1).
 % The depends_on(X1, X2) rule represents that X2 must be exectued and on the machine executing X1.
-depends_on(nrpcpa_cpp, project_asm).
-depends_on(nrpcpa_cpp, fibinachi_nasm64bit_asm).
+depends_on(nrpcpa_cpp, spacy_test_py).
+depends_on(nrpcpa_cpp, wikipedia_pull_py).
+depends_on(nrpcpa_cpp, timer_f90).
 depends_on(spacy_test_py, wikipedia_pull_py).
+nobody_depends_on(nrpcpa_cpp).
+nobody_depends_on(wikipedia_gpu_py).
+nobody_depends_on(psutil_example_py).
+nobody_depends_on(wikipedia_cpu_py).
+nobody_depends_on(fibinachi_nasm64bit_asm).
+nobody_depends_on(days_in_month_c).
+nobody_depends_on(project_asm).
 % The machine_threads() rule represents how many cores on any given machine.
 machine_threads(mac_a, 8).
 machine_threads(mac_b, 4).

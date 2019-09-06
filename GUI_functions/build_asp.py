@@ -66,7 +66,7 @@ if __name__ == "__main__":
     asp_file.write("% Programs can not be moved back into the home directory.\n")
     asp_file.write(":- turn(X,Y,t), holds(at(X,done),t-1).\n")
     asp_file.write("% Programs can not be executed if they are already complete.\n")
-    asp_file.write(":- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t-1).\n")
+    asp_file.write(":- turn(X,Y,t), holds(on(X,M),t), depends_on(X, X1), not holds(on(X1,M),t).\n")
     # Comments detailing limits of move and turn.
     asp_file.write("moved(X,t) :- move(X,Y,t).\n")
     asp_file.write("% moved() indicated what task X was moved at turn t.\n")
@@ -97,6 +97,8 @@ if __name__ == "__main__":
     asp_file.write("% This section will prevent a program which requires a given toolkit from being scheduled to run on a machine\n")
     asp_file.write("%  which does not have said toolkit.\n")
     asp_file.write(":- move(X, Z, Y1), turned(X, Y2), Y1 == Y2.\n")
+    asp_file.write(":- move(X, Z, Y1), move(X, Z, Y2), Y1 != Y2.\n")
+    asp_file.write(":- move(X, Z, T1), turned(X,T2), T1 > T2, nobody_depends_on(X).\n")
     asp_file.write("%  A program can not be moved and executed at the same time.\n")
 
     # This section may not needed as there is nothing wrong with creating duplicates of completed programs so long as they are needed.
@@ -135,12 +137,14 @@ if __name__ == "__main__":
     asp_file.write("#program base.\n")
 
     # Here all the tasks are added to the model
+    all_tasks= []
     for i in range(len(all_jobs)):
         job = all_jobs[i][0]
         job = job.replace(" ", "")
         job = job.replace(".", "_")
         job = job.lower()
         asp_file.write("task("+job+").\n")
+        all_tasks.append(job)
 
     asp_file.write("os(ubuntu_DE).\n")
     asp_file.write("os(centOS_7_DE).\n")
@@ -235,6 +239,7 @@ if __name__ == "__main__":
 
     asp_file.write("% The depends_on(X1, X2) rule represents that X2 must be exectued and on the machine executing X1.\n")
     # A program P1 may need to be executed at a different machine than another program P2, even if P2 depends on P1. 
+    depended_on = []
     for i in range(len(all_jobs)):
         job0 = all_jobs[i][0]
         job0 = job0.replace(" ", "")
@@ -242,10 +247,21 @@ if __name__ == "__main__":
         job0 = job0.lower()
         for j in range(len(all_jobs[i][2])):
             job1 = all_jobs[i][2][j]
+
             job1 = job1.replace(" ", "")
             job1 = job1.replace(".", "_")
             job1 = job1.lower()
+            depended_on.append(job1)
             asp_file.write("depends_on("+job0+", "+job1+").\n")
+    
+    for k in range(len(all_tasks)):
+        for l in range(len(depended_on)) :
+            if all_tasks[k] == depended_on[l]:
+                all_tasks[k] = False
+                break
+    for k in range(len(all_tasks)):
+        if all_tasks[k] != False:
+            asp_file.write("nobody_depends_on("+all_tasks[k]+").\n")
     
     asp_file.write("% The machine_threads() rule represents how many cores on any given machine.\n")
     # Though a task which has a higher multi-threading demand than the total cores on the machine which said task is being ran on may execute without issue, this is not always the case.
