@@ -125,25 +125,29 @@ class menu_frame(tk.Frame):
             tk.Checkbutton(self.scrollFrame.viewPort, text= "Configure Machine: " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=30).grid(row=row + 7, column=0)
         
 
-        tk.Label(self.scrollFrame.viewPort, text="Program Dependency Options", width=40).grid(row= 0, column=0)
+        tk.Label(self.scrollFrame.viewPort, text="Dependency Options", width=20).grid(row= 0, column=0)
         # Program Dependency Options is the section of the menu which allows for each program's needs to be enetered into the data structure which will later build the ASP file for the schedule. 
         #Programs are organized by file type, at this time ECU supports the organization of Python, Fortran, C, C++, and Assembly files.
         
+        tk.Label(self.scrollFrame.viewPort, text="Execution Options", width=20).grid(row= 0, column=2)
 
-        tk.Label(self.scrollFrame.viewPort, text="Reset Options").grid(row= 0, column=2)
-        # Reset options is the section of the menu which allows for the data structures pertaining to machines and tasks to be cleared.
+
         tk.Label(self.scrollFrame.viewPort, text="Machine Options", width=40).grid(row=6, column=0)
         # Machine options is the section of the menu which allows for the individual configuration of each machine in the cluster, this section is built with the loop above.
 
         tk.Label(self.scrollFrame.viewPort, text="Number of Theads Needed for processing", width=40).grid(row=8+len(machines), column=0)
 
         tk.Button(self.scrollFrame.viewPort, text="Python program dependency settings", command=lambda x=a: self.py_settings(".py"), width=35, relief="solid").grid(row= 1, column=0)
-
         tk.Button(self.scrollFrame.viewPort, text="Fortran program dependency settings", command=lambda x=a: self.fr_settings(".f90"), width=35, relief="solid").grid(row= 2, column=0)
         tk.Button(self.scrollFrame.viewPort, text="C program dependency settings", command=lambda x=a: self.c_settings(".c"), width=35, relief="solid").grid(row= 3, column=0)
         tk.Button(self.scrollFrame.viewPort, text="C++ program dependency settings", command=lambda x=a: self.cpp_settings(".cpp"), width=35, relief="solid").grid(row= 4, column=0)
         tk.Button(self.scrollFrame.viewPort, text="Assembly program dependency settings", command=lambda x=a: self.asm_settings(".asm"), width=35, relief="solid").grid(row= 5, column=0)
 
+        tk.Button(self.scrollFrame.viewPort, text="Python program dependency settings", command=lambda x=a: self.py_exe(".py"), width=35, relief="solid").grid(row= 1, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="Fortran program dependency settings", command=lambda x=a: self.fr_exe(".f90"), width=35, relief="solid").grid(row= 2, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="C program dependency settings", command=lambda x=a: self.c_exe(".c"), width=35, relief="solid").grid(row= 3, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="C++ program dependency settings", command=lambda x=a: self.cpp_exe(".cpp"), width=35, relief="solid").grid(row= 4, column=2)
+        tk.Button(self.scrollFrame.viewPort, text="Assembly program dependency settings", command=lambda x=a: self.asm_exe(".asm"), width=35, relief="solid").grid(row= 5, column=2)
 
         
         chosen_programs = []
@@ -151,11 +155,7 @@ class menu_frame(tk.Frame):
         thread_cost = []
         j = 0 
 
-        tk.Button(self.scrollFrame.viewPort, text="Reset All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row= 1, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="Reset All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 2, column=2)
-        tk.Label(self.scrollFrame.viewPort, text="View Options").grid(row= 3, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="View All Machines", command=lambda x=a: self.view_machines("reset"), width=15, relief="solid").grid(row= 4, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.view_programs(list(machines), thread_cost), width=15, relief="solid").grid(row= 5, column=2)
+
 
         self.scrollFrame.pack(side="top", fill="both", expand=True)
 
@@ -206,9 +206,19 @@ class menu_frame(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="Build Schedule [60s Attempt]", width=28, command=lambda x=a: self.build_schedule_30(machines)).grid(row=row+13+len(machines), column=0)
         tk.Button(self.scrollFrame.viewPort, text="Build Schedule [5m Attempt]", width=28, command=lambda x=a: self.build_schedule_300(machines)).grid(row=row+14+len(machines), column=0)
         tk.Label(self.scrollFrame.viewPort, text="Schedule Build Not Yet Attempted", width=31).grid(row= row+15+len(machines), column=0)
-        tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=a: self.view_schedule(chosen_programs),state = 'disabled').grid(row=row+16+len(machines), column=0)
+
         tk.Button(self.scrollFrame.viewPort, text="Exit Schedule Builder", width=28, command=lambda x=a: self.printMsg_kill(chosen_programs)).grid(row=row+17+len(machines), column=0)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
+
+        tk.Label(self.scrollFrame.viewPort, text="Reset Options").grid(row= row+11+len(machines), column=2)
+        # Reset options is the section of the menu which allows for the data structures pertaining to machines and tasks to be cleared.
+        tk.Button(self.scrollFrame.viewPort, text="Reset All Machines", command=lambda x=a: self.reset_machines("reset"), width=15, relief="solid").grid(row=  row+12+len(machines), column=2)
+        tk.Button(self.scrollFrame.viewPort, text="Reset All Programs", command=lambda x=a: self.reset_programs(list(machines), thread_cost), width=15, relief="solid").grid(row=  row+13+len(machines), column=2)
+        tk.Label(self.scrollFrame.viewPort, text="View Options").grid(row=  row+14+len(machines), column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Machines", command=lambda x=a: self.view_machines("reset"), width=15, relief="solid").grid(row=  row+15+len(machines), column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View All Programs", command=lambda x=a: self.view_programs(list(machines), thread_cost), width=15, relief="solid").grid(row=  row+16+len(machines), column=2)
+        tk.Button(self.scrollFrame.viewPort, text="View New Schedule", command=lambda x=a: self.view_schedule(chosen_programs),state = 'disabled').grid(row=row+17+len(machines), column=2)
+
     def add_remove(self, selected, chosen):
         # If a machine's details are configured this function allows for those changes to be committed to the appropriate data structure. 
         viable_add = True
@@ -249,7 +259,23 @@ class menu_frame(tk.Frame):
     def asm_settings(self, msg):
         os.system("python3 GUI_functions/select_asm_GUI.py")
         # This function opens the script pertaining to assembly dependencies. 
-    
+
+    def py_exe(self, msg):
+        # This function opens the script pertaining to python dependencies. 
+        os.system("python3 GUI_functions/py_exe.py")
+    def fr_exe(self, msg):
+        # This function opens the script pertaining to fortran dependencies. 
+        os.system("python3 GUI_functions/select_f90_GUI.py")
+    def cpp_exe(self, msg):
+        os.system("python3 GUI_functions/select_cpp_GUI.py")
+        # This function opens the script pertaining to C++ dependencies. 
+    def c_exe(self, msg):
+        os.system("python3 GUI_functions/select_c_GUI.py")
+        # This function opens the script pertaining to C dependencies. 
+    def asm_exe(self, msg):
+        os.system("python3 GUI_functions/select_asm_GUI.py")
+        # This function opens the script pertaining to assembly dependencies. 
+
     def click_change_up(self, costs, a, machines):
         #This increments the thread cost of a particular task.
         cost_value = int(costs[a][1])
@@ -353,10 +379,10 @@ class menu_frame(tk.Frame):
                     break
         if satisfiable == True:
             tk.Label(self.scrollFrame.viewPort, text="15s Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+17+len(machines), column=2)
         else:
             tk.Label(self.scrollFrame.viewPort, text="15s Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+17+len(machines), column=2)
 
     def build_schedule_60(self, machines):
         # This function first runs the script which will build the ASP script, and then attempts to build the script with a 60 secound time limit. 
@@ -375,10 +401,10 @@ class menu_frame(tk.Frame):
                     break
         if satisfiable == True:
             tk.Label(self.scrollFrame.viewPort, text="60s Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View New Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+17+len(machines), column=2)
         else:
             tk.Label(self.scrollFrame.viewPort, text="60s Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View New Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+17+len(machines), column=2)
     
     def build_schedule_300(self, machines):
         # This function first runs the script which will build the ASP script, and then attempts to build the script with a 300 secound time limit. 
@@ -397,10 +423,10 @@ class menu_frame(tk.Frame):
                     break
         if satisfiable == True:
             tk.Label(self.scrollFrame.viewPort, text="5m Schedule Build Successful", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View New Schedule", width=28, command=lambda x=0: self.view_schedule(solution)).grid(row=row+17+len(machines), column=2)
         else:
             tk.Label(self.scrollFrame.viewPort, text="5m Schedule Build Failed", width=31).grid(row= row+15+len(machines), column=0)
-            tk.Button(self.scrollFrame.viewPort, text="View Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+16+len(machines), column=0)
+            tk.Button(self.scrollFrame.viewPort, text="View New Schedule", width=28, command=lambda x=0: self.view_schedule(solution), state = 'disabled').grid(row=row+17+len(machines), column=2)
     
     def view_schedule(self, solution):
         # This function will call the view_asp.py script, a program which displays a task schedule in a GUI.
