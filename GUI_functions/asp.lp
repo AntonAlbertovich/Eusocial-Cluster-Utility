@@ -136,8 +136,8 @@ os_on(mac_c, centOS_7_NE).
 os_on(mac_d, debian).
 os_on(mac_e).
 % The thread_cost() rule represents how many threads a given task requires.
-thread_cost(nrpcpa_cpp, 1).
-thread_cost(wikipedia_gpu_py, 6).
+thread_cost(nrpcpa_cpp, 2).
+thread_cost(wikipedia_gpu_py, 1).
 thread_cost(spacy_test_py, 1).
 thread_cost(psutil_example_py, 1).
 thread_cost(wikipedia_cpu_py, 1).
@@ -145,7 +145,7 @@ thread_cost(fibinachi_nasm64bit_asm, 1).
 thread_cost(wikipedia_pull_py, 1).
 thread_cost(days_in_month_c, 1).
 thread_cost(timer_f90, 1).
-thread_cost(project_asm, 1).
+thread_cost(project_asm, 2).
 % The depends_on(X1, X2) rule represents that X2 must be exectued and on the machine executing X1.
 depends_on(nrpcpa_cpp, spacy_test_py).
 depends_on(nrpcpa_cpp, wikipedia_pull_py).

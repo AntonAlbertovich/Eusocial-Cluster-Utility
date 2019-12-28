@@ -1,3 +1,5 @@
+# py_exe.py
+
 import tkinter as tk
 
 from tkinter import *
@@ -46,7 +48,7 @@ class sub_menu(tk.Frame):
         input_file = open("GUI_functions/Tasks_details.bin", "rb")
         possible_programs = pickle.load(input_file)
         input_file.close()
-
+	# hey
         for i in range(len(possible_programs)):
             if ".py" in possible_programs[i][0]:
                 programs.append(possible_programs[i])
@@ -92,7 +94,27 @@ class sub_menu(tk.Frame):
         output_file.close()
         print(all_programs)
         root.quit()
+
+
     
+def click_set_py():
+    # This allows the user to enter a default execution command for all python scripts.
+    py_Label.configure(text='Python Executed with: $' + py_name.get())
+
+    input_file= open("GUI_functions/Cluster_details.bin", "rb")
+    machines = pickle.load(input_file)
+    input_file.close()
+
+    for i in range(len(machines)):
+        if this_machine[1] == machines[i][1]:
+            machines[i][5][0] = py_name.get()
+            output_file= open("GUI_functions/Cluster_details.bin", "wb")
+            pickle.dump(machines, output_file)
+            output_file.close()
+            break
+
+
+
 if __name__ == "__main__":
 
     root=tk.Tk()

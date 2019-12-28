@@ -1,3 +1,4 @@
+# machine_submenu.py
 
 import tkinter as tk
 from tkinter import ttk
@@ -432,14 +433,18 @@ check9.grid(column=2, row=11, sticky=tk.W, columnspan=3)
 def checkCallback4(*ignoredArgs):
     if chVarCm.get(): 
         check8.configure(state='disabled')
-        action_CT.configure(state='normal')
+        #action_CT.configure(state='normal')
+        print("CRACK!")
+        action_CT.configure(state='disabled')
     else:       
-        check8.configure(state='normal')
+        #check8.configure(state='normal')
+        print("CRACK!")
         action_CT.configure(state='disabled')
     if chVarCn.get(): 
         check9.configure(state='disabled')
+	print("POP!!")
         action_CT.configure(state='disabled')
-        
+  
         input_file= open("GUI_functions/Cluster_details.bin", "rb")
         machines = pickle.load(input_file)
         input_file.close()

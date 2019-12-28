@@ -93,8 +93,8 @@ class sub_menu(tk.Frame):
         print(all_programs)
         root.quit()
     
-if __name__ == "__main__":
-
+#if __name__ == "__main__":
+def py_GUI():
     root=tk.Tk()
     root.title('Python Program')
     sub_menu(root).pack(side="top", fill="both", expand=True)

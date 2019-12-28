@@ -71,8 +71,8 @@ class Example_net(tk.Frame):
         
         root_net.quit()
     
-if __name__ == "__main__":
-
+#if __name__ == "__main__":
+def hours_GUI():
     root_net=tk.Tk()
     root_net.title('Select hours of availablity')
     Example_net(root_net).pack(side="top", fill="both", expand=True)

@@ -129,7 +129,6 @@ class menu_frame(tk.Frame):
         # Program Dependency Options is the section of the menu which allows for each program's needs to be enetered into the data structure which will later build the ASP file for the schedule. 
         #Programs are organized by file type, at this time ECU supports the organization of Python, Fortran, C, C++, and Assembly files.
         
-        tk.Label(self.scrollFrame.viewPort, text="Execution Options", width=20).grid(row= 0, column=2)
 
 
         tk.Label(self.scrollFrame.viewPort, text="Machine Options", width=40).grid(row=6, column=0)
@@ -142,12 +141,6 @@ class menu_frame(tk.Frame):
         tk.Button(self.scrollFrame.viewPort, text="C program dependency settings", command=lambda x=a: self.c_settings(".c"), width=35, relief="solid").grid(row= 3, column=0)
         tk.Button(self.scrollFrame.viewPort, text="C++ program dependency settings", command=lambda x=a: self.cpp_settings(".cpp"), width=35, relief="solid").grid(row= 4, column=0)
         tk.Button(self.scrollFrame.viewPort, text="Assembly program dependency settings", command=lambda x=a: self.asm_settings(".asm"), width=35, relief="solid").grid(row= 5, column=0)
-
-        tk.Button(self.scrollFrame.viewPort, text="Python program dependency settings", command=lambda x=a: self.py_exe(".py"), width=35, relief="solid").grid(row= 1, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="Fortran program dependency settings", command=lambda x=a: self.fr_exe(".f90"), width=35, relief="solid").grid(row= 2, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="C program dependency settings", command=lambda x=a: self.c_exe(".c"), width=35, relief="solid").grid(row= 3, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="C++ program dependency settings", command=lambda x=a: self.cpp_exe(".cpp"), width=35, relief="solid").grid(row= 4, column=2)
-        tk.Button(self.scrollFrame.viewPort, text="Assembly program dependency settings", command=lambda x=a: self.asm_exe(".asm"), width=35, relief="solid").grid(row= 5, column=2)
 
         
         chosen_programs = []
@@ -191,7 +184,8 @@ class menu_frame(tk.Frame):
 
         for row in range(len(programs)):
             a = row
-            tk.Button(self.scrollFrame.viewPort, text=programs[row], width=25, relief="solid").grid(row=a+9+len(machines), column=0)
+            #tk.Button(self.scrollFrame.viewPort, text=programs[row], width=25, relief="solid").grid(row=a+9+len(machines), column=0)
+            tk.Checkbutton(self.scrollFrame.viewPort, text= "Setup: " + programs[row], relief="solid",command=lambda x=a:self.prog_exe_setting(programs[x]), width=35, height= 2).grid(row=a+9+len(machines), column=0)
             tk.Button(self.scrollFrame.viewPort, text="Increase Cost", command=lambda x=a: self.click_change_up(thread_cost, x, machines)).grid(row=a+9+len(machines), column=1)
             tk.Button(self.scrollFrame.viewPort, text="Thread Cost: " + thread_cost[a][1]).grid(row=a+9+len(machines), column=2)
             j = j + 1
@@ -243,38 +237,44 @@ class menu_frame(tk.Frame):
             chosen.append(selected)
             print(chosen)
     
+    def prog_exe_setting(self, selected):
+        # If a machine's details are configured this function allows for those changes to be committed to the appropriate data structure. 
+        output_file = open("GUI_functions/update.bin", "wb")
+        # Here update.bin contains the information which specifies which machine is to edited by machine_submenu.py
+        machine_data = []
+        machine_data.append(selected)
+        pickle.dump(machine_data, output_file)
+        output_file.close()
+        # machine_submenu.py is a script which edits the data structure pertaining to the machines in the cluster
+
+        from GUI_functions.program_exe import exe_menu
+        exe_menu()
     
     def py_settings(self, msg):
         # This function opens the script pertaining to python dependencies. 
-        os.system("python3 GUI_functions/select_py_GUI.py")
+        #os.system("python3 GUI_functions/select_py_GUI.py")
+        from GUI_functions.select_py_GUI import py_GUI
+        py_GUI() 
     def fr_settings(self, msg):
         # This function opens the script pertaining to fortran dependencies. 
-        os.system("python3 GUI_functions/select_f90_GUI.py")
+        #os.system("python3 GUI_functions/select_f90_GUI.py")
+        from GUI_functions.select_f90_GUI import f90_GUI
+        f90_GUI() 
     def cpp_settings(self, msg):
-        os.system("python3 GUI_functions/select_cpp_GUI.py")
+        #os.system("python3 GUI_functions/select_cpp_GUI.py")
+        from GUI_functions.select_cpp_GUI import cpp_GUI
+        cpp_GUI() 
         # This function opens the script pertaining to C++ dependencies. 
     def c_settings(self, msg):
-        os.system("python3 GUI_functions/select_c_GUI.py")
+        #os.system("python3 GUI_functions/select_c_GUI.py")
+        from GUI_functions.select_c_GUI import c_GUI
+        c_GUI() 
         # This function opens the script pertaining to C dependencies. 
     def asm_settings(self, msg):
-        os.system("python3 GUI_functions/select_asm_GUI.py")
+        #os.system("python3 GUI_functions/select_asm_GUI.py")
         # This function opens the script pertaining to assembly dependencies. 
-
-    def py_exe(self, msg):
-        # This function opens the script pertaining to python dependencies. 
-        os.system("python3 GUI_functions/py_exe.py")
-    def fr_exe(self, msg):
-        # This function opens the script pertaining to fortran dependencies. 
-        os.system("python3 GUI_functions/select_f90_GUI.py")
-    def cpp_exe(self, msg):
-        os.system("python3 GUI_functions/select_cpp_GUI.py")
-        # This function opens the script pertaining to C++ dependencies. 
-    def c_exe(self, msg):
-        os.system("python3 GUI_functions/select_c_GUI.py")
-        # This function opens the script pertaining to C dependencies. 
-    def asm_exe(self, msg):
-        os.system("python3 GUI_functions/select_asm_GUI.py")
-        # This function opens the script pertaining to assembly dependencies. 
+        from GUI_functions.select_asm_GUI import asm_GUI
+        asm_GUI() 
 
     def click_change_up(self, costs, a, machines):
         #This increments the thread cost of a particular task.

@@ -93,7 +93,7 @@ class menu_frame(tk.Frame):
         root.quit()
     
 
-def asm_menu():
+def asm_GUI():
     root=tk.Tk()
     root.title('Assembly Programs')
     menu_frame(root).pack(side="top", fill="both", expand=True)

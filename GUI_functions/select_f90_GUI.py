@@ -92,8 +92,8 @@ class menu_frame(tk.Frame):
         print(all_programs)
         root.quit()
     
-if __name__ == "__main__":
-
+#if __name__ == "__main__":
+def f90_GUI():
     root=tk.Tk()
     root.title('Select C Dependecies')
     menu_frame(root).pack(side="top", fill="both", expand=True)
