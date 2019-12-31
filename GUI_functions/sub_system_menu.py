@@ -151,8 +151,8 @@ class menu_frame(tk.Frame):
         def click_configure_networks():
                 # This function opens the window for selecting what machines this machine may acccess.
                 print("Setting up Network...")
-                import os
-                os.system("python3 GUI_functions/select_networks.py")
+                from GUI_functions.select_networks import networks_GUI
+                networks_GUI()
                 input_file = open("GUI_functions/update.bin", "rb")
                 this_update = list(pickle.load(input_file))
                 input_file.close()
@@ -173,8 +173,8 @@ class menu_frame(tk.Frame):
         def click_configure_toolkits():
                 # This function opens the window for selecting which toolkits are on this machine.
                 print("Setting up toolkits...")
-                import os
-                os.system("python3 GUI_functions/select_toolkits.py")
+                from GUI_functions.select_toolkits import tool_GUI
+                tool_GUI()
                 input_file = open("GUI_functions/update.bin", "rb")
                 this_update = list(pickle.load(input_file))
                 input_file.close()
@@ -184,7 +184,7 @@ class menu_frame(tk.Frame):
                 input_file.close()
 
                 for i in range(len(machines)):
-                    print("ping")
+                    print("ping toolkit")
                     if this_machine[1] == machines[i][1]:
                         machines[i][3] = this_update
                         output_file= open("GUI_functions/Cluster_details.bin", "wb")
@@ -209,7 +209,7 @@ class menu_frame(tk.Frame):
                 input_file.close()
 
                 for i in range(len(machines)):
-                    print("ping")
+                    print("ping avil")
                     if this_machine[1] == machines[i][1]:
                         machines[i][4] = this_update
                         output_file= open("GUI_functions/Cluster_details.bin", "wb")
@@ -287,14 +287,14 @@ class menu_frame(tk.Frame):
 
 
         def checkCallback0():
-            print("ping")
+            print("ping 0")
             check0.select()
             check1.deselect()
             action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_1.grid(column=5, row=7)
             action_1.configure(state='disabled')
         def checkCallback1():
-            print("ring")
+            print("ring 1")
             check1.select()
             check0.deselect()
             action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
@@ -312,14 +312,14 @@ class menu_frame(tk.Frame):
         check1.grid(column=2, row=7, sticky=tk.W, columnspan=3)
 
         def checkCallback2():
-            print("ping")
+            print("ping 2")
             check2.select()
             check3.deselect()
             action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=8)
             action_CD.configure(state='disabled')
         def checkCallback3():
-            print("ring")
+            print("ring 3")
             check3.select()
             check2.deselect()
             action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
@@ -335,14 +335,14 @@ class menu_frame(tk.Frame):
 
 
         def checkCallback4():
-            print("ping")
+            print("ping 4")
             check4.select()
             check5.deselect()
             action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
             action_5.grid(column=5, row=9)
             action_5.configure(state='disabled')
         def checkCallback5():
-            print("ring")
+            print("ring 5")
             check5.select()
             check4.deselect()
             action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
@@ -360,23 +360,21 @@ class menu_frame(tk.Frame):
         check5.grid(column=2, row=9, sticky=tk.W, columnspan=3)
 
         def checkCallback6():
-            print("ping")
+            print("ping 6")
             check6.select()
             check7.deselect()
             action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
             action_7.grid(column=5, row=10)
             action_7.configure(state='disabled')
         def checkCallback7():
-            print("ring")
+            print("ring 7")
             check7.select()
             check6.deselect()
+
             action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
             action_7.grid(column=5, row=10)
-        action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
-        action_7.grid(column=5, row=10)
-        action_7.configure(state='disabled')
         chVarCn = tk.IntVar()
-        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine has all necessary toolkits installed.", command=click_configure_toolkits, variable=chVarCn)
+        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine has all necessary toolkits installed.", command=checkCallback6, variable=chVarCn)
         check6.deselect()
         check6.grid(column=0, row=10, sticky=tk.W, columnspan=3)
         chVarCm = tk.IntVar()
@@ -384,10 +382,14 @@ class menu_frame(tk.Frame):
         check7.deselect()
         check7.grid(column=2, row=10, sticky=tk.W, columnspan=3)
 
+
+
         def checkCallback8():
-            print("ping")
+            print("ping 8")
             check8.select()
             check9.deselect()
+            check6.select()
+            check7.deselect()
             action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=11)
             action_CD.configure(state='disabled')
@@ -395,6 +397,8 @@ class menu_frame(tk.Frame):
             print("ring")
             check9.select()
             check8.deselect()
+            check7.select()
+            check6.deselect()
             action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=11)
         chVar8 = tk.IntVar()

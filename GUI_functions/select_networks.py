@@ -82,8 +82,8 @@ class menu_frame(tk.Frame):
         
         root_net.quit()
     
-if __name__ == "__main__":
-
+#if __name__ == "__main__":
+def networks_GUI():
     root_net=tk.Tk()
     root_net.title('Cluster Network')
     menu_frame(root_net).pack(side="top", fill="both", expand=True)
