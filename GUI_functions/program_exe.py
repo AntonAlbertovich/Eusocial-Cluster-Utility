@@ -68,7 +68,7 @@ class menu_frame(tk.Frame):
 
         def click_set_c():
             # This allows the user to enter a default execution command for all C scripts.
-            tk.Label(self.scrollFrame.viewPort, text='C Executed with: $' + c_nameEntered.get()).grid(column=2, row=3)
+            tk.Label(self.scrollFrame.viewPort, width = 45, text='Pre-execution abort phrase: ' + c_nameEntered.get()).grid(column=2, row=5)
             input_file= open("GUI_functions/Cluster_details.bin", "rb")
             machines = pickle.load(input_file)
             input_file.close()
@@ -103,7 +103,7 @@ class menu_frame(tk.Frame):
 
         def click_set_f90():
             # This allows the user to enter a default execution command for all fortran scripts.
-            tk.Label(self.scrollFrame.viewPort, text='Fortran Executed with: $' + f90_nameEntered.get()).grid(column=2, row=2)
+            tk.Label(self.scrollFrame.viewPort, width = 45, text='Abort if pre-execution returns: ' + f90_nameEntered.get()).grid(column=2, row=2)
             input_file= open("GUI_functions/Cluster_details.bin", "rb")
             machines = pickle.load(input_file)
             input_file.close()
@@ -120,7 +120,7 @@ class menu_frame(tk.Frame):
 
         def click_set_cpp():
             # This allows the user to enter a default execution command for all C++ scripts.
-            tk.Label(self.scrollFrame.viewPort, text='C++ Executed with: $' + cpp_nameEntered.get()).grid(column=2, row=4)
+            tk.Label(self.scrollFrame.viewPort, width = 45, text='Program Executed with:~$ ' + cpp_nameEntered.get()).grid(column=2, row=6)
             input_file= open("GUI_functions/Cluster_details.bin", "rb")
             machines = pickle.load(input_file)
             input_file.close()
@@ -223,9 +223,9 @@ class menu_frame(tk.Frame):
 
 
         tk.Label(self.scrollFrame.viewPort, text="Leave blank if no pre-execution command is needed.").grid(column=2, row=2)
-        tk.Label(self.scrollFrame.viewPort, text=this_machine[0] + " execution command.").grid(column=2, row=3)
-        tk.Label(self.scrollFrame.viewPort, text="C++").grid(column=2, row=4)
-        tk.Label(self.scrollFrame.viewPort, text="Assembly").grid(column=2, row=5)
+        tk.Label(self.scrollFrame.viewPort, width =45, text=this_machine[0] + " execution command.").grid(column=2, row=3)
+        #tk.Label(self.scrollFrame.viewPort, text="C++").grid(column=2, row=4)
+        tk.Label(self.scrollFrame.viewPort, text="Leave blank if none is needed.").grid(column=2, row=5)
         tk.Label(self.scrollFrame.viewPort, text="Number of Cores in Processor").grid(column=2, row=6)
 
 
@@ -233,125 +233,107 @@ class menu_frame(tk.Frame):
         f90_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=f90_name)
         f90_nameEntered.grid(column=1, row=2)
 
-        c_name = tk.StringVar()
-        c_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=c_name)
-        c_nameEntered.grid(column=1, row=3)
 
-        cpp_name = tk.StringVar()
-        cpp_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=cpp_name)
-        cpp_nameEntered.grid(column=1, row=4)
 
-        asm_name = tk.StringVar()
-        asm_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=asm_name)
-        asm_nameEntered.grid(column=1, row=5)
 
-        cc_name = tk.StringVar()
-        cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=5, textvariable=cc_name)
-        cc_nameEntered.grid(column=1, row=6)
+
+        #asm_name = tk.StringVar()
+        #asm_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=asm_name)
+        #asm_nameEntered.grid(column=1, row=5)
+
+        #cc_name = tk.StringVar()
+        #cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=5, textvariable=cc_name)
+        #cc_nameEntered.grid(column=1, row=6)
 
         click_set_f90 = tk.Button(self.scrollFrame.viewPort, text="Set Pre-Execution Command", command=click_set_f90, width=35 )
         click_set_f90.grid(column=0, row=2)
 
-        click_set_c = tk.Button(self.scrollFrame.viewPort, text="Set Program Execution Command", command=click_set_c, width=35)
-        click_set_c.grid(column=0, row=3)
 
-        click_set_cpp = tk.Button(self.scrollFrame.viewPort, text="Set C++ Program Execution Command", command=click_set_cpp, width=35)
-        click_set_cpp.grid(column=0, row=4)
 
-        click_set_asm = tk.Button(self.scrollFrame.viewPort, text="Set Assembly Program Execution Command", command=click_set_asm, width=35)
-        click_set_asm.grid(column=0, row=5)
+        click_set_c = tk.Button(self.scrollFrame.viewPort, text="Set Abort Phrase", command=click_set_c, width=35)
+        click_set_c.grid(column=0, row=5)
 
-        click_set_cc = tk.Button(self.scrollFrame.viewPort, text="Set Custom Core Count", command=click_set_cc, width=35)
-        click_set_cc.grid(column=0, row=6)
+        click_set_cpp = tk.Button(self.scrollFrame.viewPort, text="Program Execution Command", command=click_set_cpp, width=35)
+        click_set_cpp.grid(column=0, row=6)
+
+        cpp_name = tk.StringVar()
+        cpp_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=cpp_name)
+        cpp_nameEntered.grid(column=1, row=6)
+
+        #click_set_asm = tk.Button(self.scrollFrame.viewPort, text="Set Assembly Program Execution Command", command=click_set_asm, width=35)
+        #click_set_asm.grid(column=0, row=5)
+
+        #click_set_cc = tk.Button(self.scrollFrame.viewPort, text="Set Custom Core Count", command=click_set_cc, width=35)
+        #click_set_cc.grid(column=0, row=6)
 
 
         def checkCallback0():
             print("ping 0")
             check0.select()
             check1.deselect()
-            action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_1.grid(column=5, row=1)
-            action_1.configure(state='disabled')
         def checkCallback1():
             print("ring 1")
             check1.select()
             check0.deselect()
-            action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_1.grid(column=5, row=1)
-        action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-        action_1.grid(column=5, row=1)
-        action_1.configure(state='disabled')
         chVarDn = tk.IntVar()
         check0 = tk.Checkbutton(self.scrollFrame.viewPort, text=this_machine[0] + " requires a pre-execution command.", command=checkCallback0, variable=chVarDn)
         check0.deselect()
         check0.grid(column=0, row=1, sticky=tk.W, columnspan=3)
         chVarDm = tk.IntVar()
-        check1 = tk.Checkbutton(self.scrollFrame.viewPort, text=this_machine[0] + " is compiled or interepated then executed with a single command.", command=checkCallback1,  variable=chVarDm)
+        check1 = tk.Checkbutton(self.scrollFrame.viewPort, text=this_machine[0] + " is executed with a single command.", command=checkCallback1,  variable=chVarDm)
         check1.deselect()
         check1.grid(column=2, row=1, sticky=tk.W, columnspan=3)
+
+
+        c_name = tk.StringVar()
+        c_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=c_name)
+        c_nameEntered.grid(column=1, row=5)
+
 
         def checkCallback2():
             print("ping 2")
             check2.select()
             check3.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=8)
-            action_CD.configure(state='disabled')
         def checkCallback3():
             print("ring 3")
             check3.select()
             check2.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=8)
         chVarAn = tk.IntVar()
-        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text= "This machine is set to UTC time.", command=checkCallback2, variable=chVarAn)
+        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text= "Report and log program error messages.", command=checkCallback2, variable=chVarAn)
         check2.deselect()
-        check2.grid(column=0, row=8, sticky=tk.W, columnspan=3)
+        check2.grid(column=0, row=3, sticky=tk.W, columnspan=3)
         chVarAm = tk.IntVar()
-        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is NOT set to UTC time.", command=checkCallback3,  variable=chVarAm)
+        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text= "Ignore error messages.", command=checkCallback3,  variable=chVarAm)
         check3.deselect()
-        check3.grid(column=2, row=8, sticky=tk.W, columnspan=3)
+        check3.grid(column=2, row=3, sticky=tk.W, columnspan=3)
 
 
         def checkCallback4():
             print("ping 4")
             check4.select()
             check5.deselect()
-            action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
-            action_5.grid(column=5, row=9)
-            action_5.configure(state='disabled')
         def checkCallback5():
             print("ring 5")
             check5.select()
             check4.deselect()
-            action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
-            action_5.grid(column=5, row=9)
-        action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
-        action_5.grid(column=5, row=7)
-        action_5.configure(state='disabled')
         chVar4 = tk.IntVar()
-        check4 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is connected to all other machines.", command=checkCallback4, variable=chVar4)
+        check4 = tk.Checkbutton(self.scrollFrame.viewPort, text="If pre-exeuction returns a phrase then abort execution.", command=checkCallback4, variable=chVar4)
         check4.deselect()
-        check4.grid(column=0, row=9, sticky=tk.W, columnspan=3)
+        check4.grid(column=0, row=4, sticky=tk.W, columnspan=3)
         chVar5 = tk.IntVar()
-        check5 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine requires a custom network configuration.", command=checkCallback5,  variable=chVar5)
+        check5 = tk.Checkbutton(self.scrollFrame.viewPort, text="Do not set a pre-execution abort phrase.", command=checkCallback5,  variable=chVar5)
         check5.deselect()
-        check5.grid(column=2, row=9, sticky=tk.W, columnspan=3)
+        check5.grid(column=2, row=4, sticky=tk.W, columnspan=3)
 
         def checkCallback6():
             print("ping 6")
             check6.select()
             check7.deselect()
-            action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
-            action_7.grid(column=5, row=10)
-            action_7.configure(state='disabled')
         def checkCallback7():
             print("ring 7")
             check7.select()
             check6.deselect()
 
-            action_7 = tk.Button(self.scrollFrame.viewPort, text="Configure Toolkits", command=click_configure_toolkits, width=25)
-            action_7.grid(column=5, row=10)
         chVarCn = tk.IntVar()
         check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine has all necessary toolkits installed.", command=checkCallback6, variable=chVarCn)
         check6.deselect()
@@ -367,19 +349,10 @@ class menu_frame(tk.Frame):
             print("ping 8")
             check8.select()
             check9.deselect()
-            check6.select()
-            check7.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=11)
-            action_CD.configure(state='disabled')
         def checkCallback9():
             print("ring")
             check9.select()
             check8.deselect()
-            check7.select()
-            check6.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-            action_CD.grid(column=5, row=11)
         chVar8 = tk.IntVar()
         check8 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available for cluster computation 24/7.", command=checkCallback8, variable=chVar8)
         check8.deselect()
