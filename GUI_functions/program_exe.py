@@ -223,10 +223,9 @@ class menu_frame(tk.Frame):
 
 
         tk.Label(self.scrollFrame.viewPort, text="Leave blank if no pre-execution command is needed.").grid(column=2, row=2)
-        tk.Label(self.scrollFrame.viewPort, width =45, text=this_machine[0] + " execution command.").grid(column=2, row=3)
         #tk.Label(self.scrollFrame.viewPort, text="C++").grid(column=2, row=4)
         tk.Label(self.scrollFrame.viewPort, text="Leave blank if none is needed.").grid(column=2, row=5)
-        tk.Label(self.scrollFrame.viewPort, text="Number of Cores in Processor").grid(column=2, row=6)
+        tk.Label(self.scrollFrame.viewPort, text="Leave blank if none is needed.").grid(column=2, row=6)
 
 
         f90_name = tk.StringVar()
@@ -299,11 +298,11 @@ class menu_frame(tk.Frame):
             check3.select()
             check2.deselect()
         chVarAn = tk.IntVar()
-        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text= "Report and log program error messages.", command=checkCallback2, variable=chVarAn)
+        check2 = tk.Checkbutton(self.scrollFrame.viewPort, text="Attempt to run on one other machine if pre-execution initially fails.", command=checkCallback2, variable=chVarAn)
         check2.deselect()
         check2.grid(column=0, row=3, sticky=tk.W, columnspan=3)
         chVarAm = tk.IntVar()
-        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text= "Ignore error messages.", command=checkCallback3,  variable=chVarAm)
+        check3 = tk.Checkbutton(self.scrollFrame.viewPort, text= "Ignore program pre-execution's exit code.", command=checkCallback3,  variable=chVarAm)
         check3.deselect()
         check3.grid(column=2, row=3, sticky=tk.W, columnspan=3)
 
@@ -335,11 +334,11 @@ class menu_frame(tk.Frame):
             check6.deselect()
 
         chVarCn = tk.IntVar()
-        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine has all necessary toolkits installed.", command=checkCallback6, variable=chVarCn)
+        check6 = tk.Checkbutton(self.scrollFrame.viewPort, text="Attempt to run on one other machine if program execution initially fails.", command=checkCallback6, variable=chVarCn)
         check6.deselect()
         check6.grid(column=0, row=10, sticky=tk.W, columnspan=3)
         chVarCm = tk.IntVar()
-        check7 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine requires a custom toolkit configuration.", command=checkCallback7,  variable=chVarCm)
+        check7 = tk.Checkbutton(self.scrollFrame.viewPort, text="Ignore program execution's exit code.", command=checkCallback7,  variable=chVarCm)
         check7.deselect()
         check7.grid(column=2, row=10, sticky=tk.W, columnspan=3)
 
@@ -354,20 +353,20 @@ class menu_frame(tk.Frame):
             check9.select()
             check8.deselect()
         chVar8 = tk.IntVar()
-        check8 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available for cluster computation 24/7.", command=checkCallback8, variable=chVar8)
+        check8 = tk.Checkbutton(self.scrollFrame.viewPort, text="Terminate all opertations if this program can not be completed.", command=checkCallback8, variable=chVar8)
         check8.deselect()
         check8.grid(column=0, row=11, sticky=tk.W, columnspan=3)
         chVar9 = tk.IntVar()
-        check9 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available only within a given time frame.", command=checkCallback9,  variable=chVar9)
+        check9 = tk.Checkbutton(self.scrollFrame.viewPort, text="Only terminate operation dependent on this program.", command=checkCallback9,  variable=chVar9)
         check9.deselect()
         check9.grid(column=2, row=11, sticky=tk.W, columnspan=3)
         
         
-        tk.Label(self.scrollFrame.viewPort, text="Select Machine OS").grid(column=0, row=12)
+        tk.Label(self.scrollFrame.viewPort, text="Set Execution Time Constraint").grid(column=0, row=12)
         tk.Label(self.scrollFrame.viewPort, text="Select Machine Architecture").grid(column=2, row=12)
 
         archit= ['x86', 'ARM Cortex-A72']
-        os_distro= ['Ubuntu 18.04 [Desktop Edition]', 'CentOS 7 [Desktop Edition]', 'CentOS 7 [Node/server Edition]', 'Unlisted Debian based OS', 'Unlisted Red Hat based OS']
+        os_distro= ['No Time Constraint', '15 Seconds', '60 Seconds', '5 Minutes', '60 Minutes', '24 Hours', '72 Hours']
 
         def os_deselect(keep):
             if keep != 0:
@@ -380,6 +379,8 @@ class menu_frame(tk.Frame):
                 OS_3.deselect()
             if keep != 4:
                 OS_4.deselect()
+            if keep != 5:
+                OS_5.deselect()
 
         def ar_deselect(keep):
             if keep != 0:
@@ -406,6 +407,14 @@ class menu_frame(tk.Frame):
         def os_Call_4():
             print(os_distro[4])
             os_deselect(4)
+
+        def os_Call_5():
+            print(os_distro[5])
+            os_deselect(5)
+
+        def os_Call_6():
+            print(os_distro[6])
+            os_deselect(6)
 
         def ar_Call_0():
             print(archit[0])
@@ -439,7 +448,17 @@ class menu_frame(tk.Frame):
         OS_4 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[4], command=os_Call_4, variable=chOS_4)
         OS_4.deselect()
         OS_4.grid(column=0, row=18, sticky=tk.W, columnspan=3)
-        
+
+        chOS_5 = tk.IntVar()
+        OS_5 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[5], command=os_Call_4, variable=chOS_4)
+        OS_5.deselect()
+        OS_5.grid(column=0, row=19, sticky=tk.W, columnspan=3)
+
+        chOS_6 = tk.IntVar()
+        OS_6 = tk.Checkbutton(self.scrollFrame.viewPort, text=os_distro[6], command=os_Call_4, variable=chOS_4)
+        OS_6.deselect()
+        OS_6.grid(column=0, row=20, sticky=tk.W, columnspan=3)
+
         chAR_0 = tk.IntVar()
         AR_0 = tk.Checkbutton(self.scrollFrame.viewPort, text=archit[0], command=ar_Call_0, variable=chAR_0)
         AR_0.deselect()
@@ -469,9 +488,15 @@ class menu_frame(tk.Frame):
             output_file.close()
             print(all_programs)
             root.quit()
+        def exe_dir():
+            from GUI_functions.exe_directory_options import Exe_directory_options
+            Exe_directory_options()
 
+
+        action_Q = tk.Button(self.scrollFrame.viewPort, text="Build Execution Directory", command=exe_dir, width=25)
+        action_Q.grid(column=0, row=21)
         action_Q = tk.Button(self.scrollFrame.viewPort, text="Save Cahnges", command=printMsg_kill, width=25)
-        action_Q.grid(column=0, row=19)
+        action_Q.grid(column=0, row=22)
 
 
 def exe_menu():

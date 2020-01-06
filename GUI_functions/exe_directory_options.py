@@ -124,8 +124,7 @@ def click_set_py():
 
 
 
-if __name__ == "__main__":
-
+def Exe_directory_options():
     root=tk.Tk()
     root.title('Execution Directory Options')
     sub_menu(root).pack(side="top", fill="both", expand=True)
