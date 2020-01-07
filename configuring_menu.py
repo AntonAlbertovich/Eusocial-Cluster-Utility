@@ -122,7 +122,7 @@ class menu_frame(tk.Frame):
         for row in range(len(machines)):
             # This loop builds the menu for the configuration of each machine in the cluster.
             a = row
-            tk.Checkbutton(self.scrollFrame.viewPort, text= "Configure Machine: " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), width=30).grid(row=row + 7, column=0)
+            tk.Checkbutton(self.scrollFrame.viewPort, text= "Configure Machine: " + machines[row][0], relief="solid",command=lambda x=a:self.add_remove(machines[x], chosen_machines), height=2, width=30).grid(row=row + 7, column=0)
         
 
         tk.Label(self.scrollFrame.viewPort, text="Dependency Options", width=20).grid(row= 0, column=0)

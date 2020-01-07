@@ -64,89 +64,6 @@ class menu_frame(tk.Frame):
             except ValueError:
                 tk.Label(self.scrollFrame.viewPort, text="Errorwwwwww").grid(column=2, row=6)
     
-        def click_set_py():
-            # This allows the user to enter a default execution command for all python scripts.
-            tk.Label(self.scrollFrame.viewPort, text='Python Executed with: $' + py_nameEntered.get()).grid(column=2, row=1)
-            input_file= open("GUI_functions/Cluster_details.bin", "rb")
-            machines = pickle.load(input_file)
-            input_file.close()
-
-            for i in range(len(machines)):
-                if this_machine[1] == machines[i][1]:
-                    machines[i][5][0] = py_nameEntered.get()
-                    output_file= open("GUI_functions/Cluster_details.bin", "wb")
-                    pickle.dump(machines, output_file)
-                    output_file.close()
-                    break
-
-
-        def click_set_c():
-            # This allows the user to enter a default execution command for all C scripts.
-            tk.Label(self.scrollFrame.viewPort, text='C Executed with: $' + c_nameEntered.get()).grid(column=2, row=3)
-            input_file= open("GUI_functions/Cluster_details.bin", "rb")
-            machines = pickle.load(input_file)
-            input_file.close()
-
-            for i in range(len(machines)):
-                if this_machine[1] == machines[i][1]:
-                    machines[i][5][2] = c_nameEntered.get()
-                    output_file= open("GUI_functions/Cluster_details.bin", "wb")
-                    pickle.dump(machines, output_file)
-                    output_file.close()
-                    break
-
-        def click_set_asm():
-            # This allows the user to enter a default execution command for all assembly scripts.
-            tk.Label(self.scrollFrame.viewPort, text='ASM Executed with: $' + asm_nameEntered.get()).grid(column=2, row=5)
-            input_file= open("GUI_functions/Cluster_details.bin", "rb")
-            machines = pickle.load(input_file)
-            input_file.close()
-            for i in range(len(machines)):
-                print("ping")
-                if this_machine[1] == machines[i][1]:
-                    print("!")
-                    machines[i][5][4] = asm_nameEntered.get()
-                    print(machines)
-                    output_file= open("GUI_functions/Cluster_details.bin", "wb")
-                    pickle.dump(machines, output_file)
-                    output_file.close()
-                    print(machines)
-                    break
-
-
-
-        def click_set_f90():
-            # This allows the user to enter a default execution command for all fortran scripts.
-            tk.Label(self.scrollFrame.viewPort, text='Fortran Executed with: $' + f90_nameEntered.get()).grid(column=2, row=2)
-            input_file= open("GUI_functions/Cluster_details.bin", "rb")
-            machines = pickle.load(input_file)
-            input_file.close()
-
-            for i in range(len(machines)):
-                if this_machine[1] == machines[i][1]:
-                    machines[i][5][1] = f90_nameEntered.get()
-                    output_file= open("GUI_functions/Cluster_details.bin", "wb")
-                    pickle.dump(machines, output_file)
-                    output_file.close()
-                    break
-
-
-
-        def click_set_cpp():
-            # This allows the user to enter a default execution command for all C++ scripts.
-            tk.Label(self.scrollFrame.viewPort, text='C++ Executed with: $' + cpp_nameEntered.get()).grid(column=2, row=4)
-            input_file= open("GUI_functions/Cluster_details.bin", "rb")
-            machines = pickle.load(input_file)
-            input_file.close()
-
-            for i in range(len(machines)):
-
-                if this_machine[1] == machines[i][1]:
-                    machines[i][5][3] = cpp_nameEntered.get()
-                    output_file= open("GUI_functions/Cluster_details.bin", "wb")
-                    pickle.dump(machines, output_file)
-                    output_file.close()
-                    break
 
         def click_configure_networks():
                 # This function opens the window for selecting what machines this machine may acccess.
@@ -236,51 +153,13 @@ class menu_frame(tk.Frame):
     
 
 
-        tk.Label(self.scrollFrame.viewPort, text="Python").grid(column=2, row=1)
-        tk.Label(self.scrollFrame.viewPort, text="Fortran").grid(column=2, row=2)
-        tk.Label(self.scrollFrame.viewPort, text="C").grid(column=2, row=3)
-        tk.Label(self.scrollFrame.viewPort, text="C++").grid(column=2, row=4)
-        tk.Label(self.scrollFrame.viewPort, text="Assembly").grid(column=2, row=5)
         tk.Label(self.scrollFrame.viewPort, text="Number of Cores in Processor").grid(column=2, row=6)
 
-        py_name = tk.StringVar()
-        py_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=py_name)
-        py_nameEntered.grid(column=1, row=1)
-
-        f90_name = tk.StringVar()
-        f90_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=f90_name)
-        f90_nameEntered.grid(column=1, row=2)
-
-        c_name = tk.StringVar()
-        c_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=c_name)
-        c_nameEntered.grid(column=1, row=3)
-
-        cpp_name = tk.StringVar()
-        cpp_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=cpp_name)
-        cpp_nameEntered.grid(column=1, row=4)
-
-        asm_name = tk.StringVar()
-        asm_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=asm_name)
-        asm_nameEntered.grid(column=1, row=5)
 
         cc_name = tk.StringVar()
-        cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=5, textvariable=cc_name)
+        cc_nameEntered = tk.Entry(self.scrollFrame.viewPort, width=25, textvariable=cc_name)
         cc_nameEntered.grid(column=1, row=6)
 
-        click_set_py = tk.Button(self.scrollFrame.viewPort, text="Set Python Program Execution Command", command=click_set_py, width=35)
-        click_set_py.grid(column=0, row=1)
-
-        click_set_f90 = tk.Button(self.scrollFrame.viewPort, text="Set Fortran Program Execution Command", command=click_set_f90, width=35 )
-        click_set_f90.grid(column=0, row=2)
-
-        click_set_c = tk.Button(self.scrollFrame.viewPort, text="Set C Program Execution Command", command=click_set_c, width=35)
-        click_set_c.grid(column=0, row=3)
-
-        click_set_cpp = tk.Button(self.scrollFrame.viewPort, text="Set C++ Program Execution Command", command=click_set_cpp, width=35)
-        click_set_cpp.grid(column=0, row=4)
-
-        click_set_asm = tk.Button(self.scrollFrame.viewPort, text="Set Assembly Program Execution Command", command=click_set_asm, width=35)
-        click_set_asm.grid(column=0, row=5)
 
         click_set_cc = tk.Button(self.scrollFrame.viewPort, text="Set Custom Core Count", command=click_set_cc, width=35)
         click_set_cc.grid(column=0, row=6)
@@ -299,9 +178,6 @@ class menu_frame(tk.Frame):
             check0.deselect()
             action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
             action_1.grid(column=5, row=7)
-        action_1 = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
-        action_1.grid(column=5, row=7)
-        action_1.configure(state='disabled')
         chVarDn = tk.IntVar()
         check0 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine does NOT require custom directory configuration.", command=checkCallback0, variable=chVarDn)
         check0.deselect()
@@ -315,14 +191,14 @@ class menu_frame(tk.Frame):
             print("ping 2")
             check2.select()
             check3.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Time Zone", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=8)
             action_CD.configure(state='disabled')
         def checkCallback3():
             print("ring 3")
             check3.select()
             check2.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Time Zone", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=8)
         chVarAn = tk.IntVar()
         check2 = tk.Checkbutton(self.scrollFrame.viewPort, text= "This machine is set to UTC time.", command=checkCallback2, variable=chVarAn)
@@ -347,9 +223,6 @@ class menu_frame(tk.Frame):
             check4.deselect()
             action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
             action_5.grid(column=5, row=9)
-        action_5 = tk.Button(self.scrollFrame.viewPort, text="Configure Network", command=click_configure_networks, width=25)
-        action_5.grid(column=5, row=7)
-        action_5.configure(state='disabled')
         chVar4 = tk.IntVar()
         check4 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is connected to all other machines.", command=checkCallback4, variable=chVar4)
         check4.deselect()
@@ -388,18 +261,14 @@ class menu_frame(tk.Frame):
             print("ping 8")
             check8.select()
             check9.deselect()
-            check6.select()
-            check7.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Availability", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=11)
             action_CD.configure(state='disabled')
         def checkCallback9():
             print("ring")
             check9.select()
             check8.deselect()
-            check7.select()
-            check6.deselect()
-            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Directory", command=click_configure_dir, width=25)
+            action_CD = tk.Button(self.scrollFrame.viewPort, text="Configure Availability", command=click_configure_dir, width=25)
             action_CD.grid(column=5, row=11)
         chVar8 = tk.IntVar()
         check8 = tk.Checkbutton(self.scrollFrame.viewPort, text="This machine is available for cluster computation 24/7.", command=checkCallback8, variable=chVar8)
